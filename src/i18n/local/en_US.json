@@ -1,0 +1,498 @@
+{
+  "common": {
+    "slogan": "The era of artificial intelligence has dawned.",
+    "ok": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "close": "Close",
+    "run": "Run",
+    "pleaseEnter": "Please enter",
+    "pleaseSelect": "Please select",
+    "required": "is required",
+    "edit": "Edit",
+    "delete": "Delete",
+    "export": "Export",
+    "download": "Download",
+    "collect": "Collect",
+    "loadMore": "Load more",
+    "deleteConfirm": "Do you want to delete it?",
+    "deleteConfirmContent": "After being deleted, it cannot be restored.",
+    "clear": "Clear",
+    "clearConfirm": "Are you sure to clear your chat history?",
+    "clearConfirmContent": "Chat history will not be restored after clearing.",
+    "loadErrorRetry": "Failed to load, click retry",
+    "copySuccess": "Copied to clipboard",
+    "officialWebsite": "Official Website",
+    "updateTime": "Update time",
+    "charCount": "Characters",
+    "configError": "Configuration error",
+    "goSetting": "Go to Settings"
+  },
+  "setting": {
+    "name": "Settings",
+    "app": {
+      "name": "Application",
+      "appearance": {
+        "name": "Appearance",
+        "theme": {
+          "name": "Theme",
+          "auto": "Auto",
+          "light": "Light",
+          "dark": "Dark",
+          "custom": "Custom",
+          "customEdit": "Edit custom theme",
+          "customEditReset": "Reset style"
+        },
+        "local": "Language",
+        "fontSize": "Text size",
+        "min": "min",
+        "max": "max"
+      },
+      "network": {
+        "name": "Network",
+        "proxy": "Proxy address"
+      },
+      "backup": {
+        "name": "Backup",
+        "importOk": "Select file",
+        "importSuccess": "Import success",
+        "importNone": "No data has been imported",
+        "importError": "Import error",
+        "setting": {
+          "name": "Settings backup",
+          "export": "Export settings",
+          "import": "Import settings",
+          "importConfirm": "Import settings warning",
+          "importConfirmContent": "Select backup file import, the existing application Settings will be overwritten, the operation cannot be restored!"
+        },
+        "data": {
+          "name": "Data backup",
+          "export": "Export application data",
+          "import": "Import application data",
+          "importConfirm": "Import data warning",
+          "importConfirmContent": "Select backup file import, the existing application data will be overwritten, the operation cannot be restored!"
+        },
+        "cache": {
+          "name": "Cache files",
+          "path": "Cache directory",
+          "clear": "Clear cache",
+          "clearSuccess": "Cache clearing complete"
+        }
+      }
+    },
+    "functionModel":{
+      "name": "Function model",
+      "moonshotAI": {
+        "name": "Moonshot AI",
+        "apiKey": "API Key"
+      }
+    },
+    "bigModel": {
+      "name": "Chat model",
+      "openAI": {
+        "name": "OpenAI",
+        "baseUrl": "Server URL",
+        "key": "OpenAI Key"
+      },
+      "ollama": {
+        "name": "Ollama",
+        "baseUrl": "Server URL"
+      },
+      "gemini": {
+        "name": "Gemini",
+        "baseUrl": "Server URL",
+        "key": "Gemini Key"
+      },
+      "zhipuAI": {
+        "name": "Zhipu AI",
+        "apiKey": "API Key"
+      },
+      "spark": {
+        "name": "iFLYTEK Spark",
+        "appId": "APPID",
+        "secret": "APISecret",
+        "key": "APIKey"
+      },
+      "ernie": {
+        "name": "Baidu ERNIE",
+        "apiKey": "API Key",
+        "secretKey": "Secret Key"
+      },
+      "tongyi": {
+        "name": "Alibaba Tongyi",
+        "apiKey": "API Key"
+      },
+      "tiangong": {
+        "name": "Tiangong",
+        "appKey": "app_key",
+        "appSecret": "app_secret"
+      },
+      "moonshotAI": {
+        "name": "Moonshot AI",
+        "apiKey": "API Key"
+      },
+      "stepFun": {
+        "name": "Jie Yue",
+        "apiKey": "API Key"
+      },
+      "deepSeek": {
+        "name": "DeepSeek",
+        "apiKey": "API Key"
+      }
+    },
+    "aiCalendar": {
+      "name": "Calendar",
+      "weekStart": "The beginning of the week",
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "bigModel": "Big model"
+    },
+    "translation": {
+      "name": "Translation",
+      "youdao": {
+        "name": "Youdao Translation",
+        "appId": "App ID",
+        "secret": "App Secret"
+      },
+      "baiduTranslation": {
+        "name": "Baidu Translation",
+        "appId": "App ID",
+        "secret": "App Secret"
+      }
+    },
+    "about": {
+      "name": "About",
+      "sourceCode": "Source address",
+      "contactAuthor": "Contact author",
+      "version": {
+        "name": "Application version",
+        "num": "1.0"
+      },
+      "developer":{
+        "name": "Team",
+        "team": "BUPT MAIR",
+        "member":""
+      },
+      "devTools": {
+        "name": "Developer tools",
+        "openDevTools": "Open dev tools",
+        "openLogPath": "Open log directory",
+        "welcomePage": "Open welcome page"
+      }
+    }
+  },
+  "welcomePage": {
+    "title": "Now supported"
+  },
+  "userSetting": {
+    "name": "User Info",
+    "selectAvatar": "Select",
+    "nickname": "Nickname"
+  },
+  "bigModelProvider": {
+    "OpenAI": "OpenAI",
+    "Ollama": "Ollama",
+    "Gemini": "Gemini",
+    "ZhipuAI": "Zhipu AI",
+    "Spark": "iFLYTEK Spark",
+    "ERNIE": "Baidu ERNIE",
+    "Tongyi": "Alibaba Tongyi",
+    "Tiangong": "Tiangong",
+    "MoonshotAI": "Moonshot AI",
+    "StepFun": "Jie Yue",
+    "DeepSeek": "DeepSeek"
+  },
+  "bigModelProviderWelcome": {
+    "OpenAI": "I_ am_ the_ OpenAI_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "Ollama": "I_ am_ the_ Ollama_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "Gemini": "I_ am_ the_ Gemini_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "ZhipuAI": "I_ am_ the_ Zhipu AI_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "Spark": "I_ am_ the_ Xunfei_ Spark_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "ERNIE": "I_ am_ the_ Baidu_ Wenxin_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "Tongyi": "I_ am_ the_ Alibaba_ Tongyi_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "Tiangong": "I_ am_ the_ Tiangong_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "MoonshotAI": "I_ am_ the_ Moonshot AI_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "StepFun": "I_ am_ the_ Jie Yue_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "DeepSeek": "I_ am_ the_ DeepSeek_ large_ model._ How_ can_ I_ help_ you_ today?"
+  },
+  "translationProvider": {
+    "youdao": "Youdao Translation",
+    "baiduTranslation": "Baidu Translation"
+  },
+  "assistantList": {
+    "new": "New assistant",
+    "newChat": "New chat",
+    "name": "Name",
+    "title": "Title",
+    "instruction": "System instruction",
+    "provider": "Provider",
+    "model": "Model",
+    "isCustomModel": "Custom models support all capabilities by default",
+    "imageSupported": "Image supported",
+    "imageNotSupported": "Image sot supported",
+    "pluginSupported": "Plugin supported",
+    "pluginNotSupported": "Plugin not supported",
+    "networkSupported": "Network supported",
+    "networkNotSupported": "Network not supported",
+    "maxTokens": "Generated max tokens",
+    "inputMaxTokens": "Input max tokens",
+    "contextSize": "Context size",
+    "type": "Assistant type",
+    "chat": "Chat",
+    "search": "Search assistant",
+    "speechModel": "Speech model",
+    "speechVoice": "Speech voice",
+    "speechSpeed": "Speech speed"
+  },
+  "chatList": {
+    "search": "Search chat"
+  },
+  "assistantItem": {
+    "content": {
+      "image": "[Image]",
+      "empty": "[No chat]"
+    },
+    "messageCount": "messages"
+  },
+  "chatWindow": {
+    "header": {
+      "edit": "Edit assistant",
+      "editChat": "Edit chat",
+      "export": "Export records",
+      "clear": "Clear records",
+      "delete": "Delete assistant",
+      "deleteChat": "Delete chat"
+    },
+    "inputPlaceholder": {
+      "chat": "Enter your question here (Shift + Enter line wrap)",
+      "drawing": "Enter the image description here (Shift + Enter line wrap)"
+    },
+    "configMiss": {
+      "OpenAI": "OpenAI is not configured",
+      "Ollama": "Ollama is not configured",
+      "Gemini": "Gemini is not configured",
+      "ZhipuAI": "Zhipu AI is not configured",
+      "Spark": "iFLYTEK Spark is not configured",
+      "ERNIE": "Baidu ERNIE is not configured",
+      "Tongyi": "Alibaba Tongyi is not configured",
+      "Tiangong": "Tiangong is not configured",
+      "MoonshotAI": "Moonshot AI is not configured",
+      "StepFun": "Jie Yue is not configured",
+      "DeepSeek": "DeepSeek is not configured"
+    },
+    "error": {
+      "imageRequires": "You have to upload a picture",
+      "OpenAI": "OpenAI call error",
+      "Ollama": "Ollama call error",
+      "Gemini": "Gemini call error",
+      "ZhipuAI": "Zhipu AI call error",
+      "Spark": "iFLYTEK Spark call error",
+      "ERNIE": "Baidu ERNIE call error",
+      "Tongyi": "Alibaba Tongyi call error",
+      "Tiangong": "Tiangong call error",
+      "MoonshotAI": "Moonshot AI call error",
+      "StepFun": "Jie Yue call error",
+      "DeepSeek": "DeepSeek call error"
+    },
+    "fileList": {
+      "title": "Document list",
+      "tip": "Note that the total number of words in the document cannot exceed the large model Token limit!",
+      "select": "Select document"
+    },
+    "stop": "Stop",
+    "send": "Send",
+    "selectImage": "Image",
+    "selectFile": "Document",
+    "selectPlugin": "Plugin",
+    "noPlugin": "No plugin",
+    "copy": "Copy",
+    "speech": "Speech",
+    "startSpeech": "Start speech",
+    "stopSpeech": "Stop speech",
+    "multipleChoice": "Multiple choice",
+    "collectSuccess": "Added to favorites",
+    "inputTokensLimit": "Input tokens limit",
+    "contextSizeDown": "Subject to the maximum input Token, the number of context items is automatically adjusted to",
+    "clearContext": "Clear context",
+    "clearContextTip": "Context cleared, Click to restore",
+    "sharePreview": "Share preview",
+    "shareDownload": "Save image",
+    "closeLeft": "Close sidebar",
+    "openLeft": "Open sidebar",
+    "fastPrompt": "Fast prompt",
+    "fastPromptSearch": "Search prompt"
+  },
+  "collectionSet": {
+    "search": "Search collections",
+    "empty": "Collect inspiration for chatting with AI",
+    "type": {
+      "all": "All",
+      "chat": "Chat",
+      "image": "Image",
+      "note": "Note"
+    },
+    "note": {
+      "new": "New note",
+      "defaultTitle": "New note",
+      "titlePlaceholder": "No title",
+      "contentPlaceholder": "Enter the notes here"
+    }
+  },
+  "translator": {
+    "name": "Text translation",
+    "queryPlaceholder": "Please enter your text to be translated",
+    "returnPlaceholder": "Translation result",
+    "configMiss": {
+      "youdao": "Youdao Translation is not configured",
+      "baiduTranslation": "Baidu Translation is not configured"
+    },
+    "error": {
+      "youdao": "Youdao Translation call error",
+      "baiduTranslation": "Baidu Translation call error"
+    },
+    "langType": {
+      "auto": "Auto",
+      "zh-CHS": "Chinese",
+      "en": "English",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "fr": "French"
+    }
+  },
+  "knowledgeBase": {
+    "slogan": "Endless wisdom, all in the AI knowledge base",
+    "list": {
+      "search": "Search knowledge base",
+      "new": "New knowledge base",
+      "edit": "Edit knowledge base",
+      "name": "Name",
+      "description": "Description",
+      "indexName": "Index name",
+      "redisConfig": {
+        "url": "Redis server url",
+        "username": "Redis username",
+        "password": "Redis password"
+      },
+      "redisDoc": "How do I install Redis Stack?"
+    },
+    "window": {
+      "search": "Enter questions or keywords to search the knowledge base",
+      "searchFile": "Search knowledge file",
+      "backFileList": "Return to knowledge list",
+      "newFile": "New knowledge file",
+      "empty": "No knowledge file",
+      "newFileText": "Knowledge text",
+      "newFileTextOverride": "Whether to overwrite the current knowledge text?",
+      "selectFile": "Select file",
+      "selectFileTip": "Support .text .pdf .docx .pptx type",
+      "fileDetail": "Knowledge file detail",
+      "knowledgeFile": "Knowledge file",
+      "knowledgeDoc": "Knowledge fragment"
+    }
+  },
+  "aiCalendar": {
+    "name": "AI Calendar",
+    "generate": "AI generate",
+    "stopGenerate": "Stop generate",
+    "noDayReportError": "There are no daily papers available during the week",
+    "dayReport": {
+      "name": "Daily report",
+      "content": "Daily report content"
+    },
+    "weekReport": {
+      "name": "Week report",
+      "content": "Week report content"
+    },
+    "monthReport": {
+      "name": "Month report",
+      "content": "Month report content"
+    },
+    "yearReport": {
+      "name": "Year report",
+      "content": "Year report content"
+    }
+  },
+  "miniProgram": {
+    "name": "AI mini program",
+    "search": "Search mini program",
+    "empty": "No mini program"
+  },
+  "notification": {
+    "name": "Notification",
+    "empty": "No notification",
+    "clear": "Clear",
+    "issues": "Feedback",
+    "type": {
+      "info": "Info log",
+      "warn": "Warn log",
+      "error": "Error log"
+    }
+  },
+  "chatPlugin": {
+    "slogan": "Custom plugins to expand the possibilities",
+    "list": {
+      "search": "Search plugin",
+      "new": "New plugin - Basic information",
+      "edit": "Edit  plugin",
+      "type": "Type",
+      "name": "Name",
+      "description": "Description",
+      "doc": "How to design plugin?"
+    },
+    "window": {
+      "design": "Design plugin",
+      "code": "Function code",
+      "codePlaceholder": "The entire function uses a Promise wrapper, returns the result with resolve(), and takes the function input from params",
+      "param": "Parameter description",
+      "paramName": "name",
+      "paramType": "type",
+      "paramDesc": "description",
+      "test": "Test plugin",
+      "testResult": "Test result"
+    }
+  },
+  "aiDrawing": {
+    "name": "AI Drawing",
+    "provider": "Provider",
+    "model": "Model",
+    "number": "Number",
+    "size": "Image size",
+    "quality": "Image quality",
+    "style": "Image style",
+    "styleOption": {
+      "auto": "auto",
+      "3dCartoon": "3D cartoon",
+      "anime": "anime",
+      "oilPainting": "oil painting",
+      "watercolor": "watercolor",
+      "sketch": "sketch",
+      "chinesePainting": "chinese painting",
+      "flatIllustration": "flat illustration",
+      "base": "base",
+      "3dModel": "3D model",
+      "analogFilm": "analog film",
+      "cinematic": "cinematic",
+      "comicBook": "comic book",
+      "craftClay": "craft clay",
+      "digitalArt": "digital art",
+      "enhance": "enhance",
+      "fantasyArt": "fantasy art",
+      "isometric": "isometric",
+      "lineArt": "line art",
+      "lowpoly": "lowpoly",
+      "neonpunk": "neonpunk",
+      "origami": "origami",
+      "photographic": "photographic",
+      "pixelArt": "pixel art",
+      "texture": "texture"
+    },
+    "negativePrompt": "Negative prompt",
+    "promptPlaceholder": "Please enter the prompt word",
+    "steps": "Steps",
+    "samplerIndex": "Sampling mode",
+    "cfgScale": "Prompt word correlation",
+    "start": "Generation",
+    "stop": "Stop",
+    "new": "New canvas"
+  }
+}

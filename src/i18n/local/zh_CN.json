@@ -1,0 +1,498 @@
+{
+  "common": {
+    "slogan": "人工智能时代已然到来",
+    "ok": "确定",
+    "cancel": "取消",
+    "save": "保存",
+    "close": "关闭",
+    "run": "运行",
+    "pleaseEnter": "请输入",
+    "pleaseSelect": "请选择",
+    "required": "不能为空",
+    "edit": "编辑",
+    "delete": "删除",
+    "export": "导出",
+    "download": "下载",
+    "collect": "收藏",
+    "loadMore": "加载更多",
+    "deleteConfirm": "确认删除吗？",
+    "deleteConfirmContent": "删除后将无法恢复。",
+    "clear": "清空",
+    "clearConfirm": "确认清空聊天记录吗？",
+    "clearConfirmContent": "聊天记录清空后将无法恢复。",
+    "loadErrorRetry": "加载失败，点击重试",
+    "copySuccess": "已复制到剪贴板",
+    "officialWebsite": "官网地址",
+    "updateTime": "更新时间",
+    "charCount": "字",
+    "configError": "配置错误",
+    "goSetting": "前往配置"
+  },
+  "setting": {
+    "name": "设置",
+    "app": {
+      "name": "应用",
+      "appearance": {
+        "name": "外观",
+        "theme": {
+          "name": "主题",
+          "auto": "自动",
+          "light": "明亮",
+          "dark": "黑暗",
+          "custom": "自定义",
+          "customEdit": "编辑自定义主题",
+          "customEditReset": "重置样式"
+        },
+        "local": "语言",
+        "fontSize": "文字大小",
+        "min": "小",
+        "max": "大"
+      },
+      "network": {
+        "name": "网络",
+        "proxy": "代理地址"
+      },
+      "backup": {
+        "name": "备份",
+        "importOk": "选择文件",
+        "importSuccess": "导入成功",
+        "importNone": "未导入任何数据",
+        "importError": "导入失败",
+        "setting": {
+          "name": "设置备份",
+          "export": "导出设置",
+          "import": "导入设置",
+          "importConfirm": "导入设置警告",
+          "importConfirmContent": "选择备份文件导入，将覆盖现有应用设置，操作不可恢复！"
+        },
+        "data": {
+          "name": "数据备份",
+          "export": "导出应用数据",
+          "import": "导入应用数据",
+          "importConfirm": "导入数据警告",
+          "importConfirmContent": "选择备份文件导入，将覆盖现有应用数据，操作不可恢复！"
+        },
+        "cache": {
+          "name": "缓存文件",
+          "path": "缓存目录",
+          "clear": "清理缓存",
+          "clearSuccess": "缓存清理完成"
+        }
+      }
+    },
+    "functionModel":{
+      "name": "系统操作模型",
+      "moonshotAI": {
+        "name": "月之暗面",
+        "apiKey": "API Key"
+      }
+    },
+    "bigModel": {
+      "name": "聊天大模型",
+      "openAI": {
+        "name": "OpenAI",
+        "baseUrl": "服务地址",
+        "key": "OpenAI Key"
+      },
+      "ollama": {
+        "name": "Ollama",
+        "baseUrl": "服务地址"
+      },
+      "gemini": {
+        "name": "Gemini",
+        "baseUrl": "服务地址",
+        "key": "Gemini Key"
+      },
+      "zhipuAI": {
+        "name": "智谱AI",
+        "apiKey": "API Key"
+      },
+      "spark": {
+        "name": "讯飞星火",
+        "appId": "APPID",
+        "secret": "APISecret",
+        "key": "APIKey"
+      },
+      "ernie": {
+        "name": "百度文心",
+        "apiKey": "API Key",
+        "secretKey": "Secret Key"
+      },
+      "tongyi": {
+        "name": "阿里通义",
+        "apiKey": "API Key"
+      },
+      "tiangong": {
+        "name": "天工",
+        "appKey": "app_key",
+        "appSecret": "app_secret"
+      },
+      "moonshotAI": {
+        "name": "月之暗面",
+        "apiKey": "API Key"
+      },
+      "stepFun": {
+        "name": "阶跃星辰",
+        "apiKey": "API Key"
+      },
+      "deepSeek": {
+        "name": "DeepSeek",
+        "apiKey": "API Key"
+      }
+    },
+    "aiCalendar": {
+      "name": "日历",
+      "weekStart": "每周的开始",
+      "sunday": "周日",
+      "monday": "周一",
+      "bigModel": "大模型"
+    },
+    "translation": {
+      "name": "翻译",
+      "youdao": {
+        "name": "有道翻译",
+        "appId": "应用ID",
+        "secret": "应用密钥"
+      },
+      "baiduTranslation": {
+        "name": "百度翻译",
+        "appId": "应用ID",
+        "secret": "应用密钥"
+      }
+    },
+    "about": {
+      "name": "关于",
+      "sourceCode": "源码地址",
+      "contactAuthor": "联系作者",
+      "version": {
+        "name": "应用版本",
+        "num": "1.0"
+      },
+      "developer":{
+        "name": "开发团队",
+        "team": "北京邮电大学 MAIR",
+        "member":""
+      },
+      "devTools": {
+        "name": "开发者工具",
+        "openDevTools": "打开开发者控制台",
+        "openLogPath": "打开日志目录",
+        "welcomePage": "打开欢迎页"
+      }
+    }
+  },
+  "welcomePage": {
+    "title": "现已支持"
+  },
+  "userSetting": {
+    "name": "用户信息",
+    "selectAvatar": "选择",
+    "nickname": "昵称"
+  },
+  "bigModelProvider": {
+    "OpenAI": "OpenAI",
+    "Ollama": "Ollama",
+    "Gemini": "Gemini",
+    "ZhipuAI": "智谱AI",
+    "Spark": "讯飞星火",
+    "ERNIE": "百度文心",
+    "Tongyi": "阿里通义",
+    "Tiangong": "天工",
+    "MoonshotAI": "月之暗面",
+    "StepFun": "阶跃星辰",
+    "DeepSeek": "DeepSeek"
+  },
+  "bigModelProviderWelcome": {
+    "OpenAI": "我_是_ Open_AI _大_模_型，_请_问_有_什_么_可_以_帮_你_？",
+    "Ollama": "我_是_ Ollama _大_模_型，_请_问_有_什_么_可_以_帮_你_？",
+    "Gemini": "我_是_ Gemini _大_模_型，_请_问_有_什_么_可_以_帮_你_？",
+    "ZhipuAI": "我_是_智谱_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
+    "Spark": "我_是_讯飞_星火_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
+    "ERNIE": "我_是_百度_文心_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
+    "Tongyi": "我_是_阿里_通义_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
+    "Tiangong": "我_是_天工_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
+    "MoonshotAI": "我_是_月之_暗面_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
+    "StepFun": "我_是_阶跃_星辰_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
+    "DeepSeek": "我_是_ DeepSeek _大_模_型，_请_问_有_什_么_可_以_帮_你_？"
+  },
+  "translationProvider": {
+    "youdao": "有道翻译",
+    "baiduTranslation": "百度翻译"
+  },
+  "assistantList": {
+    "new": "新增助手",
+    "newChat": "新的聊天",
+    "name": "名称",
+    "title": "标题",
+    "instruction": "系统指令",
+    "provider": "提供商",
+    "model": "模型",
+    "isCustomModel": "自定义模型默认支持所有能力",
+    "imageSupported": "支持图片",
+    "imageNotSupported": "不支持图片",
+    "pluginSupported": "支持插件",
+    "pluginNotSupported": "不支持插件",
+    "networkSupported": "支持联网",
+    "networkNotSupported": "不支持联网",
+    "maxTokens": "生成最大Token数",
+    "inputMaxTokens": "输入最大Token数",
+    "contextSize": "上下文大小",
+    "type": "助手类型",
+    "chat": "对话",
+    "search": "搜索助手",
+    "speechModel": "发音模型",
+    "speechVoice": "发音人",
+    "speechSpeed": "发音语速"
+  },
+  "chatList": {
+    "search": "搜索对话"
+  },
+  "assistantItem": {
+    "content": {
+      "image": "[图片]",
+      "empty": "[暂无对话]"
+    },
+    "messageCount": "条对话"
+  },
+  "chatWindow": {
+    "header": {
+      "edit": "编辑助手",
+      "editChat": "编辑对话",
+      "export": "导出记录",
+      "clear": "清空记录",
+      "delete": "删除助手",
+      "deleteChat": "删除对话"
+    },
+    "inputPlaceholder": {
+      "chat": "在此输入你的问题（Shift + Enter 换行）",
+      "drawing": "在此输入图片描述（Shift + Enter 换行）"
+    },
+    "configMiss": {
+      "OpenAI": "OpenAI 未配置",
+      "Ollama": "Ollama 未配置",
+      "Gemini": "Gemini 未配置",
+      "ZhipuAI": "智谱AI 未配置",
+      "Spark": "星火大模型未配置",
+      "ERNIE": "百度文心大模型未配置",
+      "Tongyi": "阿里通义大模型未配置",
+      "Tiangong": "天工大模型未配置",
+      "MoonshotAI": "月之暗面大模型未配置",
+      "StepFun": "阶跃星辰大模型未配置",
+      "DeepSeek": "DeepSeek 大模型未配置"
+    },
+    "error": {
+      "imageRequires": "你必须上传一张图片",
+      "OpenAI": "OpenAI 调用错误",
+      "Ollama": "Ollama 调用错误",
+      "Gemini": "Gemini 调用错误",
+      "ZhipuAI": "智谱AI 调用错误",
+      "Spark": "星火大模型调用错误",
+      "ERNIE": "百度文心大模型调用错误",
+      "Tongyi": "阿里通义大模型调用错误",
+      "Tiangong": "天工大模型调用错误",
+      "MoonshotAI": "月之暗面大模型调用错误",
+      "StepFun": "阶跃星辰大模型调用错误",
+      "DeepSeek": "DeepSeek 大模型调用错误"
+    },
+    "fileList": {
+      "title": "文档列表",
+      "tip": "注意文档总字数不能超过大模型 Token 限制！",
+      "select": "选择文档"
+    },
+    "stop": "停止",
+    "send": "发送",
+    "selectImage": "图片",
+    "selectFile": "文档",
+    "selectPlugin": "插件",
+    "noPlugin": "暂无插件",
+    "copy": "复制",
+    "speech": "朗读",
+    "startSpeech": "开始朗读",
+    "stopSpeech": "停止朗读",
+    "multipleChoice": "多选",
+    "collectSuccess": "已添加至收藏夹",
+    "inputTokensLimit": "输入Token数超限制",
+    "contextSizeDown": "受最大输入Token数限制，上下文条数已自动调整为",
+    "clearContext": "清除上下文",
+    "clearContextTip": "上下文已清除，点击恢复",
+    "sharePreview": "分享预览",
+    "shareDownload": "保存图片",
+    "closeLeft": "关闭边栏",
+    "openLeft": "展开边栏",
+    "fastPrompt": "快捷指令",
+    "fastPromptSearch": "搜索指令"
+  },
+  "collectionSet": {
+    "search": "搜索收藏",
+    "empty": "收藏与AI对话的灵感",
+    "type": {
+      "all": "全部",
+      "chat": "对话",
+      "image": "图片",
+      "note": "笔记"
+    },
+    "note": {
+      "new": "新建笔记",
+      "defaultTitle": "新笔记",
+      "titlePlaceholder": "无标题",
+      "contentPlaceholder": "在此输入笔记内容"
+    }
+  },
+  "translator": {
+    "name": "文本翻译",
+    "queryPlaceholder": "输入要翻译的文本",
+    "returnPlaceholder": "翻译结果",
+    "configMiss": {
+      "youdao": "有道翻译未配置",
+      "baiduTranslation": "百度翻译未配置"
+    },
+    "error": {
+      "youdao": "有道翻译调用错误",
+      "baiduTranslation": "百度翻译调用错误"
+    },
+    "langType": {
+      "auto": "自动",
+      "zh-CHS": "中文",
+      "en": "英语",
+      "ja": "日语",
+      "ko": "韩语",
+      "fr": "法语"
+    }
+  },
+  "knowledgeBase": {
+    "slogan": "无尽智慧，尽在AI知识库",
+    "list": {
+      "search": "搜索知识库",
+      "new": "新建知识库",
+      "edit": "编辑知识库",
+      "name": "名称",
+      "description": "描述",
+      "indexName": "索引名称",
+      "redisConfig": {
+        "url": "Redis 服务器地址",
+        "username": "Redis 用户名",
+        "password": "Redis 密码"
+      },
+      "redisDoc": "如何安装 Redis Stack？"
+    },
+    "window": {
+      "search": "输入问题或者关键字检索知识库",
+      "searchFile": "搜索知识文件",
+      "backFileList": "返回知识列表",
+      "newFile": "新增知识文件",
+      "empty": "暂无知识文件",
+      "newFileText": "知识文本",
+      "newFileTextOverride": "是否覆盖当前知识文本？",
+      "selectFile": "选择文件",
+      "selectFileTip": "支持 .text .pdf .docx .pptx 类型",
+      "fileDetail": "知识文件详情",
+      "knowledgeFile": "知识文件",
+      "knowledgeDoc": "知识碎片"
+    }
+  },
+  "aiCalendar": {
+    "name": "AI 日历",
+    "generate": "AI 生成",
+    "stopGenerate": "停止生成",
+    "noDayReportError": "该周期内暂无日报",
+    "dayReport": {
+      "name": "日报",
+      "content": "日报内容"
+    },
+    "weekReport": {
+      "name": "周报",
+      "content": "周报内容"
+    },
+    "monthReport": {
+      "name": "月报",
+      "content": "月报内容"
+    },
+    "yearReport": {
+      "name": "年报",
+      "content": "年报内容"
+    }
+  },
+  "miniProgram": {
+    "name": "AI 小程序",
+    "search": "搜索小程序",
+    "empty": "暂无相关小程序"
+  },
+  "notification": {
+    "name": "提醒",
+    "empty": "暂无提醒",
+    "clear": "清空",
+    "issues": "错误反馈",
+    "type": {
+      "info": "普通日志",
+      "warn": "警告日志",
+      "error": "错误日志"
+    }
+  },
+  "chatPlugin": {
+    "slogan": "自定义插件，扩展无限可能",
+    "list": {
+      "search": "搜索插件",
+      "new": "新建插件 - 基本信息",
+      "edit": "编辑插件",
+      "type": "类型",
+      "name": "名称",
+      "description": "描述",
+      "doc": "如何设计插件？"
+    },
+    "window": {
+      "design": "设计插件",
+      "code": "函数代码",
+      "codePlaceholder": "整个函数使用 Promise 包裹，使用 resolve() 返回结果，从 params 中获取函数入参",
+      "param": "参数说明",
+      "paramName": "参数名",
+      "paramType": "类型",
+      "paramDesc": "描述",
+      "test": "插件测试",
+      "testResult": "测试结果"
+    }
+  },
+  "aiDrawing": {
+    "name": "AI 绘画",
+    "provider": "提供商",
+    "model": "模型",
+    "number": "生成数量",
+    "size": "图片大小",
+    "quality": "图片质量",
+    "style": "图片风格",
+    "styleOption": {
+      "auto": "自动",
+      "3dCartoon": "3D卡通",
+      "anime": "动画",
+      "oilPainting": "油画",
+      "watercolor": "水彩",
+      "sketch": "素描",
+      "chinesePainting": "中国画",
+      "flatIllustration": "扁平插画",
+      "base": "基础风格",
+      "3dModel": "3D模型",
+      "analogFilm": "模拟胶片",
+      "cinematic": "电影",
+      "comicBook": "漫画",
+      "craftClay": "工艺黏土",
+      "digitalArt": "数字艺术",
+      "enhance": "增强",
+      "fantasyArt": "幻想艺术",
+      "isometric": "等距风格",
+      "lineArt": "线条艺术",
+      "lowpoly": "低多边形",
+      "neonpunk": "霓虹朋克",
+      "origami": "折纸",
+      "photographic": "摄影",
+      "pixelArt": "像素艺术",
+      "texture": "纹理"
+    },
+    "negativePrompt": "反向提示词",
+    "promptPlaceholder": "请输入提示词",
+    "steps": "步骤",
+    "samplerIndex": "采样方式",
+    "cfgScale": "提示词相关性",
+    "start": "生成",
+    "stop": "停止",
+    "new": "新建画布"
+  }
+}

@@ -5,7 +5,9 @@ export type AssistantType = "chat";
 // 消息类型
 export type ChatMsgType = "text" | "img";
 // 页面类型
-export type PageName = "chat" | "chat-assistant";
+export type PageName = "chat" | "chat-assistant" | "collect";
+// 收藏类型
+export type CollectionItemType = 'chat' | 'image' | 'note';
 // 插件类型
 export type ChatPluginType = "function";
 // 提示类型
@@ -24,7 +26,7 @@ export type BigModelProvider =
   // | "OpenAI"
   // | "Ollama"
   // | "Gemini"
-  // | "ZhipuAI"
+  | "ZhipuAI"
   // | "Tongyi"
   // | "ERNIE"
   // | "Spark"

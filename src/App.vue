@@ -8,6 +8,7 @@ import Chat from "@/components/Chat/Chat.vue";
 import SystemChat from "@/components/SystemChat/SystemChat.vue";
 import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 import Setting from "@/components/Modal/Setting.vue"
+import Collect from "@/components/Collect/Collect.vue"
 // 引入国际化组件
 import { useI18n } from "vue-i18n";
 import enUS from "@arco-design/web-vue/es/locale/lang/en-us";
@@ -38,6 +39,10 @@ const data = reactive({
     {
       name: "chat-assistant",
       icon: "IconCommand",
+    },
+    {
+      name: "collect",
+      icon: "IconStar",
     }
   ] as { name: PageName; icon: string }[],
   alivePages: ["chat"] as PageName[],
@@ -108,8 +113,6 @@ onMounted(() => {
   updateTheme();
   // 设置语言
   locale.value = settingStore.app.locale
-
-  console.log("sdasdasd",systemStore.isWelcomeShow)
 })
 </script>
 
@@ -151,6 +154,10 @@ onMounted(() => {
       <!-- 系统聊天页 -->
       <div v-if="alivePages.includes('chat-assistant')" v-show="systemStore.isThisPage('chat-assistant')" class="app-body">
         <SystemChat />
+      </div>
+      <!-- 收藏页 -->
+      <div v-if="alivePages.includes('collect')" v-show="systemStore.isThisPage('collect')" class="app-body">
+        <Collect />
       </div>
       <!-- 全局加载遮罩 -->
       <div v-if="false" class="global-loading z-index-max">

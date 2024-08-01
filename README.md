@@ -1,6 +1,6 @@
 # ChatHub
 
-This template should help get you started developing with Vue 3 in Vite.
+基于Vue3的大模型问答系统，支持月之暗面、智谱AI大模型
 
 ## Recommended IDE Setup
 

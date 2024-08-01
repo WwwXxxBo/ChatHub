@@ -3,6 +3,7 @@ import { type ChatPlugin, type ChatMessage, type BigModelProvider } from "@/type
 // 引入各类大模型
 import { chat2moonshot } from "@/utils/bigmodel/moonshot-util"
 import { chat2zhipu } from "@/utils/bigmodel/zhipu-util"
+import { chat2tiangong } from "@/utils/bigmodel/tiangong-util"
 
 // 因为目前只打算支持 Kimi 因此这里先不进行类型检查
 type ChatFunctionMap = {
@@ -12,6 +13,7 @@ type ChatFunctionMap = {
 const chatFunctionMap = {
   MoonshotAI: chat2moonshot,
   ZhipuAI: chat2zhipu,
+  Tiangong: chat2tiangong
 }
 
 

@@ -74,6 +74,7 @@ export const chat2tiangong = async (option : CommonChatOption) => {
             const lines = jsonData.split('\n')
             // 遍历每一行
             for (const line of lines) {
+                // 过滤掉最后的返回值
                 if (line && line != 'data: ' && line != 'data: [DONE]') {
                     const lineData = JSON.parse(line.slice(5))
                     // 正确返回

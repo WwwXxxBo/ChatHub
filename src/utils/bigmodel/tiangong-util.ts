@@ -72,22 +72,16 @@ export const chat2tiangong = async (option : CommonChatOption) => {
             const jsonData = new TextDecoder('utf-8').decode(value)
             // 按照换行分行
             const lines = jsonData.split('\n')
-            console.log('输出',lines)
             // 遍历每一行
             for (const line of lines) {
-                if (line) {
-                    const newLine = '{' + line + '}'
-                    // console.log('输出',line)
+                if (line && line != 'data: ' && line != 'data: [DONE]') {
                     const lineData = JSON.parse(line.slice(5))
-                    if(lineData.target == 'finish'){
-                        break;
-                    }
-                    // console.log('Data:',lineData?.arguments[0]?.messages[0]?.text)
                     // 正确返回
                     if (waitAnswer) {
                         waitAnswer = false
                         startAnswer && startAnswer(sessionId)
                     }
+                    console.log(lineData)
                     appendAnswer && appendAnswer(sessionId, lineData?.arguments[0]?.messages[0]?.text)
                 }
             }

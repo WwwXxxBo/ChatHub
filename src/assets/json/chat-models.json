@@ -185,5 +185,32 @@
       "value": "deepseek-coder",
       "type": "text"
     }
+  ],
+  "BaiChuan": [
+    {
+      "name": "Baichuan4",
+      "value": "Baichuan4",
+      "type": "text"
+    },
+    {
+      "name": "Baichuan3-Turbo",
+      "value": "Baichuan3-Turbo",
+      "type": "text"
+    },
+    {
+      "name": "Baichuan3-Turbo-128k",
+      "value": "Baichuan3-Turbo-128k",
+      "type": "text"
+    },
+    {
+      "name": "Baichuan2-Turbo",
+      "value": "Baichuan2-Turbo",
+      "type": "text"
+    },
+    {
+      "name": "Baichuan2-Turbo-192k",
+      "value": "Baichuan2-Turbo-192k",
+      "type": "text"
+    }
   ]
 }

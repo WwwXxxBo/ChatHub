@@ -138,6 +138,10 @@
       "deepSeek": {
         "name": "DeepSeek",
         "apiKey": "API Key"
+      },
+      "baichuan": {
+        "name": "BaiChuan",
+        "apiKey": "API Key"
       }
     },
     "aiCalendar": {
@@ -200,7 +204,8 @@
     "Tiangong": "Tiangong",
     "MoonshotAI": "Moonshot AI",
     "StepFun": "Jie Yue",
-    "DeepSeek": "DeepSeek"
+    "DeepSeek": "DeepSeek",
+    "BaiChuan": "BaiChuan"
   },
   "bigModelProviderWelcome": {
     "OpenAI": "I_ am_ the_ OpenAI_ large_ model._ How_ can_ I_ help_ you_ today?",

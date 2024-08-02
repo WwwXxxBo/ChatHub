@@ -29,7 +29,8 @@ const data = reactive({
     'Tiangong',
     'MoonshotAI',
     'StepFun',
-    'DeepSeek'
+    'DeepSeek',
+    'BaiChuan'
   ] as BigModelProvider[],
   providerShowIndex: -1
 })

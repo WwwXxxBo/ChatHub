@@ -218,7 +218,8 @@
     "Tiangong": "I_ am_ the_ Tiangong_ large_ model._ How_ can_ I_ help_ you_ today?",
     "MoonshotAI": "I_ am_ the_ Moonshot AI_ large_ model._ How_ can_ I_ help_ you_ today?",
     "StepFun": "I_ am_ the_ Jie Yue_ large_ model._ How_ can_ I_ help_ you_ today?",
-    "DeepSeek": "I_ am_ the_ DeepSeek_ large_ model._ How_ can_ I_ help_ you_ today?"
+    "DeepSeek": "I_ am_ the_ DeepSeek_ large_ model._ How_ can_ I_ help_ you_ today?",
+    "BaiChuan": "I_ am_ the_ BaiChuan_ large_ model._ How_ can_ I_ help_ you_ today?"
   },
   "translationProvider": {
     "youdao": "Youdao Translation",

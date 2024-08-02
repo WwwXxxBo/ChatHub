@@ -31,9 +31,10 @@ export type BigModelProvider =
   // | "ERNIE"
   // | "Spark"
   | "Tiangong"
-  | "MoonshotAI";
+  | "MoonshotAI"
   // | "StepFun"
   // | "DeepSeek";
+  | "BaiChuan";
 
 // 提示
 export interface AppNotification {

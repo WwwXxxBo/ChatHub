@@ -656,6 +656,45 @@ watch(
                   </a-space>
                 </a-space>
               </a-tab-pane>
+              <!-- 百川智能 -->
+              <a-tab-pane
+                key="baichuan"
+                :title="$t('setting.bigModel.baichuan.name')"
+              >
+                <a-space
+                  direction="vertical"
+                  :size="25"
+                  fill
+                  class="setting-tab-content"
+                >
+                  <a-space
+                    direction="vertical"
+                    :size="25"
+                    fill
+                    class="setting-tab-content"
+                  >
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("common.officialWebsite") }}</div>
+                      <a-link
+                        @click="openInBrowser('https://platform.baichuan-ai.com/')"
+                        >https://platform.baichuan-ai.com/</a-link
+                      >
+                    </a-space>
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("setting.bigModel.baichuan.apiKey") }}</div>
+                      <a-input-password
+                        v-model="settingStore.baichuan.apiKey"
+                        size="small"
+                        :placeholder="
+                          $t('common.pleaseEnter') +
+                          ' ' +
+                          $t('setting.bigModel.baichuan.apiKey')
+                        "
+                      />
+                    </a-space>
+                  </a-space>
+                </a-space>
+              </a-tab-pane>
             </a-tabs>
           </a-tab-pane>
 

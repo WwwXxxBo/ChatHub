@@ -60,6 +60,9 @@ export const useSettingStore = defineStore({
     deepSeek: {
       apiKey: "",
     },
+    baichuan: {
+      apiKey: "",
+    }
   }),
   actions: {
     setStoreFromJson(json: string) {
@@ -114,6 +117,10 @@ export const useSettingStore = defineStore({
       }
       if (settingBackup.deepSeek !== undefined) {
         this.deepSeek = settingBackup.deepSeek;
+        importFlag = true;
+      }
+      if (settingBackup.baichuan !== undefined) {
+        this.baichuan = settingBackup.baichuan;
         importFlag = true;
       }
       if (settingBackup.youdao !== undefined) {
@@ -188,6 +195,11 @@ export const useSettingStore = defineStore({
             configErrorFlag = true;
           }
           break;
+        case "BaiChuan":
+          if (!this.baichuan.apiKey) {
+            configErrorFlag = true;
+          }
+          break;
       }
       return configErrorFlag;
     },
@@ -255,6 +267,11 @@ export const useSettingStore = defineStore({
             apiKey: this.deepSeek.apiKey,
           };
           break;
+        case "BaiChuan":
+          otherOption = {
+            apiKey: this.baichuan.apiKey,
+          };
+            break;
       }
       return otherOption;
     },

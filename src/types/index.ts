@@ -33,7 +33,7 @@ export type BigModelProvider =
   | "Tiangong"
   | "MoonshotAI"
   // | "StepFun"
-  // | "DeepSeek";
+  | "DeepSeek"
   | "BaiChuan";
 
 // 提示

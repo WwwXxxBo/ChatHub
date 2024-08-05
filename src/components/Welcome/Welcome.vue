@@ -81,9 +81,13 @@ onMounted(() => {
 
 <style scoped lang="less">
 .welcome-page {
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--color-fill-2);
+  // width: 100vw;
+  // height: 100vh;
+  width: 100%;
+  height: 100%;
+  // background-color: var(--color-fill-2);
+  background: url('../../assets/images/Welcome/background.png');
+  background-size: 100% 100%;
   position: absolute;
   top: 0;
   left: 0;

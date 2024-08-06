@@ -64,7 +64,7 @@ onMounted(() => {
   <div class="welcome-page z-index-max" @click="systemStore.isWelcomeShow = false">
     <div class="provider-list">
       <div class="provider-list-title">
-        <div class="provider-list-title-left">{{ $t('welcomePage.title') }}</div>
+        <div class="provider-list-title-left"> 大模型对话平台 </div>
         <div class="provider-list-title-right">&copy; 2024 北京邮电大学 MAIR</div>
       </div>
       <ProviderAvatar
@@ -109,8 +109,9 @@ onMounted(() => {
       justify-content: space-between;
 
       .provider-list-title-left {
-        font-size: var(--font-size-xl);
-        font-weight: 500;
+        font-size: var(--font-size-xxl);
+        color: #1078F8;
+        font-weight: 1000;
       }
 
       .provider-list-title-right {

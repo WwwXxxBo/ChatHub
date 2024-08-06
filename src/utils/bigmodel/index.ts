@@ -5,9 +5,10 @@ import { chat2moonshot } from "@/utils/bigmodel/moonshot-util"
 import { chat2zhipu } from "@/utils/bigmodel/zhipu-util"
 import { chat2tiangong } from "@/utils/bigmodel/tiangong-util"
 import { chat2baichuan } from "@/utils/bigmodel/baichuan-util"
-import { chat2deepSeek } from "@/utils/bigmodel/deep-seek-util"
+import { chat2deepSeek } from "@/utils/bigmodel/deepseek-util"
+import { char2stepfun } from "@/utils/bigmodel/stepfun-util"
 
-// 目前支持 Kimi、智谱AI、天工、百川
+// 目前支持 Kimi、智谱AI、天工、百川、DeepSeek、阶跃星辰
 type ChatFunctionMap = {
   [provider in BigModelProvider]: (option: CommonChatOption) => Promise<any>
 }
@@ -17,7 +18,8 @@ const chatFunctionMap = {
   ZhipuAI: chat2zhipu,
   Tiangong: chat2tiangong,
   BaiChuan: chat2baichuan,
-  DeepSeek: chat2deepSeek
+  DeepSeek: chat2deepSeek,
+  StepFun: char2stepfun
 }
 
 

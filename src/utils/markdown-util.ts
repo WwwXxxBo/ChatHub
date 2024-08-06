@@ -6,7 +6,7 @@ import hljs from "highlight.js";
 // 引入 Markdown-it 插件
 import MarkdownIt from "markdown-it";
 // 引入 Markdown 数学插件
-import markdownItMathjax from 'markdown-it-mathjax'
+import mk from 'markdown-it-katex'
 import 'highlight.js/scss/github-dark.scss'
 // 引入 Markdown 的样式
 import "@/assets/css/markdown-code.less";
@@ -39,14 +39,13 @@ const markdown = new MarkdownIt({
     return `<pre>${codeHtml}</pre>`;
   },
 });
-// 支持数学公式，svg渲染，无需引入额外样式
-markdown.use(markdownItMathjax)
 // 渲染函数
 export const renderMarkdown = (content: string, isLoading: boolean) => {
   if (!isLoading) {
     return markdown.render(content);
   }
-
+  // 支持数学公式，svg渲染，无需引入额外样式
+  markdown.use(mk)
   // 加载中，显示闪烁光标
   const endFlag = "【end】";
   let htmlCode = markdown.render(content + endFlag);

@@ -17,6 +17,7 @@
     "gpt-tokenizer": "^2.2.1",
     "highlight.js": "^11.10.0",
     "markdown-it": "^14.1.0",
+    "markdown-it-katex": "^2.0.3",
     "markdown-it-mathjax": "^2.0.0",
     "openai": "^4.53.2",
     "pinia": "^2.1.7",

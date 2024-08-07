@@ -108,3 +108,20 @@ export interface Assistant {
   speechVoice?: string;
   speechSpeed?: number;
 }
+
+// 笔记收藏
+interface CollectionNote {
+  title: string
+  content: string
+}
+
+// 收藏
+interface CollectionItem{
+  id: string,
+  type: CollectionItemType,
+  createTime: number,
+  // 对话收藏
+  chat?: Assistant,
+  // 笔记收藏
+  note?: CollectionNote
+}

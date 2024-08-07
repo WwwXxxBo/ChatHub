@@ -2,6 +2,7 @@
 import { reactive, toRefs } from "vue";
 // 引入类型限制
 import { type CollectionItemType } from "@/types"
+// 引入国际化组件
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

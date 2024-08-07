@@ -110,13 +110,13 @@ export interface Assistant {
 }
 
 // 笔记收藏
-interface CollectionNote {
+export interface CollectionNote {
   title: string
   content: string
 }
 
 // 收藏
-interface CollectionItem{
+export interface CollectionItem{
   id: string,
   type: CollectionItemType,
   createTime: number,

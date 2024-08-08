@@ -337,6 +337,7 @@ const multipleChoiceOpen = (id?: string) => {
   if (id) {
     multipleChoiceChange(id)
   }
+  console.log('多选状态',data.multipleChoiceFlag)
 }
 
 // 关闭多选
@@ -483,12 +484,14 @@ onMounted(() => {
             </div>
             <!-- 右键菜单内容 -->
             <template #content>
+              <!-- 复制 -->
               <a-doption @click="clipboardWriteText(getSelectedText(msg.content))">
                 {{ $t('chatWindow.copy') }}
               </a-doption>
-              <a-doption>
+              <!-- 多选 -->
+              <a-doption @click="multipleChoiceOpen(msg.id)">
                 {{ $t('chatWindow.multipleChoice') }}
-              </a-doption @click="multipleChoiceOpen(msg.id)">
+              </a-doption>
             </template>
           </a-dropdown>
           <!-- 清空上下文提示 -->

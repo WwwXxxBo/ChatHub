@@ -1,0 +1,52 @@
+<script setup lang="ts">
+
+</script>
+
+<template>
+
+</template>
+
+<style lang="less" scoped>
+.chat-message-file {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 170px;
+  max-width: 170px;
+  padding: 5px;
+  background-color: var(--color-fill-2);
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+
+  .chat-message-file-avatar {
+    flex-shrink: 0;
+  }
+
+  .chat-message-file-body {
+    height: 35px;
+    min-width: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .chat-message-file-name {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-text-1);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-message-file-size {
+      font-size: var(--font-size-xxs);
+      color: var(--color-text-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+</style>

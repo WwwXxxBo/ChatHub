@@ -20,7 +20,6 @@ import { exportTextFile } from '@/utils/download-util'
 import { nowTimestamp, formatDateTime } from "@/utils/date-util";
 // 引入国际化组件
 import { useI18n } from "vue-i18n";
-import { Models } from "openai/resources";
 
 const { t } = useI18n();
 

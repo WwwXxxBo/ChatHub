@@ -63,7 +63,7 @@ onMounted(() => {
         :placeholder="$t('chatList.search')"
         class="search-input no-drag-area"
       />
-      <a-button class="assistant-new-btn no-drag-area" @click="newAssistant()">
+      <a-button type="primary" class="assistant-new-btn no-drag-area" @click="newAssistant()">
         <icon-plus :size="16" />
       </a-button>
     </div>

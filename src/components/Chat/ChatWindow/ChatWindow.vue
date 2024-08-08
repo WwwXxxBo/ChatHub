@@ -8,6 +8,7 @@ import { type Assistant, type ChatMessage, type ChatRole } from "@/types"
 import ChatWindowHeader from "@/components/Chat/ChatWindow/ChatWindowHeader.vue";
 import ChatWindowWelcome from "@/components/Chat/ChatWindow/ChatWindowWelcome.vue";
 import ChatMultipleChoice from "@/components/Chat/ChatWindow/ChatMultipleChoice.vue"
+import ChatFileList from '@/coponents/Chat/ChatWindow/ChatFileList.vue'
 import ProviderAvatar from "@/components/Avatar/ProviderAvatar.vue";
 import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 // 引入提示词列表
@@ -686,11 +687,14 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- 提示词列表modal -->
+    <!-- 提示词列表模态框 -->
     <Prompt
       v-model:modal-visible="promptListModalVisible"
       @select-prompt="selectPrompt"
     />
+    <!-- 上传文件模态框 -->
+    <ChatFileList />
+
   </div>
 </template>
 

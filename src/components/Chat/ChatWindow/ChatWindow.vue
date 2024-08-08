@@ -3,12 +3,13 @@ import { ref, reactive, toRefs, onMounted, nextTick, computed } from "vue";
 // 引入模型接口
 import { CommonChatOption, chat2bigModel } from "@/utils/bigmodel"
 // 引入类型检查
-import { type Assistant, type ChatMessage, type ChatRole } from "@/types"
+import { type Assistant, type ChatMessage, type ChatRole, type MessageFile } from "@/types"
 // 引入页面组件
 import ChatWindowHeader from "@/components/Chat/ChatWindow/ChatWindowHeader.vue";
 import ChatWindowWelcome from "@/components/Chat/ChatWindow/ChatWindowWelcome.vue";
 import ChatMultipleChoice from "@/components/Chat/ChatWindow/ChatMultipleChoice.vue"
-import ChatFileList from '@/components/Chat/ChatWindow/ChatFileList.vue'
+import ChatWindowFileList from '@/components/Chat/ChatWindow/ChatWindowFileList.vue'
+import ChatMessageFile from '@/components/Chat/ChatWindow/ChatMessageFile.vue'
 import ProviderAvatar from "@/components/Avatar/ProviderAvatar.vue";
 import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 // 引入提示词列表
@@ -18,6 +19,8 @@ import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { useSystemStore } from "@/stores/system"
 import { useSettingStore } from "@/stores/setting"
 import { useNotificationStore } from "@/stores/notification"
+// 引入文件处理方法
+import { saveFileByPath } from '@/utils/file-util'
 // 引入复制对象方法
 import { copyObj } from "@/utils/object-util";
 // 引入时间处理函数
@@ -221,12 +224,29 @@ const useBigModel = async () => {
   const question = data.question.trim()
   data.question = ''
 
+  // 处理并清空文件列表
+  const questionFileList: MessageFile[] = []
+  if(data.selectFileList.length > 0){
+    for(const f of data.selectFileList){
+      const fileSavePath = await saveFileByPath(f.file!.path, `${randomUUID()}${f.file!.name}`)
+      questionFileList.push({
+        id: randomUUID(),
+        name: f.file!.name,
+        path: fileSavePath,
+        size: f.file!.size
+      })
+    }
+    data.selectFileList = []
+  }
+
+
   // 用户消息追加
   data.currentChatAssistant.chatMessageList.push({
     id: randomUUID(),
     type: 'text',
     role: 'user',
     content: question,
+    fileList: questionFileList,
     createTime: nowTimestamp()
   })
   scrollToBottom(false)
@@ -627,9 +647,10 @@ onMounted(() => {
         >
           <a-button
             size="mini"
-            :type="undefined"
+            :type="selectFileList.length > 0 ? 'primary' : undefined"
             shape="round"
             @click="fileListModalVisible = true"
+
           >
             <icon-file :size="15" />
           </a-button>
@@ -693,7 +714,10 @@ onMounted(() => {
       @select-prompt="selectPrompt"
     />
     <!-- 上传文件模态框 -->
-    <ChatFileList />
+    <ChatWindowFileList 
+      v-model:modal-visible="fileListModalVisible"
+      v-model:select-file-list="selectFileList"
+    />
 
   </div>
 </template>

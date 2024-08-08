@@ -4,7 +4,6 @@ import { ref, reactive, toRefs, onMounted, nextTick, computed } from "vue";
 import { CommonChatOption, chat2bigModel } from "@/utils/bigmodel"
 // 引入类型检查
 import { type Assistant, type ChatMessage, type ChatRole } from "@/types"
-
 // 引入页面组件
 import ChatWindowHeader from "@/components/Chat/ChatWindow/ChatWindowHeader.vue";
 import ChatWindowWelcome from "@/components/Chat/ChatWindow/ChatWindowWelcome.vue";
@@ -13,7 +12,6 @@ import ProviderAvatar from "@/components/Avatar/ProviderAvatar.vue";
 import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 // 引入提示词列表
 import Prompt from "@/components/Modal/Prompt.vue";
-
 // 引入 Chat Assistant、System、Notification、Setting 状态
 import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { useSystemStore } from "@/stores/system"
@@ -33,11 +31,17 @@ import { getContentTokensLength } from "@/utils/gpt-tokenizer-util"
 import { FileItem, Message, Modal, RequestOption } from '@arco-design/web-vue'
 // 引入发音标识枚举类型
 import { SpeechStatus } from '@/utils/constant'
+// 引入页面选中信息组件
+import { getSelectedText } from '@/utils/window-util'
 // 引入时间组件
 import dayjs from 'dayjs'
 // 引入国际化
 import { useI18n } from 'vue-i18n'
+// 引入 OpenAI 组件
 import { APIUserAbortError } from 'openai'
+// 引入 vue-clipboard3 组件
+import useClipboard from 'vue-clipboard3'
+
 
 const { t } = useI18n()
 // 状态
@@ -49,6 +53,17 @@ const settingStore = useSettingStore();
 let abortCtr = new AbortController()
 
 const SystemChatWindowHeaderRef = ref()
+
+// 复制
+const { toClipboard } = useClipboard()
+const clipboardWriteText = async (text: string) => {
+  try{
+    await toClipboard(text)
+    Message.success(t('common.copySuccess'))
+  }catch(e){
+    Message.warning(e)
+  }
+}
 
 // 数据绑定
 const data = reactive({
@@ -468,7 +483,7 @@ onMounted(() => {
             </div>
             <!-- 右键菜单内容 -->
             <template #content>
-              <a-doption>
+              <a-doption @click="clipboardWriteText(getSelectedText(msg.content))">
                 {{ $t('chatWindow.copy') }}
               </a-doption>
               <a-doption>

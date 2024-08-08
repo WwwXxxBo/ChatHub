@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, toRefs } from 'vue';
 // 引入基础类型检查
 import { type ChatMessage, type CollectionItem } from '@/types'
+// 引入页面组件
+import ProviderAvatar from "@/components/Avatar/ProviderAvatar.vue";
+import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 // 引入 Chat Assistant、Collection 状态
 import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { useCollectionStore } from '@/stores/collection'
 // 引入随机生成 ID 值工具方法
 import { randomUUID } from "@/utils/id-util";
+// 引入处理Markdown格式方法
+import { renderMarkdown } from '@/utils/markdown-util'
 // 引入复制对象方法
 import { copyObj } from "@/utils/object-util";
 // 引入时间处理函数
@@ -15,6 +20,8 @@ import { nowTimestamp } from "@/utils/date-util";
 import { Message, Modal } from '@arco-design/web-vue'
 // 引入国际化
 import { useI18n } from 'vue-i18n'
+// 引入绘图库
+import html2canvas from 'html2canvas'
 
 
 const { t } = useI18n()
@@ -36,6 +43,7 @@ const data = reactive({
   currentChatAssistant: chatAssistantStore.getCurrentChatAssistant,
   shareModalVisible: false
 })
+const { currentChatAssistant, shareModalVisible } = toRefs(data)
 
 // 获取选中聊天信息
 const getSelectMessageList = () => {
@@ -49,7 +57,6 @@ const getSelectMessageList = () => {
   chatMessageList.sort((m1, m2) => m1.createTime - m2.createTime)
   return chatMessageList
 }
-
 
 // 收藏选中聊天信息
 const multipleChoiceCollect = () => {
@@ -75,10 +82,45 @@ const multipleChoiceCollect = () => {
   emits('close')
   Message.success(t('chatWindow.collectSuccess'))
 }
+
+// 分享选中的消息
+const multipleChoiceShare = () => {
+  if(props.multipleChoiceList.length === 0){
+    return
+  }
+  data.shareModalVisible = true
+}
+
+const shareModalBeforeOk = async () => {
+  await new Promise<void>((resolve, reject) => {
+    const el = document.getElementById('share-chat-message-list')
+    if(el){
+      html2canvas(el, {
+        scale: 2, //缩放比例
+        allowTaint: true, // 是否允许跨域图像污染画布
+        useCORS: true // 是否尝试使用CORS从服务器加载图像
+      })
+      .then((canvas) => {
+        // 将图像下载到本地
+        const a = document.createElement('a') // 生成一个a元素
+        a.download = `share-${nowTimestamp()}` // 设置图片名称没有设置则为默认
+        a.href = canvas.toDataURL('image/png') // 将生成的URL设置为a.href属性
+        a.dispatchEvent(new MouseEvent('click')) // 触发a的单击事件
+        emits('close')
+        resolve()
+      })
+      .catch((error) => {
+        Message.error(error)
+        reject()
+      })
+    }
+  })
+  return true
+}
 </script>
 
 <template>
-<div class="multiple-choice-console">
+  <div class="multiple-choice-console">
     <!-- 收藏 -->
     <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceCollect()">
       <icon-common class="multiple-choice-console-icon" />
@@ -86,7 +128,7 @@ const multipleChoiceCollect = () => {
     <a-button shape="circle" class="multiple-choice-console-btn" @click="">
       <icon-download class="multiple-choice-console-icon" />
     </a-button>
-    <a-button shape="circle" class="multiple-choice-console-btn" @click="">
+    <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceShare()">
       <icon-share-external class="multiple-choice-console-icon" />
     </a-button>
     <a-button shape="circle" class="multiple-choice-console-btn" @click="">
@@ -95,7 +137,76 @@ const multipleChoiceCollect = () => {
     <a-button shape="circle" class="multiple-choice-console-btn" @click="emits('close')">
       <icon-close class="multiple-choice-console-icon" />
     </a-button>
-</div>
+    <!-- 分享预览模态框 -->
+    <a-modal 
+      v-model:visible="shareModalVisible"
+      :ok-text="$t('chatWindow.shareDownload')"
+      :cancel-text="$t('common.cancel')"
+      unmount-on-close
+      title-align="start"
+      width="80vw"
+      :on-before-ok="shareModalBeforeOk"
+    >
+      <template #title> {{ $t('chatWindow.sharePreview') }} </template>
+      <div
+        class="chat-message-list-container"
+        style="height: 60vh; padding: 0 10px; overflow-y: auto"
+      >
+        <div id="share-chat-message-list" class="chat-message-list">
+          <div v-for="msg in getSelectMessageList()" :key="msg.id" class="chat-message">
+            <!-- 消息头像 -->
+            <div class="chat-message-avatar">
+              <UserAvatar v-if="msg.role === 'user'" :size="30" />
+              <ProviderAvatar 
+                v-else-if="msg.role === 'assistant'"
+                :provider="currentChatAssistant.provider"
+                :size="30"
+              />
+            </div>
+            <!-- 消息内容 -->
+            <div class="chat-message-content select-text">
+              <!-- 用户消息 -->
+              <div v-if="msg.role === 'user'">{{ msg.content }}</div>
+              <div
+                v-else-if="msg.role === 'assistant'"
+                class="chat-message-md"
+                v-html="renderMarkdown(msg.content, false)"
+              >
+              </div>
+              <a-image
+                v-if="msg.image"
+                width="300"
+                height="300"
+                :src="`file://${msg.image}`"
+                show-loader
+                fit="cover"
+              >
+                <!-- 预览 -->
+                <template #preview-actions>
+                  <a-image-preview-action
+                    :name="$t('common.download')"
+                    @click="downloadFile(`file://${msg.image}`, `img-${msg.id}.png`)"
+
+                  >
+                    <icon-download />
+                  </a-image-preview-action>
+                </template>
+              </a-image>
+              <!-- 文件列表 -->
+              <div v-if="msg.fileList && msg.fileList.length > 0" class="chat-message-file-list">
+                <!-- <ChatMessageFile v-for="f in msg.fileList" :key="f.id" :message-file="f" /> -->
+              </div>
+            </div>
+          </div>
+          <!-- 尾部 -->
+          <div class="share-image-footer">
+            <div>{{ currentChatAssistant.provider }}</div>
+            <div>{{ currentChatAssistant.model }}</div>
+          </div>
+        </div>
+      </div>
+    </a-modal>
+  </div>
 </template>
 
 <style lang="less" scoped>

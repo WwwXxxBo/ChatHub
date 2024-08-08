@@ -65,11 +65,10 @@ onMounted(() => {
         :placeholder="$t('chatList.search')"
         class="search-input no-drag-area"
       />
+      <a-button type="primary" class="assistant-new-btn no-drag-area" @click="newChatAssistant()"> 
+        <icon-plus :size="16" />
+      </a-button>
     </div>
-    <a-button type="primary" class="assistant-new-btn no-drag-area" @click="newChatAssistant()"> 
-      新增对话
-    </a-button>
-
     <!-- 滚动条 -->
     <a-scrollbar
       v-if="
@@ -119,10 +118,7 @@ onMounted(() => {
   .assistant-header {
     flex-shrink: 0;
     box-sizing: border-box;
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
-    // padding: 15px 15px 0 15px;
+    padding: 15px 15px 0 15px;
     display: flex;
     gap: 5px;
     align-items: center;
@@ -132,18 +128,17 @@ onMounted(() => {
       border: none;
       background-color: var(--color-fill-2);
     }
-  }
-  .assistant-new-btn {
+
+    .assistant-new-btn {
       flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 30px;
-      margin-left: 10px;
-      margin-right: 10px;
+      width: 30px;
       padding: 0;
+    }
   }
-
   .assistant-list-container {
     .assistant-list-draggable {
       box-sizing: border-box;

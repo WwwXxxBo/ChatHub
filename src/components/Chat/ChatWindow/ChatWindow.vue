@@ -225,19 +225,19 @@ const useBigModel = async () => {
   data.question = ''
 
   // 处理并清空文件列表
-  const questionFileList: MessageFile[] = []
-  if(data.selectFileList.length > 0){
-    for(const f of data.selectFileList){
-      const fileSavePath = await saveFileByPath(f.file!.path, `${randomUUID()}${f.file!.name}`)
-      questionFileList.push({
-        id: randomUUID(),
-        name: f.file!.name,
-        path: fileSavePath,
-        size: f.file!.size
-      })
-    }
-    data.selectFileList = []
-  }
+  // const questionFileList: MessageFile[] = []
+  // if(data.selectFileList.length > 0){
+  //   for(const f of data.selectFileList){
+  //     const fileSavePath = await saveFileByPath(f.file!.path, `${randomUUID()}${f.file!.name}`)
+  //     questionFileList.push({
+  //       id: randomUUID(),
+  //       name: f.file!.name,
+  //       path: fileSavePath,
+  //       size: f.file!.size
+  //     })
+  //   }
+  //   data.selectFileList = []
+  // }
 
 
   // 用户消息追加
@@ -246,7 +246,7 @@ const useBigModel = async () => {
     type: 'text',
     role: 'user',
     content: question,
-    fileList: questionFileList,
+    // fileList: questionFileList,
     createTime: nowTimestamp()
   })
   scrollToBottom(false)

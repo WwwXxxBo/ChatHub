@@ -5,6 +5,8 @@ import { getChatTokensLength } from "@/utils/gpt-tokenizer-util"
 import { Message } from '@arco-design/web-vue'
 // 引入 Notification 状态
 import { useNotificationStore } from "@/stores/notification"
+// 引入 LangChain 处理方法
+import { langChainLoadFile } from '@/utils/langchain'
 // 引入接口
 import {
   type Assistant,
@@ -103,7 +105,7 @@ export const turnChat = async (chatMessageList: ChatMessage[]) => {
     const chatMessage = chatMessageList[i];
     if (currentRole === chatMessage.role) {
 
-      // 将文件内容拼接到用户消息中 暂时弃用
+      // 将文件内容拼接到用户消息中
       if (chatMessage.fileList && chatMessage.fileList.length > 0) {
         const fileContentList: Record<string, string> = {};
         for (const f of chatMessage.fileList) {
@@ -113,8 +115,7 @@ export const turnChat = async (chatMessageList: ChatMessage[]) => {
           fileContentList
         )}\n${chatMessage.content}`;
       }
-
-
+      
       messages.unshift({
         role: chatMessage.role,
         content: chatMessage.content,

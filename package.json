@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@highlightjs/vue-plugin": "^2.1.0",
+    "@langchain/community": "^0.2.25",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.12",
     "gpt-tokenizer": "^2.2.1",

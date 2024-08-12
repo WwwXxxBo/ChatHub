@@ -52,9 +52,9 @@ export const isSupportImage = (
   modelName: string
 ) => {
   // Ollama 始终支持图片上传，暂不根据模型进行判断
-  if (providerName === "Ollama") {
-    return true;
-  }
+  // if (providerName === "Ollama") {
+  //   return true;
+  // }
   const models = chatModels[providerName];
   if (!models) {
     return false;
@@ -63,7 +63,7 @@ export const isSupportImage = (
   if (!model) {
     return true;
   }
-  return model["isSupportImage"];
+  return model["isSupportImage"] === undefined ? false : model["isSupportImage"];
 };
 
 export const isSupportPlugin = (

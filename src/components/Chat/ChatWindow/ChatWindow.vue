@@ -19,6 +19,8 @@ import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { useSystemStore } from "@/stores/system"
 import { useSettingStore } from "@/stores/setting"
 import { useNotificationStore } from "@/stores/notification"
+// 引入模型能力检查
+import { isSupportImage } from "@/utils/base-util"
 // 引入文件处理方法
 import { saveFileByPath } from '@/utils/file-util'
 // 引入复制对象方法
@@ -138,6 +140,11 @@ const chatMessageListPageData = computed(() => {
 
 function selectImageClick() {}
 
+// 支持图片上传
+const isSupportImageComputed = computed(() => {
+  console.log('是否支持图片',isSupportImage(data.currentChatAssistant.provider,data.currentChatAssistant.model))
+  return isSupportImage(data.currentChatAssistant.provider,data.currentChatAssistant.model)
+})
 
 // 加载更多分页数据
 const chatMessageLoadMore = (id: string) => {
@@ -616,7 +623,7 @@ onMounted(() => {
           </a-button>
         </a-tooltip>
         <!-- 选择图片 -->
-        <div v-if="true" class="chat-input-select-image">
+        <div v-if="isSupportImageComputed" class="chat-input-select-image">
           <a-upload
             :file-list="selectImageList"
             :limit="1"

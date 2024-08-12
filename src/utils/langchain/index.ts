@@ -1,5 +1,5 @@
 // LangChain 相关方法
-import { BaseDocumentLoader } from 'langchain/dist/document_loaders/base'
+import { BaseDocumentLoader } from 'langchain/document_loaders/base'
 import { TextLoader } from 'langchain/document_loaders/fs/text'
 import { DocxLoader } from '@langchain/community/document_loaders/fs/docx'
 import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf'

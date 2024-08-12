@@ -6,7 +6,7 @@ import { Message } from '@arco-design/web-vue'
 // 引入 Notification 状态
 import { useNotificationStore } from "@/stores/notification"
 // 引入 LangChain 处理方法
-import { langChainLoadFile } from '@/utils/langchain'
+// import { langChainLoadFile } from '@/utils/langchain'
 // 引入接口
 import {
   type Assistant,
@@ -106,15 +106,15 @@ export const turnChat = async (chatMessageList: ChatMessage[]) => {
     if (currentRole === chatMessage.role) {
 
       // 将文件内容拼接到用户消息中
-      if (chatMessage.fileList && chatMessage.fileList.length > 0) {
-        const fileContentList: Record<string, string> = {};
-        for (const f of chatMessage.fileList) {
-          fileContentList[f.name] = await langChainLoadFile(f.path);
-        }
-        chatMessage.content = `Files Data:\n${JSON.stringify(
-          fileContentList
-        )}\n${chatMessage.content}`;
-      }
+      // if (chatMessage.fileList && chatMessage.fileList.length > 0) {
+      //   const fileContentList: Record<string, string> = {};
+      //   for (const f of chatMessage.fileList) {
+      //     fileContentList[f.name] = await langChainLoadFile(f.path);
+      //   }
+      //   chatMessage.content = `Files Data:\n${JSON.stringify(
+      //     fileContentList
+      //   )}\n${chatMessage.content}`;
+      // }
       
       messages.unshift({
         role: chatMessage.role,

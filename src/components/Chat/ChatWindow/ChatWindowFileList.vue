@@ -16,7 +16,6 @@ const selectFileRequest = (option: RequestOption) => {
 </script>
 
 <template>
-<div></div>
   <a-modal
     v-model:visible="modalVisible"
     :footer="false"

@@ -3,7 +3,7 @@ import fs from "fs";
 import { join } from "path";
 
 const appConfig = {
-  tempPath: "@/data",
+  tempPath: "C:\isaac\myproject\ChatHub\data",
 };
 
 // 临时缓存目录
@@ -11,7 +11,7 @@ const creatTempPath = () => {
   try {
     fs.mkdirSync(appConfig.tempPath);
   } catch (e: any) {
-    if (e.code != "EEXIST") {
+    if (e.code != "EXIST") {
       console.log(e);
     }
   }

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FileItem, RequestOption } from "@arco-design/web-vue";
-
 const modalVisible = defineModel("modalVisible", { default: () => false });
 const selectFileList = defineModel<FileItem[]>("selectFileList", {
   default: () => [],

@@ -1,9 +1,38 @@
 <script setup lang="ts">
+import { type MessageFile } from "@/types"
+import FileAvatar from "@/components/Avatar/FileAvatar.vue";
+import { formatFileSize } from "@/utils/file"
 
+// 接收文件列表
+defineProps({
+  messageFile:{
+    type: Object as () => MessageFile,
+    default: () => ({})
+  }
+})
+// 打开文件所在位置
+const showItemInFolder = (path:string) => {
+
+}
 </script>
 
 <template>
-
+  <div class="chat-message-file" @click="showItemInFolder(messageFile.path)">
+    <!-- 图标 -->
+    <FileAvatar 
+      class="chat-message-file-avatar"
+      :type="messageFile.name.split('.').at(-1)"
+      :size="30"
+    />
+    <div class="chat-message-file-body">
+      <div class="chat-message-file-name">
+        {{ messageFile.name }}
+      </div>
+      <div class="chat-message-file-size">
+        {{ messageFile.name.split('.').at(-1) }} {{ formatFileSize(messageFile.size) }}
+      </div>
+    </div>
+  </div>
 </template>
 
 <style lang="less" scoped>

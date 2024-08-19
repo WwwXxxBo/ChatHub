@@ -1,5 +1,5 @@
 // 引入通用类型检查
-import type { ChatMessage } from "@/types";
+import type { BaseMessage } from "@/types";
 // 引入接口
 import { turnChat, limitContext } from "@/utils/base-util";
 // 引入大模型相关类型检查
@@ -10,7 +10,7 @@ import CryptoJS from "crypto-js";
 // 星火大模型文档：https://www.xfyun.cn/doc/spark/
 
 // 获取星火大模型服务地址
-const getSparkHostURL = (model: string) => {
+const getSparkHostUrl = (model: string) => {
   let hostURL = "";
   switch (model) {
     case "Spark Lite":
@@ -59,6 +59,7 @@ const getDomain = (model: string) => {
       domain = "4.0Ultra";
       break;
   }
+  return domain
 };
 
 // 获取ws请求地址
@@ -81,5 +82,63 @@ const getAuthUrl = (
   const authorization = btoa(authorizationOrigin);
   return `${url.toString()}?authorization=${authorization}&date=${date}&host=${host}`;
 };
+
+// 获取对话请求参数
+const getSparkRequestParam = (
+appId: string,
+model:string,
+maxTokens: number | undefined,
+messageList: BaseMessage[]
+) => {
+  return JSON.stringify({
+    header: {
+      appId: appId,
+      uid: '12345'
+    },
+    parameter:{
+      "chat": {
+        domain: getDomain(model),
+        temperature:0.5,
+        max_tokens: maxTokens ?? 4096
+      }
+    },
+    payload:{
+      message:{
+        text: messageList
+      }
+    }
+  })
+}
+
+export const chat2spark = async (option: CommonChatOption) => {
+  const {
+    model,
+    instruction,
+    inputMaxTokens,
+    maxTokens,
+    contextSize,
+    appId,
+    apiKey,
+    secretKey,
+    messages,
+    sessionId,
+    startAnswer,
+    appendAnswer,
+    end
+  } = option
+
+  // 获取模型服务地址
+  const modelUrl = getSparkHostUrl(model)
+  if(modelUrl === ''){
+    end && end(sessionId, `Unsupported model: ${model}`)
+    return
+  }
+  // 等待回答
+  let waitAnswer = true
+  // Websocket 实例
+  const sparkClient = new WebSocket(getAuthUrl(modelUrl, 'GET', apiKey!, secretKey!))
+  // 连接成功
+  
+}
 
 

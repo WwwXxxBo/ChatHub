@@ -104,7 +104,7 @@
         "key": "Gemini Key"
       },
       "zhipuAI": {
-        "name": "智谱AI",
+        "name": "智谱清言",
         "apiKey": "API Key"
       },
       "spark": {
@@ -123,7 +123,7 @@
         "apiKey": "API Key"
       },
       "tiangong": {
-        "name": "天工",
+        "name": "天工开物",
         "appKey": "app_key",
         "appSecret": "app_secret"
       },
@@ -136,11 +136,11 @@
         "apiKey": "API Key"
       },
       "deepSeek": {
-        "name": "DeepSeek",
+        "name": "深度求索",
         "apiKey": "API Key"
       },
       "baichuan": {
-        "name": "BaiChuan",
+        "name": "百川智能",
         "apiKey": "API Key"
       }
     },

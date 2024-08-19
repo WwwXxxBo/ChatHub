@@ -1,6 +1,6 @@
 # ChatHub
 
-基于Vue3的大模型问答系统，支持月之暗面、智谱AI大模型
+基于Vue3的大模型问答系统，支持月之暗面、智谱清言、天工开物、百川智能、DeepSeek、OpenAI模型
 
 ## Recommended IDE Setup
 

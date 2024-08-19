@@ -20,8 +20,6 @@ export const chat2tongyi = async (option: CommonChatOption) => {
     end,
   } = option;
   let waitAnswer = true;
-//   const baseURL =
-//     "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions";
   // 设置请求头
   const headers = {
     Authorization: `Bearer ${apiKey}`,
@@ -70,7 +68,6 @@ export const chat2tongyi = async (option: CommonChatOption) => {
             waitAnswer = false;
             startAnswer && startAnswer(sessionId);
           }
-          console.log(jsonData);
           appendAnswer && appendAnswer(sessionId, jsonData.choices[0].message.content ?? "")
         }
       }

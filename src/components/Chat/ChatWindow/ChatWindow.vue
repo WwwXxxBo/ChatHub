@@ -317,7 +317,7 @@ const useBigModel = async () => {
   }
   // 各家大模型特有选项
   const otherOption = settingStore.getBigModelConfig(data.currentChatAssistant.provider)
-
+  console.log(data.currentChatAssistant.provider)
   // 大模型能力调用
   await chat2bigModel(data.currentChatAssistant.provider, {
     ...chat2bigModelOption,

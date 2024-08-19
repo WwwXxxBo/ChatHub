@@ -27,7 +27,7 @@ export type BigModelProvider =
   // | "Ollama"
   // | "Gemini"
   | "ZhipuAI"
-  // | "Tongyi"
+  | "Tongyi"
   // | "ERNIE"
   | "Spark"
   | "Tiangong"

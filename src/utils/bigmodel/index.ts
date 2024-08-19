@@ -9,6 +9,7 @@ import { chat2deepSeek } from "@/utils/bigmodel/deepseek-util"
 import { char2stepfun } from "@/utils/bigmodel/stepfun-util"
 import { chat2openai } from "@/utils/bigmodel/openai-util"
 import { chat2spark } from "@/utils/bigmodel/spark-util"
+import { chat2tongyi } from "@/utils/bigmodel/tongyi-util"
 
 // 目前支持 Kimi、智谱AI、天工、百川、DeepSeek、阶跃星辰
 type ChatFunctionMap = {
@@ -23,7 +24,8 @@ const chatFunctionMap = {
   DeepSeek: chat2deepSeek, // 目前存在问题
   StepFun: char2stepfun,
   OpenAI: chat2openai,
-  Spark: chat2spark
+  Spark: chat2spark,
+  Tongyi: chat2tongyi //目前存在跨域问题
 }
 
 

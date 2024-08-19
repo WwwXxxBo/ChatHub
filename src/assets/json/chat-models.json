@@ -66,39 +66,6 @@
   ],
   "Tongyi": [
     {
-      "name": "qwen-vl-max",
-      "value": "qwen-vl-max",
-      "type": "vision",
-      "isSupportImage": true
-    },
-    {
-      "name": "qwen-vl-plus",
-      "value": "qwen-vl-plus",
-      "type": "vision",
-      "isSupportImage": true
-    },
-    {
-      "name": "qwen-max-longcontext",
-      "value": "qwen-max-longcontext",
-      "type": "text",
-      "isSupportPlugin": true,
-      "isSupportNetwork": true
-    },
-    {
-      "name": "qwen-max",
-      "value": "qwen-max",
-      "type": "text",
-      "isSupportPlugin": true,
-      "isSupportNetwork": true
-    },
-    {
-      "name": "qwen-plus",
-      "value": "qwen-plus",
-      "type": "text",
-      "isSupportPlugin": true,
-      "isSupportNetwork": true
-    },
-    {
       "name": "qwen-turbo",
       "value": "qwen-turbo",
       "type": "text",

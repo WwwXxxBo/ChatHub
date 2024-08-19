@@ -7,6 +7,7 @@ import { chat2tiangong } from "@/utils/bigmodel/tiangong-util"
 import { chat2baichuan } from "@/utils/bigmodel/baichuan-util"
 import { chat2deepSeek } from "@/utils/bigmodel/deepseek-util"
 import { char2stepfun } from "@/utils/bigmodel/stepfun-util"
+import { chat2openai } from "@/utils/bigmodel/openai-util"
 
 // 目前支持 Kimi、智谱AI、天工、百川、DeepSeek、阶跃星辰
 type ChatFunctionMap = {
@@ -18,8 +19,9 @@ const chatFunctionMap = {
   ZhipuAI: chat2zhipu,
   Tiangong: chat2tiangong,
   BaiChuan: chat2baichuan,
-  DeepSeek: chat2deepSeek,
-  StepFun: char2stepfun
+  DeepSeek: chat2deepSeek, // 目前存在问题
+  StepFun: char2stepfun,
+  OpenAI: chat2openai
 }
 
 

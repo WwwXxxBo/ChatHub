@@ -23,7 +23,7 @@ export type ChatPluginParameterType =
 
 // 大模型提供者
 export type BigModelProvider =
-  // | "OpenAI"
+  | "OpenAI"
   // | "Ollama"
   // | "Gemini"
   | "ZhipuAI"

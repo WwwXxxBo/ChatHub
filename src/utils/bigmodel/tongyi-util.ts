@@ -34,10 +34,11 @@ export const chat2tongyi = async (option: CommonChatOption) => {
       inputMaxTokens,
       contextSize
     ),
+    stream: true
   };
   try {
     // 发起请求
-    const response = await fetch('/api/compatible-mode/v1/chat/completions', {
+    const response = await fetch('/tongyi/compatible-mode/v1/chat/completions', {
       method: "POST",
       headers: headers,
       body: JSON.stringify(data),
@@ -61,14 +62,14 @@ export const chat2tongyi = async (option: CommonChatOption) => {
       const lines = jsonData.split("\n");
       // 遍历每一行
       for (const line of lines) {
-        if (line) {
-          const jsonData = JSON.parse(line);
+        if (line && line != 'data: ' && line != 'data: [DONE]') {
+          const jsonData = JSON.parse(line.slice(5));
           // 正确返回
           if (waitAnswer) {
             waitAnswer = false;
             startAnswer && startAnswer(sessionId);
           }
-          appendAnswer && appendAnswer(sessionId, jsonData.choices[0].message.content ?? "")
+          appendAnswer && appendAnswer(sessionId, jsonData.choices[0].delta.content ?? "")
         }
       }
     }

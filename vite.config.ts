@@ -18,11 +18,16 @@ export default defineConfig({
     port: 3000,
     open: true,
     proxy: {
-      '/api':{
+      '/tongyi':{
         target: 'https://dashscope.aliyuncs.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      }
+        rewrite: (path) => path.replace(/^\/tongyi/, '')
+      },
+      '/stepfun':{
+        target: 'https://api.stepfun.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/stepfun/, '')
+      },
     },
     cors: true
   }

@@ -21,11 +21,11 @@ const chatFunctionMap = {
   ZhipuAI: chat2zhipu,
   Tiangong: chat2tiangong,
   BaiChuan: chat2baichuan,
-  DeepSeek: chat2deepSeek, // 目前存在问题
-  StepFun: char2stepfun,
+  DeepSeek: chat2deepSeek,
+  StepFun: char2stepfun, // 目前存在问题
   OpenAI: chat2openai,
   Spark: chat2spark,
-  Tongyi: chat2tongyi //目前存在跨域问题
+  Tongyi: chat2tongyi
 }
 
 

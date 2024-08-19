@@ -3,10 +3,6 @@ import { type CommonChatOption } from "@/utils/bigmodel";
 import { turnChat, limitContext } from "@/utils/base-util";
 import OpenAI from "openai";
 import { type ChatCompletionMessageParam } from "openai/resources/chat/completions";
-
-// 接口地址
-const baseURL = "https://dashscope.aliyuncs.com/compatible-mode/v1";
-
 export const chat2tongyi = async (option: CommonChatOption) => {
   const {
     model,
@@ -23,43 +19,67 @@ export const chat2tongyi = async (option: CommonChatOption) => {
     appendAnswer,
     end,
   } = option;
-  // OpenAI 实例
-  const openai = new OpenAI({
-    apiKey,
-    baseURL,
-    dangerouslyAllowBrowser: true,
-  });
-  // 获取现有消息列表
-  const chatMessages = (await getTongyiMessages(
-    messages!,
-    instruction,
-    inputMaxTokens,
-    contextSize
-  )) as ChatCompletionMessageParam[];
-  // 流式对话
-  const stream = await openai.chat.completions.create(
-    {
-      messages: chatMessages,
-      model,
-      stream: true,
-      max_tokens: maxTokens,
-    },
-    {
+  let waitAnswer = true;
+//   const baseURL =
+//     "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions";
+  // 设置请求头
+  const headers = {
+    Authorization: `Bearer ${apiKey}`,
+    "Content-Type": "application/json",
+  };
+  // 请求参数
+  const data = {
+    model: model,
+    messages: await getTongyiMessages(
+      messages!,
+      instruction,
+      inputMaxTokens,
+      contextSize
+    ),
+  };
+  try {
+    // 发起请求
+    const response = await fetch('/api/compatible-mode/v1/chat/completions', {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(data),
       signal: abortCtr?.signal,
-    }
-  );
-  // 开始回答
-  startAnswer && startAnswer(sessionId);
-  //   持续回答
-  for await (const chunk of stream) {
-    appendAnswer &&
-      appendAnswer(sessionId, chunk.choices[0].delta.content ?? "");
-  }
-  // 结束
-  end && end(sessionId);
-};
+    });
 
-// 获取消息列表
+    // 创建一个 eadableStream 的读取器
+    const reader = response.body!.getReader();
+    // 读取数据并处理
+    let isDone = false;
+    while (!isDone) {
+      const { done, value } = await reader.read();
+      // 如果读取完成，中止ReadableStream
+      isDone = done;
+      if (done) {
+        break;
+      }
+      // 处理接收到的数据
+      const jsonData = new TextDecoder("utf-8").decode(value);
+      // 按照换行分行
+      const lines = jsonData.split("\n");
+      // 遍历每一行
+      for (const line of lines) {
+        if (line) {
+          const jsonData = JSON.parse(line);
+          // 正确返回
+          if (waitAnswer) {
+            waitAnswer = false;
+            startAnswer && startAnswer(sessionId);
+          }
+          console.log(jsonData);
+          appendAnswer && appendAnswer(sessionId, jsonData.choices[0].message.content ?? "")
+        }
+      }
+    }
+    end && end(sessionId)
+  } catch (error: any) {
+    end && end(sessionId, error?.message);
+  }
+};
 export const getTongyiMessages = async (
   chatMessageList: ChatMessage[],
   instruction: string,
@@ -77,13 +97,5 @@ export const getTongyiMessages = async (
       content: instruction,
     });
   }
-  // 转换消息结构
-  const openaiMessages: ChatCompletionMessageParam[] = [];
-  for (const m of messages) {
-    openaiMessages.push({
-      role: m.role,
-      content: m.content,
-    } as ChatCompletionMessageParam);
-  }
-  return openaiMessages;
+  return messages;
 };

@@ -142,7 +142,6 @@ function selectImageClick() {}
 
 // 支持图片上传
 const isSupportImageComputed = computed(() => {
-  console.log('是否支持图片',isSupportImage(data.currentChatAssistant.provider,data.currentChatAssistant.model))
   return isSupportImage(data.currentChatAssistant.provider,data.currentChatAssistant.model)
 })
 
@@ -317,7 +316,6 @@ const useBigModel = async () => {
   }
   // 各家大模型特有选项
   const otherOption = settingStore.getBigModelConfig(data.currentChatAssistant.provider)
-  console.log(data.currentChatAssistant.provider)
   // 大模型能力调用
   await chat2bigModel(data.currentChatAssistant.provider, {
     ...chat2bigModelOption,
@@ -365,7 +363,6 @@ const multipleChoiceOpen = (id?: string) => {
   if (id) {
     multipleChoiceChange(id)
   }
-  console.log('多选状态',data.multipleChoiceFlag)
 }
 
 // 关闭多选

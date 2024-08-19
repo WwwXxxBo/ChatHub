@@ -386,6 +386,62 @@ watch(
                   </a-space>
                 </a-space>
               </a-tab-pane>
+              
+              <!-- 讯飞星火 -->
+              <a-tab-pane
+                key="spark"
+                :title="$t('setting.bigModel.spark.name')"
+              >
+                <a-space
+                  direction="vertical"
+                  :size="25"
+                  fill
+                  class="setting-tab-content"
+                >
+                  <a-space direction="vertical" :size="10" fill>
+                    <div>{{ $t("common.officialWebsite") }}</div>
+                    <a-link @click="openInBrowser('https://xinghuo.xfyun.cn')"
+                      >https://xinghuo.xfyun.cn</a-link
+                    >
+                  </a-space>
+                  <a-space direction="vertical" :size="10" fill>
+                    <div>{{ $t("setting.bigModel.spark.appId") }}</div>
+                    <a-input
+                      v-model="settingStore.spark.appId"
+                      size="small"
+                      :placeholder="
+                        $t('common.pleaseEnter') +
+                        ' ' +
+                        $t('setting.bigModel.spark.appId')
+                      "
+                    />
+                  </a-space>
+                  <a-space direction="vertical" :size="10" fill>
+                    <div>{{ $t("setting.bigModel.spark.secret") }}</div>
+                    <a-input-password
+                      v-model="settingStore.spark.secret"
+                      size="small"
+                      :placeholder="
+                        $t('common.pleaseEnter') +
+                        ' ' +
+                        $t('setting.bigModel.spark.secret')
+                      "
+                    />
+                  </a-space>
+                  <a-space direction="vertical" :size="10" fill>
+                    <div>{{ $t("setting.bigModel.spark.key") }}</div>
+                    <a-input-password
+                      v-model="settingStore.spark.key"
+                      size="small"
+                      :placeholder="
+                        $t('common.pleaseEnter') +
+                        ' ' +
+                        $t('setting.bigModel.spark.key')
+                      "
+                    />
+                  </a-space>
+                </a-space>
+              </a-tab-pane>
 
               <!-- OpenAI -->
               <a-tab-pane
@@ -597,62 +653,6 @@ watch(
                         $t('common.pleaseEnter') +
                         ' ' +
                         $t('setting.bigModel.ernie.secretKey')
-                      "
-                    />
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- 讯飞星火 -->
-              <a-tab-pane
-                key="spark"
-                :title="$t('setting.bigModel.spark.name')"
-              >
-                <a-space
-                  direction="vertical"
-                  :size="25"
-                  fill
-                  class="setting-tab-content"
-                >
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("common.officialWebsite") }}</div>
-                    <a-link @click="openInBrowser('https://xinghuo.xfyun.cn')"
-                      >https://xinghuo.xfyun.cn</a-link
-                    >
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.spark.appId") }}</div>
-                    <a-input
-                      v-model="settingStore.spark.appId"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.spark.appId')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.spark.secret") }}</div>
-                    <a-input-password
-                      v-model="settingStore.spark.secret"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.spark.secret')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.spark.key") }}</div>
-                    <a-input-password
-                      v-model="settingStore.spark.key"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.spark.key')
                       "
                     />
                   </a-space>

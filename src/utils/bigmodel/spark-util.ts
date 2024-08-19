@@ -1,8 +1,5 @@
-// 引入通用类型检查
-import type { BaseMessage } from "@/types";
-// 引入接口
+import { type BaseMessage, type ChatMessage } from "@/types";
 import { turnChat, limitContext } from "@/utils/base-util";
-// 引入大模型相关类型检查
 import { type CommonChatOption } from "@/utils/bigmodel";
 // 引入加密库
 import CryptoJS from "crypto-js";
@@ -59,7 +56,7 @@ const getDomain = (model: string) => {
       domain = "4.0Ultra";
       break;
   }
-  return domain
+  return domain;
 };
 
 // 获取ws请求地址
@@ -85,30 +82,30 @@ const getAuthUrl = (
 
 // 获取对话请求参数
 const getSparkRequestParam = (
-appId: string,
-model:string,
-maxTokens: number | undefined,
-messageList: BaseMessage[]
+  appId: string,
+  model: string,
+  maxTokens: number | undefined,
+  messageList: BaseMessage[]
 ) => {
   return JSON.stringify({
     header: {
       appId: appId,
-      uid: '12345'
+      uid: "12345",
     },
-    parameter:{
-      "chat": {
+    parameter: {
+      chat: {
         domain: getDomain(model),
-        temperature:0.5,
-        max_tokens: maxTokens ?? 4096
-      }
+        temperature: 0.5,
+        max_tokens: maxTokens ?? 4096,
+      },
     },
-    payload:{
-      message:{
-        text: messageList
-      }
-    }
-  })
-}
+    payload: {
+      message: {
+        text: messageList,
+      },
+    },
+  });
+};
 
 export const chat2spark = async (option: CommonChatOption) => {
   const {
@@ -124,21 +121,82 @@ export const chat2spark = async (option: CommonChatOption) => {
     sessionId,
     startAnswer,
     appendAnswer,
-    end
-  } = option
+    end,
+  } = option;
 
   // 获取模型服务地址
-  const modelUrl = getSparkHostUrl(model)
-  if(modelUrl === ''){
-    end && end(sessionId, `Unsupported model: ${model}`)
-    return
+  const modelUrl = getSparkHostUrl(model);
+  if (modelUrl === "") {
+    end && end(sessionId, `Unsupported model: ${model}`);
+    return;
   }
   // 等待回答
-  let waitAnswer = true
+  let waitAnswer = true;
   // Websocket 实例
-  const sparkClient = new WebSocket(getAuthUrl(modelUrl, 'GET', apiKey!, secretKey!))
+  const sparkClient = new WebSocket(
+    getAuthUrl(modelUrl, "GET", apiKey!, secretKey!)
+  );
   // 连接成功
-  
-}
-
-
+  sparkClient.onopen = async () => {
+    // 连接成功，发送消息
+    sparkClient.send(
+      getSparkRequestParam(
+        appId!, 
+        model, 
+        maxTokens, 
+        await getSparkMessages(messages!, instruction, inputMaxTokens, contextSize)
+      )
+    )
+  }
+  // 接收消息
+  sparkClient.onmessage = (message) => {
+    try{
+      const respJson = JSON.parse(message.data.toString())
+      const answerContent = respJson.payload.choice.text[0].content
+      if(waitAnswer){
+        waitAnswer = false
+        startAnswer && startAnswer(sessionId)
+      }
+      appendAnswer && appendAnswer(sessionId, answerContent)
+    }catch (e: any){
+      end && end(sessionId, message.data)
+      return
+    }
+  }
+  // 连接关闭
+  sparkClient.onclose = () => {
+    end && end(sessionId)
+  }
+  // 连接错误
+  sparkClient.onerror = (e) => {
+    end && end(sessionId, 'chat2spark websocket connect error')
+  }
+};
+export const getSparkMessages = async (
+  chatMessageList: ChatMessage[],
+  instruction: string,
+  inputMaxTokens: number | undefined,
+  contextSize: number
+) => {
+  // 消息格式转换
+  let messages = await turnChat(chatMessageList);
+  // 截取指定长度的上下文
+  messages = limitContext(inputMaxTokens, contextSize, messages)
+  // 增加指令
+  if(instruction.trim().length > 0){
+    messages.unshift({
+      role: 'system',
+      content: instruction
+    })
+  }
+  // 转换消息结构
+  let sparkMessages: any[] = []
+  for(const m of messages){
+    // 暂时不处理用户上传的图片
+    sparkMessages.push({
+      role: m.role,
+      content: m.content
+    })
+  }
+  return sparkMessages
+};

@@ -29,7 +29,7 @@ export type BigModelProvider =
   | "ZhipuAI"
   // | "Tongyi"
   // | "ERNIE"
-  // | "Spark"
+  | "Spark"
   | "Tiangong"
   | "MoonshotAI"
   | "StepFun"

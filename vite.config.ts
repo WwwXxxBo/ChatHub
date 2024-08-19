@@ -12,5 +12,18 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  // 解决跨域问题
+  server:{
+    port: 3000,
+    open: true,
+    proxy: {
+      '/api':{
+        target: 'https://dashscope.aliyuncs.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    },
+    cors: true
   }
 })

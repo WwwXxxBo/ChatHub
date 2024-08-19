@@ -1,6 +1,7 @@
 import { type BaseMessage, type ChatMessage } from "@/types";
 import { turnChat, limitContext } from "@/utils/base-util";
 import { type CommonChatOption } from "@/utils/bigmodel";
+import { Message } from '@arco-design/web-vue';
 // 引入加密库
 import CryptoJS from "crypto-js";
 
@@ -77,7 +78,14 @@ const getAuthUrl = (
   const signature = CryptoJS.enc.Base64.stringify(signatureSha);
   const authorizationOrigin = `api_key="${apiKey}", algorithm="${algorithm}", headers="${headers}", signature="${signature}"`;
   const authorization = btoa(authorizationOrigin);
-  return `${url.toString()}?authorization=${authorization}&date=${date}&host=${host}`;
+  const authorUrlParams = {
+    "authorization": authorization, 
+    "date": date, 
+    "host": "spark-api.xf-yun.com"
+  }
+  const authorUrl = new URLSearchParams(authorUrlParams).toString()
+  console.log(`${url.toString()}?` + authorUrl)
+  return `${url.toString()}?${authorUrl}`;
 };
 
 // 获取对话请求参数
@@ -89,7 +97,7 @@ const getSparkRequestParam = (
 ) => {
   return JSON.stringify({
     header: {
-      appId: appId,
+      app_id: appId,
       uid: "12345",
     },
     parameter: {
@@ -152,7 +160,10 @@ export const chat2spark = async (option: CommonChatOption) => {
   sparkClient.onmessage = (message) => {
     try{
       const respJson = JSON.parse(message.data.toString())
-      const answerContent = respJson.payload.choice.text[0].content
+      if(respJson.header.code === 11200){
+        Message.warning('该appId没有相关功能的授权 或者 业务量超过限制')
+      }
+      const answerContent = respJson.payload.choices.text[0].content
       if(waitAnswer){
         waitAnswer = false
         startAnswer && startAnswer(sessionId)

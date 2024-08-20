@@ -1,8 +1,6 @@
 // 设置自定义系统颜色表
 export const defaultCustomThemeMap: Record<string, string> = {
   "--color-bg-1": "#FFFFFF",
-  // ChatWindow 页面背景颜色
-  "--color-bg-2": "#F6F7FB",
   "--color-fill-1": "#F7F8FA",
   "--color-fill-2": "#F2F3F5",
   "--color-fill-3": "#E5E6EB",

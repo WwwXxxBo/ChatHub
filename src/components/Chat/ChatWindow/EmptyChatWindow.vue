@@ -20,7 +20,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-bg-2);
+  background-color: var(--color-fill-1);
 
   .chat-window-empty {
     width: 100%;

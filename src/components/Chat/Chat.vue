@@ -62,10 +62,13 @@ const { isLeftClose } = toRefs(data);
 
 <style lang="less" scoped>
 .chat-assistant {
+  margin: 10px 10px 10px 0px;
+  border-radius: 10px;
   width: 100%;
   flex-grow: 1;
   display: flex;
   overflow: hidden;
+  background-color: var(--color-bg-1);
 
   .chat-assistant-left-transition-enter-active,
   .chat-assistant-left-transition-leave-active {

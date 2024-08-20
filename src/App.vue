@@ -173,7 +173,10 @@ onMounted(() => {
   width: 100vw;
   height: 100vh;
   display: flex;
-  background-color: var(--color-bg-1);
+  // 设置渐变背景
+  background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+  // 原始纯色背景
+  // background-color: var(--color-bg-1);
   color: var(--color-text-1);
   font-size: var(--font-size-default);
 
@@ -184,7 +187,6 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-    background-color: var(--color-fill-2);
 
     .app-sidebar-avatar-macos {
       margin: 30px 0 15px 0;
@@ -201,6 +203,7 @@ onMounted(() => {
         font-size: 26px;
         stroke-width: 3;
         color: var(--color-text-1);
+        border-radius: 50%;
         transition: all 100ms linear;
       }
 

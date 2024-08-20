@@ -4,11 +4,15 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  background-color:var(--color-bg-2);
 
   .chat-input-container {
     flex-shrink: 0;
-    border-top: 1px solid var(--color-border-1);
+    border: 1px solid var(--color-border-1);
     position: relative;
+    border-radius: 10px;
+    margin: 15px;
+    background-color: var(--color-bg-1);
 
     .chat-message-list-to-bottom {
       width: 30px;
@@ -27,6 +31,7 @@
 
       .chat-message-list-to-bottom-icon {
         font-size: 20px;
+        margin-bottom: 15px;
       }
     }
 

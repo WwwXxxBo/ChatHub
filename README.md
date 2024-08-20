@@ -34,3 +34,11 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## 引用与致谢
+
+在
+
+[AIHub]: https://github.com/classfang/AIHub
+
+项目上进行二次开发！

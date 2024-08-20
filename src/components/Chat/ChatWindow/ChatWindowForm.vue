@@ -18,7 +18,6 @@ watch(
   () => assistant.value.provider,
   (value) => {
     // 如果模型是 Ollama 本地模型
-    console.log(value)
     if(value === 'Ollama'){
       assistant.value.model = modelList[0].name
     }

@@ -618,6 +618,7 @@ onMounted(() => {
             <icon-bulb :size="15" />
           </a-button>
         </a-tooltip>
+        
         <!-- 选择图片 -->
         <div v-if="isSupportImageComputed" class="chat-input-select-image">
           <a-upload

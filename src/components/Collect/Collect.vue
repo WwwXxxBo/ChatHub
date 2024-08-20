@@ -378,6 +378,12 @@ const exportChatMessageList = (id: string) => {
 @import "@/assets/css/chat-window.less";
 
 .collection-set {
+  // 增加边距和圆角
+  margin: 10px 10px 10px 0px;
+  border-radius: 10px;
+  // 增加背景颜色
+  background-color: var(--color-bg-1);
+  
   width: 100%;
   flex-grow: 1;
   display: flex;

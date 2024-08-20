@@ -1,8 +1,6 @@
 import { type ChatMessage } from "@/types";
 import { type CommonChatOption } from "@/utils/bigmodel";
 import { turnChat, limitContext } from "@/utils/base-util";
-import OpenAI from "openai";
-import { type ChatCompletionMessageParam } from "openai/resources/chat/completions";
 export const chat2tongyi = async (option: CommonChatOption) => {
   const {
     model,

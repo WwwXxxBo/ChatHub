@@ -175,8 +175,6 @@ onMounted(() => {
   display: flex;
   // 设置渐变背景
   background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
-  // 原始纯色背景
-  // background-color: var(--color-bg-1);
   color: var(--color-text-1);
   font-size: var(--font-size-default);
 

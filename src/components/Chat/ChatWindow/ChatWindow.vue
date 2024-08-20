@@ -196,7 +196,6 @@ const sendQuestion = async (event?: KeyboardEvent) => {
   try {
     await useBigModel()
   } catch (e: any) {
-    // Logger.error('big model error: ', e?.message)
     // 除了手动中断异常
     if (!(e instanceof APIUserAbortError)) {
       const errMsg = e ? e + '' : t(`chatWindow.error.${data.currentChatAssistant.provider}`)

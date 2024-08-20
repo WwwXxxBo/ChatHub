@@ -2,6 +2,7 @@
 import type { ChatMessage } from "@/types";
 import { turnChat, limitContext } from "@/utils/base-util";
 import { type CommonChatOption } from "@/utils/bigmodel";
+import { Message } from '@arco-design/web-vue';
 
 export const chat2ollama = async (option: CommonChatOption) => {
   const {
@@ -97,3 +98,24 @@ export const getOllamaMessages = async (
   // 暂时不处理图片
   return messages;
 };
+
+// 获取本地模型列表
+export const getOllamaModelList = async (baseURL: string) => {
+  // const { baseURL } = option
+  // 发送请求
+  try{
+    const response =  await fetch(`${baseURL}/api/tags`)
+    if (!response.ok) {  
+      throw new Error(`HTTP error! status: ${response.status}`);  
+    }  
+    const responseJson = await response.json(); // 假设服务器返回JSON数据  
+    const models = responseJson.models
+    const modelList: String[] = [] 
+    for(const model of models){
+      modelList.unshift(model.name)
+    }
+    return modelList
+  }catch(error: any){
+    Message.warning(error.message)
+  }
+}

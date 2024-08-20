@@ -157,10 +157,10 @@ defineExpose({
     <!-- 模型介绍 -->
     <div class="assistant-desc">
       <a-space :size="10">
-        <a-tag class="no-drag-area" @click="edit()">{{
+        <a-tag color="arcoblue" class="no-drag-area" @click="edit()">{{
           $t(`bigModelProvider.${currentChatAssistant?.provider}`)
         }}</a-tag>
-        <a-tag class="no-drag-area" @click="edit()">{{ currentChatAssistant?.model }}</a-tag>
+        <a-tag color="arcoblue" class="no-drag-area" @click="edit()">{{ currentChatAssistant?.model }}</a-tag>
       </a-space>
     </div>
     <!-- 三个点 -->

@@ -1,23 +1,38 @@
 <script setup lang="ts">
 import chatModels from "@/assets/json/chat-models.json";
+import { useSettingStore } from "@/stores/setting";
 // 引入类型检查
 import { Assistant } from "@/types"
-import { reactive, watch } from "vue";
+import { onMounted, reactive, watch } from "vue";
 // 引入判断函数
 import { isCustomModel, isSupportImage, isSupportPlugin, isSupportNetwork, isSupportSpeech } from "@/utils/base-util"
+// 引入自动识别本地 Ollama 模型方法
+import { getOllamaModelList } from "@/utils/bigmodel/ollama-util"
 
+const settingStore = useSettingStore();
+
+let  modelList = []
 const assistant = defineModel<Assistant>('assistant', { default: () => ({}) })
 watch(
+  // 自动显示模型
   () => assistant.value.provider,
   (value) => {
-    if (chatModels[value] && chatModels[value][0]) {
-      console.log(chatModels[value][0])
+    // 如果模型是 Ollama 本地模型
+    console.log(value)
+    if(value === 'Ollama'){
+      assistant.value.model = modelList[0].name
+    }
+    // 如果模型是其他模型
+    else if (chatModels[value] && chatModels[value][0]) {
       assistant.value.model = chatModels[value][0].name
     } else {
       assistant.value.model = ''
     }
   }
 )
+onMounted(async () => {
+  modelList = await getOllamaModelList(settingStore.ollama.baseUrl)
+})
 </script>
 
 <template>
@@ -63,11 +78,26 @@ watch(
       <!-- 模型 -->
       <a-form-item field="model" :label="$t('assistantList.model')">
         <a-space direction="vertical" style="width: 100%">
+          <!-- 对 Ollama 模型进行特殊处理 -->
           <template v-if="assistant.provider === 'Ollama'">
-            <a-input
+            <!-- <a-input
               v-model="assistant.model"
               :placeholder=" $t('common.pleaseEnter') + ' ' + $t('assistantList.model') "
-            />
+            /> -->
+            <a-select
+              v-model="assistant.model"
+              allow-create
+              allow-search
+              :fallback-option="false"
+            >
+              <a-option
+                v-for="m in modelList"
+                :value="m.name"
+                :key="m.id"
+              >
+                {{ m.name }}
+              </a-option>
+            </a-select>
           </template>
           <template v-else>
             <a-select

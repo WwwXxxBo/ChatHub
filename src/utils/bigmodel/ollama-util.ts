@@ -101,7 +101,6 @@ export const getOllamaMessages = async (
 
 // 获取本地模型列表
 export const getOllamaModelList = async (baseURL: string) => {
-  // const { baseURL } = option
   // 发送请求
   try{
     const response =  await fetch(`${baseURL}/api/tags`)
@@ -110,9 +109,11 @@ export const getOllamaModelList = async (baseURL: string) => {
     }  
     const responseJson = await response.json(); // 假设服务器返回JSON数据  
     const models = responseJson.models
-    const modelList: String[] = [] 
+    const modelList: any[] = [] 
     for(const model of models){
-      modelList.unshift(model.name)
+      modelList.unshift({
+        name: model.name,
+      })
     }
     return modelList
   }catch(error: any){

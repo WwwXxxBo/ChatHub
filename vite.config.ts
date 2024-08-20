@@ -28,6 +28,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/stepfun/, '')
       },
+      '/ernie':{
+        target: 'https://aip.baidubce.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ernie/, '')
+      },
     },
     cors: true
   }

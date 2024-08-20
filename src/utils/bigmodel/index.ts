@@ -10,6 +10,7 @@ import { char2stepfun } from "@/utils/bigmodel/stepfun-util"
 import { chat2openai } from "@/utils/bigmodel/openai-util"
 import { chat2spark } from "@/utils/bigmodel/spark-util"
 import { chat2tongyi } from "@/utils/bigmodel/tongyi-util"
+import { chat2ernie } from "@/utils/bigmodel/ernie-bot-util"
 
 // 目前支持 Kimi、智谱AI、天工、百川、DeepSeek、阶跃星辰
 type ChatFunctionMap = {
@@ -22,10 +23,11 @@ const chatFunctionMap = {
   Tiangong: chat2tiangong,
   BaiChuan: chat2baichuan,
   DeepSeek: chat2deepSeek,
-  StepFun: char2stepfun, // 目前存在问题
+  StepFun: char2stepfun,
   OpenAI: chat2openai,
   Spark: chat2spark,
-  Tongyi: chat2tongyi
+  Tongyi: chat2tongyi,
+  ERNIE: chat2ernie
 }
 
 

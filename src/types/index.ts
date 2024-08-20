@@ -28,7 +28,7 @@ export type BigModelProvider =
   // | "Gemini"
   | "ZhipuAI"
   | "Tongyi"
-  // | "ERNIE"
+  | "ERNIE"
   | "Spark"
   | "Tiangong"
   | "MoonshotAI"

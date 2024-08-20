@@ -1,32 +1,35 @@
-# ChatHub
+<h1 align="center">ChatHub</h1>
+<h3 align="center">
+基于Vue3的大模型问答UI，支持OpenAI、月之暗面、智谱清言、天工开物、百川智能、讯飞星火、百度文心、阿里通义、阶跃星辰、深度求索API模型，支持Ollama本地模型
+</h3>
 
-基于Vue3的大模型问答系统，支持月之暗面、智谱清言、天工开物、百川智能、DeepSeek、OpenAI模型
+![](assets/img/img_1.png)
 
-## Recommended IDE Setup
+## 🖥️ 功能介绍
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+### 1. 强大的AI能力支撑
 
-## Type Support for `.vue` Imports in TS
+轻松接入多个厂商的大模型API。
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+### 2. 丰富的配置
 
-## Customize configuration
+多语言、多主题配置。
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## ⚒️ 项目开发
 
-## Project Setup
+### 安装依赖
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 启动
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### 构建项目
 
 ```sh
 npm run build

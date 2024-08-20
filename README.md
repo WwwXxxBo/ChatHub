@@ -37,8 +37,4 @@ npm run build
 
 ## 引用与致谢
 
-在
-
-[AIHub]: https://github.com/classfang/AIHub
-
-项目上进行二次开发！
+在[AIHUB](https://github.com/classfang/AIHub)项目上进行二次开发！主要是记录自己向大神的学习过程！

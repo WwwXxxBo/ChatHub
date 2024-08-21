@@ -7,16 +7,18 @@ const promptList = ref([['',''],['',''],['',''],['','']])
 const changeRecommendation = () => {
     let length = recommends.cn.length
     for(const p of promptList.value){
-        p[0] = recommends.cn[Math.floor(Math.random() * length)][0]
-        p[1] = recommends.cn[Math.floor(Math.random() * length)][1]
+      let index = Math.floor(Math.random() * length)
+      p[0] = recommends.cn[index][0]
+      p[1] = recommends.cn[index][1]
     }
 }
 onMounted(() => {
     // 初始化推荐列表
     let length = recommends.cn.length
     for(const p of promptList.value){
-        p[0] = recommends.cn[Math.floor(Math.random() * length)][0]
-        p[1] = recommends.cn[Math.floor(Math.random() * length)][1]
+      let index = Math.floor(Math.random() * length)
+      p[0] = recommends.cn[index][0]
+      p[1] = recommends.cn[index][1]
     }
 })
 </script>

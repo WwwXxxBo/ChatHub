@@ -327,6 +327,11 @@ const selectPrompt = (prompt: string) => {
   data.question = prompt
 }
 
+// 选择推荐词
+const selectRecommend = (recommend: string) => {
+  data.question = recommend
+}
+
 // 清空上下文
 const clearContext = () => {
   if (systemStore.chatWindowLoading || data.currentChatAssistant.chatMessageList.length === 0) {
@@ -432,6 +437,7 @@ onMounted(() => {
     <!-- 推荐提示词窗口 -->
       <ChatWindowRecommend 
         v-if="currentChatAssistant.chatMessageList.length === 0"
+        @selectRecommend="selectRecommend"
       />
       <!-- 消息列表-->
       <div 

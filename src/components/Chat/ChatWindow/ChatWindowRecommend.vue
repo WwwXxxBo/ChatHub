@@ -16,6 +16,12 @@ const changeRecommendation = () => {
       p[1] = recommends.cn[index][1]
     }
 }
+
+const emits = defineEmits(['selectRecommend'])
+const selectRecommend = (recommend: string) => {
+  emits('selectRecommend', recommend)
+}
+
 onMounted(() => {
     // 初始化推荐列表
     let length = recommends.cn.length
@@ -34,7 +40,7 @@ onMounted(() => {
         <span class="changeRecommendation" @click="changeRecommendation">{{ $t('recommend.click') }}<icon-refresh /></span>
     </span>
     <a-space direction="horizontal" fill>
-      <a-card v-for="(prompt, index) in promptList" :key="prompt.id" class="card" :bordered="false" hoverable>
+      <a-card v-for="(prompt, index) in promptList" :key="prompt.id" class="card" @click="selectRecommend(prompt[1])" :bordered="false" hoverable>
         <icon-star-fill class="card-icon" />
         <br>
         <span class="card-title">{{ prompt[0] }}</span>

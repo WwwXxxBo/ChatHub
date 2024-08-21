@@ -6,10 +6,10 @@ import { CommonChatOption, chat2bigModel } from "@/utils/bigmodel"
 import { type Assistant, type ChatMessage, type ChatRole, type MessageFile } from "@/types"
 // 引入页面组件
 import ChatWindowHeader from "@/components/Chat/ChatWindow/ChatWindowHeader.vue";
-import ChatWindowWelcome from "@/components/Chat/ChatWindow/ChatWindowWelcome.vue";
 import ChatMultipleChoice from "@/components/Chat/ChatWindow/ChatMultipleChoice.vue"
 import ChatWindowFileList from '@/components/Chat/ChatWindow/ChatWindowFileList.vue'
 import ChatMessageFile from '@/components/Chat/ChatWindow/ChatMessageFile.vue'
+import ChatWindowRecommend from '@/components/Chat/ChatWindow/ChatWindowRecommend.vue'
 import ProviderAvatar from "@/components/Avatar/ProviderAvatar.vue";
 import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 // 引入提示词列表
@@ -429,10 +429,9 @@ onMounted(() => {
       style="height: calc(100vh - 158px - 55px); overflow-y: auto"
       @scroll="onChatMessageListScroll"
     >
-    <!-- 对话欢迎窗口 -->
-      <ChatWindowWelcome
+    <!-- 推荐提示词窗口 -->
+      <ChatWindowRecommend 
         v-if="currentChatAssistant.chatMessageList.length === 0"
-        :assistant="currentChatAssistant"
       />
       <!-- 消息列表-->
       <div 

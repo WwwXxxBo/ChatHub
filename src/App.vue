@@ -174,7 +174,12 @@ onMounted(() => {
   height: 100vh;
   display: flex;
   // 设置渐变背景
-  background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+  background-color:hsla(221,94%,51%,1);
+  background-image:
+  radial-gradient(at 12% 50%, hsla(10,21%,87%,0.87) 0px, transparent 50%),
+  radial-gradient(at 65% 9%, hsla(12,80%,86%,1) 0px, transparent 50%),
+  radial-gradient(at 86% 74%, hsla(12,28%,83%,1) 0px, transparent 50%);
+
   color: var(--color-text-1);
   font-size: var(--font-size-default);
 
@@ -200,7 +205,7 @@ onMounted(() => {
       .app-sidebar-item-icon {
         font-size: 26px;
         stroke-width: 3;
-        color: var(--color-text-1);
+        color: var(--color-bg-1);
         border-radius: 50%;
         transition: all 100ms linear;
       }

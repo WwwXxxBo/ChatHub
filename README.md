@@ -2,7 +2,9 @@
 <h3 align="center">
 基于Vue3的大模型问答UI，支持OpenAI、月之暗面、智谱清言、天工开物、百川智能、讯飞星火、百度文心、阿里通义、阶跃星辰、深度求索API模型，支持Ollama本地模型
 </h3>
-![](assets/img/img_1.png)
+
+
+![](assets/img/img_2.png)
 
 ![](assets/img/img_1.png)
 

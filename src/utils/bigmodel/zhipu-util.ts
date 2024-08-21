@@ -83,7 +83,24 @@ export const getZhipuMessages = async (
   // 转换消息结构
   const openaiMessages: ChatCompletionMessageParam[] = []
   for(const m of messages){
-    // 待添加图片处理
+    // 图片处理
+    console.log(m)
+    if (m.image && m.role === 'user') {
+      console.log(typeof(m.image))
+      openaiMessages.push({
+        role: 'user',
+        content: [
+          { type: 'text', text: m.content },
+          {
+            type: 'image_url',
+            image_url: {
+              // 这里和 OpenAI 不一样，不需要前缀
+              url: m.image
+            }
+          }
+        ]
+      })
+    }
     // 文本信息处理
     openaiMessages.push({
       role: m.role,

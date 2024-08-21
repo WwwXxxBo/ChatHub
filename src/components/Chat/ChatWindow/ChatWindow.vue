@@ -25,11 +25,13 @@ import { isSupportImage } from "@/utils/base-util"
 import { saveFileByPath } from '@/utils/file-util'
 // 引入复制对象方法
 import { copyObj } from "@/utils/object-util";
+// 引入图片处理
+import { formatImage } from "@/utils/image";
 // 引入时间处理函数
 import { nowTimestamp } from "@/utils/date-util";
 // 引入随机生成 ID 值工具方法
 import { randomUUID } from "@/utils/id-util";
-// 引入处理Markdown格式方法
+// 引入处理 Markdown 格式方法
 import { renderMarkdown } from '@/utils/markdown-util'
 // 引入计算用户输入 Token 函数
 import { getContentTokensLength } from "@/utils/gpt-tokenizer-util"
@@ -138,12 +140,27 @@ const chatMessageListPageData = computed(() => {
   )
 })
 
-function selectImageClick() {}
-
 // 支持图片上传
 const isSupportImageComputed = computed(() => {
   return isSupportImage(data.currentChatAssistant.provider,data.currentChatAssistant.model)
 })
+
+// 点击上传按钮后，执行该方法
+const selectImageClick = () => {
+  // 清空图片列表
+  data.selectImageList = []
+}
+// 图片上传请求
+const selectImageRequest = (option: RequestOption) => {
+  const { fileItem, onSuccess } = option
+  data.selectImageList = [fileItem]
+  console.log('test',formatImage(fileItem))
+  onSuccess()
+  return{
+    abort: () => {}
+  }
+}
+
 
 // 加载更多分页数据
 const chatMessageLoadMore = (id: string) => {
@@ -229,6 +246,14 @@ const useBigModel = async () => {
   const question = data.question.trim()
   data.question = ''
 
+  // 处理并清空图片数据
+  let questionBase64Image = ''
+  if(data.selectImageList[0]){
+    questionBase64Image = formatImage(data.selectImageList[0])
+    console.log('已转化',questionBase64Image)
+    data.selectImageList = []
+  }
+
   // 处理并清空文件列表
   // const questionFileList: MessageFile[] = []
   // if(data.selectFileList.length > 0){
@@ -251,7 +276,7 @@ const useBigModel = async () => {
     type: 'text',
     role: 'user',
     content: question,
-    // fileList: questionFileList,
+    image: questionBase64Image,
     createTime: nowTimestamp()
   })
   scrollToBottom(false)
@@ -629,6 +654,8 @@ onMounted(() => {
           <a-upload
             :file-list="selectImageList"
             :limit="1"
+            :on-button-click="selectImageClick"
+            :custom-request="selectImageRequest"
             accept="image/*"
             :show-file-list="false"
           >

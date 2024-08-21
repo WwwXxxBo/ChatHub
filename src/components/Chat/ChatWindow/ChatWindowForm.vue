@@ -19,7 +19,7 @@ watch(
   (value) => {
     // 如果模型是 Ollama 本地模型
     if(value === 'Ollama'){
-      assistant.value.model = modelList[0].name
+      assistant.value.model = modelList[0]?.name ?? ''
     }
     // 如果模型是其他模型
     else if (chatModels[value] && chatModels[value][0]) {
@@ -30,7 +30,9 @@ watch(
   }
 )
 onMounted(async () => {
-  modelList = await getOllamaModelList(settingStore.ollama.baseUrl)
+  if(assistant.value.provider === 'Ollama'){
+    modelList = await getOllamaModelList(settingStore.ollama.baseUrl)
+  }
 })
 </script>
 

@@ -52,7 +52,6 @@ const newNote = () => {
   }
   collectionStore.collectionItemList.unshift(collectionItem)
   data.currentCollectionItemId = id
-  console.log('id:',id)
 }
 
 // 滚动条条件过滤

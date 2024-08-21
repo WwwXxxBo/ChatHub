@@ -33,7 +33,7 @@ onMounted(() => {
     <span class="description">{{ $t('recommend.description') }}
         <span class="changeRecommendation" @click="changeRecommendation">{{ $t('recommend.click') }}<icon-refresh /></span>
     </span>
-    <a-space direction="horizontal" :size="large" fill>
+    <a-space direction="horizontal" fill>
       <a-card v-for="(prompt, index) in promptList" :key="prompt.id" class="card" :bordered="false" hoverable>
         <icon-star-fill class="card-icon" />
         <br>

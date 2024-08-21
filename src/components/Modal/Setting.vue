@@ -43,13 +43,7 @@ watch(
 <template>
   <div class="setting">
     <div @click="systemStore.openSettingModal()">
-      <a-badge
-        :count="newVersionFlag ? 1 : 0"
-        dot
-        :dot-style="{ width: '7px', height: '7px' }"
-      >
-        <slot name="default"></slot>
-      </a-badge>
+      <slot name="default"></slot>
     </div>
 
     <!-- 设置模态框 -->
@@ -64,7 +58,7 @@ watch(
       <template #title> {{ $t("setting.name") }} </template>
       <!-- 页面主内容 -->
       <div class="setting-page">
-        <a-tabs position="left" :default-active-key="settingDefaultActiveKey">
+        <a-tabs position="left">
           <!-- 应用 -->
           <a-tab-pane key="app" :title="$t('setting.app.name')">
             <a-tabs position="left">

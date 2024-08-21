@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import recommends from "@/assets/json/recommends.json";
 import { onMounted, ref } from "vue";
+import recommends from "@/assets/json/recommends.json";
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 // 初始值为 Prompt 列表的前 4 项
 const promptList = ref([['',''],['',''],['',''],['','']]) 
 
@@ -25,9 +29,9 @@ onMounted(() => {
 
 <template>
   <div class="chat-window-welcome-select">
-    <span class="title">ChatHub 集合多款大模型的对话平台</span>
-    <span class="description">您可以从以下话题开始与我对话，
-        <span class="changeRecommendation" @click="changeRecommendation">换一换<icon-refresh /></span>
+    <span class="title">{{ $t('recommend.title') }}</span>
+    <span class="description">{{ $t('recommend.description') }}
+        <span class="changeRecommendation" @click="changeRecommendation">{{ $t('recommend.click') }}<icon-refresh /></span>
     </span>
     <a-space direction="horizontal" :size="large" fill>
       <a-card v-for="(prompt, index) in promptList" :key="prompt.id" class="card" :bordered="false" hoverable>

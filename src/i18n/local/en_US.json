@@ -500,5 +500,10 @@
     "start": "Generation",
     "stop": "Stop",
     "new": "New canvas"
+  },
+  "recommend":{
+    "title": "ChatHub is a platform that integrates multiple large models",
+    "description": "You can start a conversation with me on the following topics,",
+    "click": "Change it"
   }
 }

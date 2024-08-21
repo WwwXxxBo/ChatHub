@@ -500,5 +500,10 @@
     "start": "生成",
     "stop": "停止",
     "new": "新建画布"
+  },
+  "recommend":{
+    "title": "ChatHub 集合多款大模型的对话平台",
+    "description": "您可以从以下话题开始与我对话，",
+    "click": "换一换"
   }
 }

@@ -222,7 +222,9 @@ onMounted(() => {
 
       .app-sidebar-item-icon {
         stroke-width: 4;
-        color: rgb(var(--primary-6)) !important;
+        font-size: 30px;
+        font-weight: 900;
+        color: var(--color-bg-1) !important;
       }
 
       &:after {
@@ -230,7 +232,8 @@ onMounted(() => {
         content: "";
         height: 26px;
         width: 10px;
-        background-color: rgb(var(--primary-5));
+        background-color: var(--color-bg-1) ;
+        // background-color: rgb(var(--primary-5));
         position: absolute;
         top: 13px;
         left: -5px;

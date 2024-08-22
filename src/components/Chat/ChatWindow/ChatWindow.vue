@@ -1,28 +1,33 @@
 <script setup lang="ts">
 import { ref, reactive, toRefs, onMounted, nextTick, computed } from "vue";
 // 引入模型接口
-import { CommonChatOption, chat2bigModel } from "@/utils/bigmodel"
+import { CommonChatOption, chat2bigModel } from "@/utils/bigmodel";
 // 引入类型检查
-import { type Assistant, type ChatMessage, type ChatRole, type MessageFile } from "@/types"
+import {
+  type Assistant,
+  type ChatMessage,
+  type ChatRole,
+  type MessageFile,
+} from "@/types";
 // 引入页面组件
 import ChatWindowHeader from "@/components/Chat/ChatWindow/ChatWindowHeader.vue";
-import ChatMultipleChoice from "@/components/Chat/ChatWindow/ChatMultipleChoice.vue"
-import ChatWindowFileList from '@/components/Chat/ChatWindow/ChatWindowFileList.vue'
-import ChatMessageFile from '@/components/Chat/ChatWindow/ChatMessageFile.vue'
-import ChatWindowRecommend from '@/components/Chat/ChatWindow/ChatWindowRecommend.vue'
+import ChatMultipleChoice from "@/components/Chat/ChatWindow/ChatMultipleChoice.vue";
+import ChatWindowFileList from "@/components/Chat/ChatWindow/ChatWindowFileList.vue";
+import ChatMessageFile from "@/components/Chat/ChatWindow/ChatMessageFile.vue";
+import ChatWindowRecommend from "@/components/Chat/ChatWindow/ChatWindowRecommend.vue";
 import ProviderAvatar from "@/components/Avatar/ProviderAvatar.vue";
 import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 // 引入提示词列表
 import Prompt from "@/components/Modal/Prompt.vue";
 // 引入 Chat Assistant、System、Notification、Setting 状态
 import { useChatAssistantStore } from "@/stores/chatAssistant";
-import { useSystemStore } from "@/stores/system"
-import { useSettingStore } from "@/stores/setting"
-import { useNotificationStore } from "@/stores/notification"
+import { useSystemStore } from "@/stores/system";
+import { useSettingStore } from "@/stores/setting";
+import { useNotificationStore } from "@/stores/notification";
 // 引入模型能力检查
-import { isSupportImage } from "@/utils/base-util"
+import { isSupportImage } from "@/utils/base-util";
 // 引入文件处理方法
-import { saveFileByPath } from '@/utils/file-util'
+import { saveFileByPath } from "@/utils/file-util";
 // 引入复制对象方法
 import { copyObj } from "@/utils/object-util";
 // 引入图片处理
@@ -32,46 +37,45 @@ import { nowTimestamp } from "@/utils/date-util";
 // 引入随机生成 ID 值工具方法
 import { randomUUID } from "@/utils/id-util";
 // 引入处理 Markdown 格式方法
-import { renderMarkdown } from '@/utils/markdown-util'
+import { renderMarkdown } from "@/utils/markdown-util";
 // 引入计算用户输入 Token 函数
-import { getContentTokensLength } from "@/utils/gpt-tokenizer-util"
+import { getContentTokensLength } from "@/utils/gpt-tokenizer-util";
 // 引入组件
-import { FileItem, Message, Modal, RequestOption } from '@arco-design/web-vue'
+import { FileItem, Message, Modal, RequestOption } from "@arco-design/web-vue";
 // 引入发音标识枚举类型
-import { SpeechStatus } from '@/utils/constant'
+import { SpeechStatus } from "@/utils/constant";
 // 引入页面选中信息组件
-import { getSelectedText } from '@/utils/window-util'
+import { getSelectedText } from "@/utils/window-util";
 // 引入时间组件
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 // 引入国际化
-import { useI18n } from 'vue-i18n'
+import { useI18n } from "vue-i18n";
 // 引入 OpenAI 组件
-import { APIUserAbortError } from 'openai'
+import { APIUserAbortError } from "openai";
 // 引入 vue-clipboard3 组件
-import useClipboard from 'vue-clipboard3'
+import useClipboard from "vue-clipboard3";
 
-
-const { t } = useI18n()
+const { t } = useI18n();
 // 状态
 const chatAssistantStore = useChatAssistantStore();
 const systemStore = useSystemStore();
 const notificationStore = useNotificationStore();
 const settingStore = useSettingStore();
 // 阻断控制
-let abortCtr = new AbortController()
+let abortCtr = new AbortController();
 
-const SystemChatWindowHeaderRef = ref()
+const SystemChatWindowHeaderRef = ref();
 
 // 复制
-const { toClipboard } = useClipboard()
+const { toClipboard } = useClipboard();
 const clipboardWriteText = async (text: string) => {
-  try{
-    await toClipboard(text)
-    Message.success(t('common.copySuccess'))
-  }catch(e){
-    Message.warning(e)
+  try {
+    await toClipboard(text);
+    Message.success(t("common.copySuccess"));
+  } catch (e) {
+    Message.warning(e);
   }
-}
+};
 
 // 数据绑定
 const data = reactive({
@@ -80,9 +84,9 @@ const data = reactive({
   // 用于判断会话是否变换
   currentSessionId: randomUUID(),
   // 当前的助手
-  currentChatAssistant:chatAssistantStore.getCurrentChatAssistant,
+  currentChatAssistant: chatAssistantStore.getCurrentChatAssistant,
   // 输入的问题
-  question: '',
+  question: "",
   // 上传文件选择
   selectFileList: [] as FileItem[],
   // 上传图片选择
@@ -98,7 +102,7 @@ const data = reactive({
   // 分页
   page: {
     number: 1,
-    size: 20
+    size: 20,
   },
   // 发音标识
   speechStatus: SpeechStatus.STOP,
@@ -107,7 +111,9 @@ const data = reactive({
   promptListModalVisible: false,
   // 文件上传列表modal
   fileListModalVisible: false,
-})
+  // 用户上传图片地址
+  userUploadImageUrl:null
+});
 
 const {
   isLoad,
@@ -122,135 +128,159 @@ const {
   page,
   speechStatus,
   promptListModalVisible,
-  fileListModalVisible
-} = toRefs(data)
+  fileListModalVisible,
+  userUploadImageUrl
+} = toRefs(data);
 
 // 元素 ref
-const chatMessageListScrollbarRef = ref()
-const chatInputTextareaRef = ref()
-const chatWindowHeaderRef = ref()
+const chatMessageListScrollbarRef = ref();
+const chatInputTextareaRef = ref();
+const chatWindowHeaderRef = ref();
 
 // 计算分页数据
 const chatMessageListPageData = computed(() => {
-  let start = data.currentChatAssistant.chatMessageList.length - data.page.number * data.page.size
-  start = start > 0 ? start : 0
+  let start =
+    data.currentChatAssistant.chatMessageList.length -
+    data.page.number * data.page.size;
+  start = start > 0 ? start : 0;
   return data.currentChatAssistant.chatMessageList.slice(
     start,
     data.currentChatAssistant.chatMessageList.length
-  )
-})
+  );
+});
 
 // 支持图片上传
 const isSupportImageComputed = computed(() => {
-  return isSupportImage(data.currentChatAssistant.provider,data.currentChatAssistant.model)
-})
+  return isSupportImage(
+    data.currentChatAssistant.provider,
+    data.currentChatAssistant.model
+  );
+});
 
 // 点击上传按钮后，执行该方法
 const selectImageClick = () => {
   // 清空图片列表
-  data.selectImageList = []
-}
+  data.selectImageList = [];
+};
 // 图片上传请求
 const selectImageRequest = (option: RequestOption) => {
-  const { fileItem, onSuccess } = option
-  data.selectImageList = [fileItem]
-  onSuccess()
-  return{
-    abort: () => {}
+  const { fileItem, onSuccess } = option;
+  data.selectImageList = [fileItem];
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    data.userUploadImageUrl = e.target.result;
   }
-}
-
+  reader.readAsDataURL(fileItem.file);
+  onSuccess();
+  return {
+    abort: () => {},
+  };
+};
 
 // 加载更多分页数据
 const chatMessageLoadMore = (id: string) => {
-  data.page.number++
+  data.page.number++;
   nextTick(() => {
     // 重新定位到当前消息
-    document.querySelector(`#chat-message-${id}`)?.scrollIntoView()
-  })
-}
+    document.querySelector(`#chat-message-${id}`)?.scrollIntoView();
+  });
+};
 
 // 计算显示的消息时间
-let lastShowTime: number = 0
-let lastShowTimeMessageId: string = ''
+let lastShowTime: number = 0;
+let lastShowTimeMessageId: string = "";
 const calcMessageTime = (current: ChatMessage, isFirst: boolean) => {
   if (
     isFirst ||
     (current.createTime - lastShowTime) / 1000 / 60 >= 5 ||
     current.id === lastShowTimeMessageId
   ) {
-    lastShowTime = current.createTime
-    lastShowTimeMessageId = current.id
-    if (dayjs(current.createTime).format('YYYY-MM-DD') === dayjs().format('YYYY-MM-DD')) {
-      return dayjs(current.createTime).format('HH:mm')
+    lastShowTime = current.createTime;
+    lastShowTimeMessageId = current.id;
+    if (
+      dayjs(current.createTime).format("YYYY-MM-DD") ===
+      dayjs().format("YYYY-MM-DD")
+    ) {
+      return dayjs(current.createTime).format("HH:mm");
     } else {
-      return dayjs(current.createTime).format('YYYY-MM-DD HH:mm')
+      return dayjs(current.createTime).format("YYYY-MM-DD HH:mm");
     }
   }
-  return null
-}
+  return null;
+};
 
 // 发送提问
 const sendQuestion = async (event?: KeyboardEvent) => {
   // 加载中、内容为空、输入法回车，不发送消息
-  if (systemStore.chatWindowLoading || !data.question.trim() || event?.isComposing) {
-    event?.preventDefault()
-    return
+  if (
+    systemStore.chatWindowLoading ||
+    !data.question.trim() ||
+    event?.isComposing
+  ) {
+    event?.preventDefault();
+    return;
   } else if (event?.shiftKey) {
-    return
+    return;
   } else {
-    event?.preventDefault()
+    event?.preventDefault();
   }
 
   // 检查输入 Token 数
-  if (getContentTokensLength(data.question.trim()) > data.currentChatAssistant.inputMaxTokens) {
-    Message.error(t('chatWindow.inputTokensLimit'))
-    return
+  if (
+    getContentTokensLength(data.question.trim()) >
+    data.currentChatAssistant.inputMaxTokens
+  ) {
+    Message.error(t("chatWindow.inputTokensLimit"));
+    return;
   }
 
   // 大模型调用
   try {
-    await useBigModel()
+    await useBigModel();
   } catch (e: any) {
     // 除了手动中断异常
     if (!(e instanceof APIUserAbortError)) {
-      const errMsg = e ? e + '' : t(`chatWindow.error.${data.currentChatAssistant.provider}`)
-      Message.error(errMsg)
-      notificationStore.error(errMsg)
+      const errMsg = e
+        ? e + ""
+        : t(`chatWindow.error.${data.currentChatAssistant.provider}`);
+      Message.error(errMsg);
+      notificationStore.error(errMsg);
     }
-    systemStore.chatWindowLoading = false
-    data.waitAnswer = false
+    systemStore.chatWindowLoading = false;
+    data.waitAnswer = false;
   }
-}
+};
 
 // 使用大模型
 const useBigModel = async () => {
   // 检查大模型配置
-  if(settingStore.checkBigModelConfig(data.currentChatAssistant.provider)){
+  if (settingStore.checkBigModelConfig(data.currentChatAssistant.provider)) {
     Modal.confirm({
-      title: t('common.configError'),
+      title: t("common.configError"),
       content: t(`chatWindow.configMiss.${data.currentChatAssistant.provider}`),
-      okText: t('common.goSetting'),
-      cancelText: t('common.cancel'),
+      okText: t("common.goSetting"),
+      cancelText: t("common.cancel"),
       onOk: () => {
-        systemStore.openSettingModal('bigModel')
-      }
-    })
-    return
+        systemStore.openSettingModal("bigModel");
+      },
+    });
+    return;
   }
   // 开启等待
-  systemStore.chatWindowLoading = true
-  data.waitAnswer = true
+  systemStore.chatWindowLoading = true;
+  data.waitAnswer = true;
   // 处理并清空问题输入
-  const question = data.question.trim()
-  data.question = ''
+  const question = data.question.trim();
+  data.question = "";
 
   // 处理并清空图片数据
-  let questionBase64Image = ''
-  if(data.selectImageList[0]){
-    const base64String = await convertImageToBase64(data.selectImageList[0].file);  
-    questionBase64Image = base64String.slice(22)
-    data.selectImageList = []
+  let questionBase64Image = "";
+  if (data.selectImageList[0]) {
+    const base64String = await convertImageToBase64(
+      data.selectImageList[0].file
+    );
+    questionBase64Image = base64String.slice(22);
+    data.selectImageList = [];
   }
 
   // 处理并清空文件列表
@@ -268,25 +298,26 @@ const useBigModel = async () => {
   //   data.selectFileList = []
   // }
 
-
   // 用户消息追加
   data.currentChatAssistant.chatMessageList.push({
     id: randomUUID(),
-    type: 'text',
-    role: 'user',
+    type: "text",
+    role: "user",
     content: question,
     image: questionBase64Image,
-    createTime: nowTimestamp()
-  })
-  scrollToBottom(false)
+    createTime: nowTimestamp(),
+  });
+  scrollToBottom(false);
   // 大模型接收的消息列表
-  let bigModelMessageList = data.currentChatAssistant.chatMessageList
+  let bigModelMessageList = data.currentChatAssistant.chatMessageList;
   // 找到清空上下文的位置
   const clearContextMessageIndex = bigModelMessageList.findIndex(
     (msg) => msg.id === data.currentChatAssistant.clearContextMessageId
-  )
+  );
   if (clearContextMessageIndex >= 0) {
-    bigModelMessageList = bigModelMessageList.slice(clearContextMessageIndex + 1)
+    bigModelMessageList = bigModelMessageList.slice(
+      clearContextMessageIndex + 1
+    );
   }
   // 大模型通用选项
   const chat2bigModelOption: CommonChatOption = {
@@ -301,104 +332,108 @@ const useBigModel = async () => {
     // chatPlugins: chatPluginStore.getPluginListByIds(data.currentAssistant.chatPluginIdList, true),
     startAnswer: (sessionId: string, content?: string) => {
       if (data.currentSessionId != sessionId) {
-        return
+        return;
       }
       data.currentChatAssistant.chatMessageList.push({
         id: randomUUID(),
-        type: 'text',
-        role: 'assistant' as ChatRole,
-        content: content ?? '',
-        createTime: nowTimestamp()
-      })
-      scrollToBottom(true)
-      data.waitAnswer = false
+        type: "text",
+        role: "assistant" as ChatRole,
+        content: content ?? "",
+        createTime: nowTimestamp(),
+      });
+      scrollToBottom(true);
+      data.waitAnswer = false;
     },
     appendAnswer: (sessionId: string, content: string) => {
       if (data.currentSessionId != sessionId) {
-        return
+        return;
       }
       data.currentChatAssistant.chatMessageList[
         data.currentChatAssistant.chatMessageList.length - 1
-      ].content += content
-      scrollToBottom(true)
+      ].content += content;
+      scrollToBottom(true);
     },
     end: (sessionId: string, errMsg: any) => {
       if (data.currentSessionId != sessionId) {
-        return
+        return;
       }
       if (errMsg != null) {
         // 错误提示
-        Message.error(errMsg)
+        Message.error(errMsg);
         // 添加提醒
-        notificationStore.error(errMsg)
+        notificationStore.error(errMsg);
       }
       // 关闭等待
-      data.waitAnswer = false
-      systemStore.chatWindowLoading = false
-    }
-  }
+      data.waitAnswer = false;
+      systemStore.chatWindowLoading = false;
+    },
+  };
   // 各家大模型特有选项
-  const otherOption = settingStore.getBigModelConfig(data.currentChatAssistant.provider)
+  const otherOption = settingStore.getBigModelConfig(
+    data.currentChatAssistant.provider
+  );
   // 大模型能力调用
   await chat2bigModel(data.currentChatAssistant.provider, {
     ...chat2bigModelOption,
-    ...otherOption
-  })
-}
+    ...otherOption,
+  });
+};
 
 // 选择提示词
 const selectPrompt = (prompt: string) => {
-  data.question = prompt
-}
+  data.question = prompt;
+};
 
 // 选择推荐词
 const selectRecommend = (recommend: string) => {
-  data.question = recommend
-}
+  data.question = recommend;
+};
 
 // 清空上下文
 const clearContext = () => {
-  if (systemStore.chatWindowLoading || data.currentChatAssistant.chatMessageList.length === 0) {
-    return
+  if (
+    systemStore.chatWindowLoading ||
+    data.currentChatAssistant.chatMessageList.length === 0
+  ) {
+    return;
   }
   // 找到最后一条 ID
-  const lastMessageId = data.currentChatAssistant.chatMessageList.at(-1)?.id
+  const lastMessageId = data.currentChatAssistant.chatMessageList.at(-1)?.id;
   // 清空或者恢复
-  if(data.currentChatAssistant.clearContextMessageId === lastMessageId){
-    data.currentChatAssistant.clearContextMessageId = null
-  }else{
-    data.currentChatAssistant.clearContextMessageId = lastMessageId
+  if (data.currentChatAssistant.clearContextMessageId === lastMessageId) {
+    data.currentChatAssistant.clearContextMessageId = null;
+  } else {
+    data.currentChatAssistant.clearContextMessageId = lastMessageId;
   }
-  scrollToBottom(false)
-}
-
+  scrollToBottom(false);
+};
 
 // 多选选择事件
 const multipleChoiceChange = (id: string) => {
   if (data.multipleChoiceList.includes(id)) {
-    data.multipleChoiceList = data.multipleChoiceList.filter((i) => i != id)
+    data.multipleChoiceList = data.multipleChoiceList.filter((i) => i != id);
   } else {
-    data.multipleChoiceList.push(id)
+    data.multipleChoiceList.push(id);
   }
-}
+};
 
 // 开启多选
 const multipleChoiceOpen = (id?: string) => {
   if (systemStore.chatWindowLoading) {
-    return
+    return;
   }
-  data.multipleChoiceFlag = true
+  data.multipleChoiceFlag = true;
   if (id) {
-    multipleChoiceChange(id)
+    multipleChoiceChange(id);
   }
-}
+};
 
 // 关闭多选
 const multipleChoiceClose = () => {
-  data.multipleChoiceList = []
-  data.multipleChoiceFlag = false
-  calcToBottomShow()
-}
+  data.multipleChoiceList = [];
+  data.multipleChoiceFlag = false;
+  calcToBottomShow();
+};
 
 // 计算置底按钮是否显示
 const calcToBottomShow = () => {
@@ -407,8 +442,8 @@ const calcToBottomShow = () => {
     chatMessageListScrollbarRef.value.containerRef.scrollHeight -
       chatMessageListScrollbarRef.value.containerRef.clientHeight -
       chatMessageListScrollbarRef.value.containerRef.scrollTop >
-    50
-}
+    50;
+};
 
 // 对话记录滚动到底部
 const scrollToBottom = (isAuto: boolean) => {
@@ -416,38 +451,38 @@ const scrollToBottom = (isAuto: boolean) => {
     if (!isAuto || !data.isToBottomBtnShow) {
       chatMessageListScrollbarRef.value.scrollTop(
         chatMessageListScrollbarRef.value.containerRef.scrollHeight
-      )
+      );
     }
-  })
-}
+  });
+};
 
 // 监听消息列表滚动
 const onChatMessageListScroll = () => {
-  calcToBottomShow()
-}
+  calcToBottomShow();
+};
 
 // 手动结束回答
 const stopAnswer = () => {
-  data.currentSessionId = randomUUID()
-  systemStore.chatWindowLoading = false
-  data.waitAnswer = false
-  abortCtr.abort()
-  abortCtr = new AbortController()
-}
+  data.currentSessionId = randomUUID();
+  systemStore.chatWindowLoading = false;
+  data.waitAnswer = false;
+  abortCtr.abort();
+  abortCtr = new AbortController();
+};
 
 // 挂载完毕
 onMounted(() => {
   // 对话记录滚动到底部
-  scrollToBottom(false)
+  scrollToBottom(false);
   // 防止滚动闪烁
-  data.isLoad = true
-})
+  data.isLoad = true;
+});
 </script>
 
 <template>
   <div class="chat-window">
     <!-- 头部 -->
-    <ChatWindowHeader 
+    <ChatWindowHeader
       ref="chatWindowHeaderRef"
       :currentChatAssistant="currentChatAssistant"
     />
@@ -458,31 +493,33 @@ onMounted(() => {
       style="height: calc(100vh - 158px - 55px); overflow-y: auto"
       @scroll="onChatMessageListScroll"
     >
-    <!-- 推荐提示词窗口 -->
-      <ChatWindowRecommend 
+      <!-- 推荐提示词窗口 -->
+      <ChatWindowRecommend
         v-if="currentChatAssistant.chatMessageList.length === 0"
         @selectRecommend="selectRecommend"
       />
       <!-- 消息列表-->
-      <div 
-        v-else 
-        class="chat-message-list fade-in-from" 
+      <div
+        v-else
+        class="chat-message-list fade-in-from"
         :class="{ 'fade-in-to': isLoad }"
       >
         <!-- 加载更多 -->
         <a-button
-          v-if="currentChatAssistant.chatMessageList.length - page.number * page.size > 0"
+          v-if="
+            currentChatAssistant.chatMessageList.length -
+              page.number * page.size >
+            0
+          "
           style="background-color: transparent"
           type="text"
           size="mini"
           @click="chatMessageLoadMore(chatMessageListPageData[0].id)"
-          >{{ $t('common.loadMore') }}
+          >{{ $t("common.loadMore") }}
         </a-button>
 
         <!-- 消息体 -->
-        <template 
-          v-for="(msg, index) in chatMessageListPageData" 
-          :key="msg.id">
+        <template v-for="(msg, index) in chatMessageListPageData" :key="msg.id">
           <!-- 输出消息时间 -->
           <div
             v-if="calcMessageTime(msg, index === 0)"
@@ -492,10 +529,7 @@ onMounted(() => {
             {{ calcMessageTime(msg, index === 0) }}
           </div>
           <!-- 右键点击菜单 -->
-          <a-dropdown 
-            :align-point="true" 
-            trigger="contextMenu"
-          >
+          <a-dropdown :align-point="true" trigger="contextMenu">
             <!-- 消息块 -->
             <div
               :id="`chat-message-${msg.id}`"
@@ -503,8 +537,8 @@ onMounted(() => {
               :class="{ 'chat-message-user': msg.role === 'user' }"
             >
               <!-- 多选框 -->
-              <a-checkbox 
-                v-if="multipleChoiceFlag" 
+              <a-checkbox
+                v-if="multipleChoiceFlag"
                 class="chat-message-checkbox"
                 :default-checked="multipleChoiceList.includes(msg.id)"
                 @change="multipleChoiceChange(msg.id)"
@@ -529,21 +563,42 @@ onMounted(() => {
                   v-html="
                     renderMarkdown(
                       msg.content,
-                      index === chatMessageListPageData.length - 1 && systemStore.chatWindowLoading
+                      index === chatMessageListPageData.length - 1 &&
+                        systemStore.chatWindowLoading
                     )
                   "
                 ></div>
+                <!-- 消息内容携带的图片 -->
+                <a-image
+                  v-if="msg.image"
+                  :src="`data:image/png;base64,${msg.image}`"
+                  class="chat-message-img"
+                  width="300"
+                  height="300"
+                  show-loader
+                  fit="cover"
+                >
+                  <template #preview-actions>
+                    <a-image-preview-action
+                      :name="$t('common.download')"
+                    >
+                      <icon-download />
+                    </a-image-preview-action>
+                  </template>
+                </a-image>
               </div>
             </div>
             <!-- 右键菜单内容 -->
             <template #content>
               <!-- 复制 -->
-              <a-doption @click="clipboardWriteText(getSelectedText(msg.content))">
-                {{ $t('chatWindow.copy') }}
+              <a-doption
+                @click="clipboardWriteText(getSelectedText(msg.content))"
+              >
+                {{ $t("chatWindow.copy") }}
               </a-doption>
               <!-- 多选 -->
               <a-doption @click="multipleChoiceOpen(msg.id)">
-                {{ $t('chatWindow.multipleChoice') }}
+                {{ $t("chatWindow.multipleChoice") }}
               </a-doption>
             </template>
           </a-dropdown>
@@ -555,14 +610,17 @@ onMounted(() => {
               orientation="center"
               @click="currentChatAssistant.clearContextMessageId = null"
             >
-              {{ $t('chatWindow.clearContextTip') }}
+              {{ $t("chatWindow.clearContextTip") }}
             </a-divider>
           </transition>
         </template>
         <!-- 等待回答占位显示 -->
         <div v-if="waitAnswer" class="chat-message">
           <div class="chat-message-avatar">
-            <ProviderAvatar :provider="currentChatAssistant.provider" :size="30" />
+            <ProviderAvatar
+              :provider="currentChatAssistant.provider"
+              :size="30"
+            />
           </div>
           <div class="chat-message-content">
             <a-spin :size="15" />
@@ -591,7 +649,11 @@ onMounted(() => {
           mini
           :content-style="{ fontSize: 'var(--font-size-xs)' }"
         >
-          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.edit()">
+          <a-button
+            size="mini"
+            shape="round"
+            @click="chatWindowHeaderRef.edit()"
+          >
             <icon-settings :size="15" />
           </a-button>
         </a-tooltip>
@@ -615,7 +677,11 @@ onMounted(() => {
           mini
           :content-style="{ fontSize: 'var(--font-size-xs)' }"
         >
-          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.clearConfirm()">
+          <a-button
+            size="mini"
+            shape="round"
+            @click="chatWindowHeaderRef.clearConfirm()"
+          >
             <icon-delete :size="15" />
           </a-button>
         </a-tooltip>
@@ -647,7 +713,7 @@ onMounted(() => {
             <icon-bulb :size="15" />
           </a-button>
         </a-tooltip>
-        
+
         <!-- 选择图片 -->
         <div v-if="isSupportImageComputed" class="chat-input-select-image">
           <a-upload
@@ -685,13 +751,35 @@ onMounted(() => {
             :type="selectFileList.length > 0 ? 'primary' : undefined"
             shape="round"
             @click="fileListModalVisible = true"
-
           >
             <icon-file :size="15" />
           </a-button>
         </a-tooltip>
       </div>
       <div class="chat-input">
+        <!-- 如果用户选择了图片 -->
+        <transition name="fadein">
+          <div v-if="selectImageList.length > 0" class="chat-input-image">
+            <a-image
+              width="80"
+              height="80"
+              preview
+              show-loader
+              :src="data.userUploadImageUrl"
+              fit="cover"
+            />
+            <!-- 删除图片按钮 -->
+            <a-button
+              class="chat-input-image-delete-btn"
+              shape="circle"
+              size="mini"
+              status="danger"
+              @click="selectImageList = []"
+            >
+              <icon-delete />
+            </a-button>
+          </div>
+        </transition>
         <!-- 文本域 -->
         <a-textarea
           ref="chatInputTextareaRef"
@@ -705,11 +793,12 @@ onMounted(() => {
           allow-clear
           @keydown.enter="sendQuestion"
         />
+
         <!-- 发送按钮 -->
         <div class="chat-input-button">
-          <a-button 
-            v-if="!systemStore.chatWindowLoading" 
-            type="primary" 
+          <a-button
+            v-if="!systemStore.chatWindowLoading"
+            type="primary"
             size="small"
             @click="sendQuestion()"
           >
@@ -720,8 +809,8 @@ onMounted(() => {
           </a-button>
 
           <!-- 停止回答按钮 -->
-          <a-button 
-            v-if="systemStore.chatWindowLoading" 
+          <a-button
+            v-if="systemStore.chatWindowLoading"
             size="small"
             @click="stopAnswer()"
           >
@@ -731,15 +820,16 @@ onMounted(() => {
             </a-space>
           </a-button>
         </div>
+
         <!-- 底部多选操作区域 -->
-          <transition name="slide2top">
-            <ChatMultipleChoice
-              v-if="multipleChoiceFlag"
-              :current-assistant="currentChatAssistant"
-              :multiple-choice-list="multipleChoiceList"
-              @close="multipleChoiceClose()"
-            />
-          </transition>
+        <transition name="slide2top">
+          <ChatMultipleChoice
+            v-if="multipleChoiceFlag"
+            :current-assistant="currentChatAssistant"
+            :multiple-choice-list="multipleChoiceList"
+            @close="multipleChoiceClose()"
+          />
+        </transition>
       </div>
     </div>
 
@@ -749,11 +839,10 @@ onMounted(() => {
       @select-prompt="selectPrompt"
     />
     <!-- 上传文件模态框 -->
-    <ChatWindowFileList 
+    <ChatWindowFileList
       v-model:modal-visible="fileListModalVisible"
       v-model:select-file-list="selectFileList"
     />
-
   </div>
 </template>
 

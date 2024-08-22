@@ -26,7 +26,7 @@ import { saveFileByPath } from '@/utils/file-util'
 // 引入复制对象方法
 import { copyObj } from "@/utils/object-util";
 // 引入图片处理
-import { formatImage } from "@/utils/image";
+import { convertImageToBase64 } from "@/utils/image";
 // 引入时间处理函数
 import { nowTimestamp } from "@/utils/date-util";
 // 引入随机生成 ID 值工具方法
@@ -106,7 +106,7 @@ const data = reactive({
   // 提示词列表modal
   promptListModalVisible: false,
   // 文件上传列表modal
-  fileListModalVisible: false
+  fileListModalVisible: false,
 })
 
 const {
@@ -154,7 +154,6 @@ const selectImageClick = () => {
 const selectImageRequest = (option: RequestOption) => {
   const { fileItem, onSuccess } = option
   data.selectImageList = [fileItem]
-  console.log('test',formatImage(fileItem))
   onSuccess()
   return{
     abort: () => {}
@@ -249,8 +248,8 @@ const useBigModel = async () => {
   // 处理并清空图片数据
   let questionBase64Image = ''
   if(data.selectImageList[0]){
-    questionBase64Image = formatImage(data.selectImageList[0])
-    console.log('已转化',questionBase64Image)
+    const base64String = await convertImageToBase64(data.selectImageList[0].file);  
+    questionBase64Image = base64String.slice(22)
     data.selectImageList = []
   }
 

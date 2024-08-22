@@ -41,6 +41,7 @@ export const chat2zhipu = async (option: CommonChatOption) => {
     inputMaxTokens,
     contextSize
   )) as ChatCompletionMessageParam[];
+
   // 流式对话
   const stream = await openai.chat.completions.create(
     {
@@ -84,7 +85,6 @@ export const getZhipuMessages = async (
   const openaiMessages: ChatCompletionMessageParam[] = []
   for(const m of messages){
     // 图片处理
-    console.log(m)
     if (m.image && m.role === 'user') {
       console.log(typeof(m.image))
       openaiMessages.push({
@@ -94,18 +94,18 @@ export const getZhipuMessages = async (
           {
             type: 'image_url',
             image_url: {
-              // 这里和 OpenAI 不一样，不需要前缀
               url: m.image
             }
           }
         ]
       })
+    } else{
+      // 文本信息处理
+      openaiMessages.push({
+        role: m.role,
+        content:m.content
+      } as ChatCompletionMessageParam)
     }
-    // 文本信息处理
-    openaiMessages.push({
-      role: m.role,
-      content:m.content
-    } as ChatCompletionMessageParam)
   }
   return openaiMessages;
 }

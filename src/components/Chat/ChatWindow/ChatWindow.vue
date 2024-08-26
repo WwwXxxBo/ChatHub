@@ -284,19 +284,20 @@ const useBigModel = async () => {
   }
 
   // 处理并清空文件列表
-  // const questionFileList: MessageFile[] = []
-  // if(data.selectFileList.length > 0){
-  //   for(const f of data.selectFileList){
-  //     const fileSavePath = await saveFileByPath(f.file!.path, `${randomUUID()}${f.file!.name}`)
-  //     questionFileList.push({
-  //       id: randomUUID(),
-  //       name: f.file!.name,
-  //       path: fileSavePath,
-  //       size: f.file!.size
-  //     })
-  //   }
-  //   data.selectFileList = []
-  // }
+  const questionFileList: MessageFile[] = []
+  console.log('上传文件长度', data.selectFileList.length)
+  if(data.selectFileList.length > 0){
+    for(const f of data.selectFileList){
+      console.log('文件', f.file)
+      questionFileList.push({
+        id: randomUUID(),
+        name: f.file!.name,
+        size: f.file!.size
+      })
+    }
+    // 情况文件列表
+    data.selectFileList = []
+  }
 
   // 用户消息追加
   data.currentChatAssistant.chatMessageList.push({
@@ -305,6 +306,7 @@ const useBigModel = async () => {
     role: "user",
     content: question,
     image: questionBase64Image,
+    fileList: questionFileList,
     createTime: nowTimestamp(),
   });
   scrollToBottom(false);
@@ -586,6 +588,10 @@ onMounted(() => {
                     </a-image-preview-action>
                   </template>
                 </a-image>
+                <!-- 消息携带的文件列表 -->
+                <div v-if="msg.fileList && msg.fileList.length > 0" class="chat-message-file-list">
+                  <ChatMessageFile v-for="f in msg.fileList" :key="f.id" :message-file="f" />
+                </div>
               </div>
             </div>
             <!-- 右键菜单内容 -->

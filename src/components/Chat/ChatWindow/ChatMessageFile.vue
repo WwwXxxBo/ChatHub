@@ -10,14 +10,11 @@ defineProps({
     default: () => ({})
   }
 })
-// 打开文件所在位置
-const showItemInFolder = (path:string) => {
 
-}
 </script>
 
 <template>
-  <div class="chat-message-file" @click="showItemInFolder(messageFile.path)">
+  <div class="chat-message-file">
     <!-- 图标 -->
     <FileAvatar 
       class="chat-message-file-avatar"

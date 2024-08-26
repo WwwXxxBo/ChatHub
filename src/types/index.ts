@@ -66,7 +66,6 @@ export interface ChatPlugin {
 export interface MessageFile {
   id: string;
   name: string;
-  path: string;
   size: number;
 }
 // 基础对话

@@ -21,7 +21,6 @@ const data = reactive({
   providers: [
     'OpenAI',
     'Ollama',
-    'Gemini',
     'ZhipuAI',
     'Tongyi',
     'ERNIE',

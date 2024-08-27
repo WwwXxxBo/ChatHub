@@ -158,13 +158,6 @@ watch(
             </a-tabs>
           </a-tab-pane>
 
-          <!-- 系统操作模型 -->
-          <a-tab-pane
-            key="functionModel"
-            :title="$t('setting.functionModel.name')"
-          >
-          </a-tab-pane>
-
           <!-- 大模型 -->
           <a-tab-pane key="bigModel" :title="$t('setting.bigModel.name')">
             <a-tabs position="left">

@@ -25,7 +25,6 @@ export type ChatPluginParameterType =
 export type BigModelProvider =
   | "OpenAI"
   | "Ollama"
-  // | "Gemini"
   | "ZhipuAI"
   | "Tongyi"
   | "ERNIE"

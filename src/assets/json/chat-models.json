@@ -188,11 +188,6 @@
       "name": "Baichuan2-Turbo",
       "value": "Baichuan2-Turbo",
       "type": "text"
-    },
-    {
-      "name": "Baichuan2-Turbo-192k",
-      "value": "Baichuan2-Turbo-192k",
-      "type": "text"
     }
   ]
 }

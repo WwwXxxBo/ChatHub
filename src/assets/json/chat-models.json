@@ -35,15 +35,6 @@
     }
   ],
   "Ollama": [],
-  "Gemini": [
-    {
-      "name": "gemini-pro-vision",
-      "value": "gemini-pro-vision",
-      "type": "vision",
-      "isSupportImage": true
-    },
-    { "name": "gemini-pro", "value": "gemini-pro", "type": "text" }
-  ],
   "ZhipuAI": [
     {
       "name": "glm-4v",
@@ -74,10 +65,26 @@
     }
   ],
   "ERNIE": [
-    { "name": "ERNIE-4.0-8k", "value": "ERNIE-4.0-8k", "type": "text" },
-    { "name": "ERNIE-3.5-8K", "value": "ERNIE-3.5-8K", "type": "text" },
-    { "name": "ERNIE-Speed-128K", "value": "ERNIE-Speed-128K", "type": "text" },
-    { "name": "ERNIE-Speed-8K", "value": "ERNIE-Speed-8K", "type": "text" }
+    { 
+      "name": "ERNIE-4.0-8k", 
+      "value": "ERNIE-4.0-8k", 
+      "type": "text" 
+    },
+    { 
+      "name": "ERNIE-3.5-8K", 
+      "value": "ERNIE-3.5-8K", 
+      "type": "text" 
+    },
+    { 
+      "name": "ERNIE-Speed-128K", 
+      "value": "ERNIE-Speed-128K", 
+      "type": "text" 
+    },
+    { 
+      "name": "ERNIE-Speed-8K", 
+      "value": "ERNIE-Speed-8K", 
+      "type": "text" 
+    }
   ],
   "Spark": [
     {
@@ -140,20 +147,46 @@
   ],
   "StepFun": [
     {
-      "name": "step-1-200k",
-      "value": "step-1-200k",
+      "name": "step-1-8k",
+      "value": "step-1-8k",
       "type": "text"
+    },
+    {
+      "name": "step-1-32k",
+      "value": "step-1-32k",
+      "type": "text"
+    },
+    {
+      "name": "step-1-128k",
+      "value": "step-1-128k",
+      "type": "text"
+    },
+    {
+      "name": "step-1-256k",
+      "value": "step-1-256k",
+      "type": "text"
+    },
+    {
+      "name": "step-2-16k-nightly",
+      "value": "step-2-16k-nightly",
+      "type": "text"
+    },
+    {
+      "name": "step-1-flash",
+      "value": "step-1-flash",
+      "type": "text"
+    },
+    {
+      "name": "step-1v-8k",
+      "value": "step-1v-8k",
+      "type": "vision",
+      "isSupportImage": true
     },
     {
       "name": "step-1v-32k",
       "value": "step-1v-32k",
       "type": "vision",
       "isSupportImage": true
-    },
-    {
-      "name": "step-1-32k",
-      "value": "step-1-32k",
-      "type": "text"
     }
   ],
   "DeepSeek": [

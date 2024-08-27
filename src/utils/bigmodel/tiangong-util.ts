@@ -29,8 +29,8 @@ export const chat2tiangong = async (option : CommonChatOption) => {
 
     // 对外网开放域名	
     const url = 'https://api-maas.singularity-ai.com/sky-work/api/v1/chat'
-    const appKey = '307e43ce18de41b168ab88b22d2bbc7d'
-    const appSecret = 'bea3ca995b595250ed0ba23d1eb45bc75b7b7550d69cb21d'
+    const appKey = apiKey
+    const appSecret = secretKey
     // 时间需要转换到秒
     const timestamp = String(Math.floor(Date.now() / 1000))
     const signContent = apiKey! + appSecret! + timestamp
@@ -38,7 +38,7 @@ export const chat2tiangong = async (option : CommonChatOption) => {
     const signResult = CryptoJS.MD5(signContent).toString(CryptoJS.enc.Hex)
     // 设置请求头，请求的数据格式为 JSON
     const headers = {
-        app_key: appKey,
+        app_key: appKey as string,
         timestamp: timestamp,
         sign: signResult,
         'Content-Type': 'application/json',
@@ -82,7 +82,6 @@ export const chat2tiangong = async (option : CommonChatOption) => {
                         waitAnswer = false
                         startAnswer && startAnswer(sessionId)
                     }
-                    console.log(lineData)
                     appendAnswer && appendAnswer(sessionId, lineData?.arguments[0]?.messages[0]?.text)
                 }
             }
@@ -93,9 +92,6 @@ export const chat2tiangong = async (option : CommonChatOption) => {
         end && end(sessionId, error?.message)
     }
 }
-
-
-
 
 export const getTiangongMessages = async (
     chatMessageList: ChatMessage[],

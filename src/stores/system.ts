@@ -13,6 +13,8 @@ export const useSystemStore = defineStore({
     currentPage: 'chat' as PageName,
     globalLoading: false,
     chatWindowLoading: false,
+    // 系统操作
+    systemChatWindowLoading: false,
     aiDrawingLoading: false,
     knowledgeBaseWindowLoading: false,
     aiCalendarLoading: false,
@@ -28,6 +30,8 @@ export const useSystemStore = defineStore({
       return (
         this.globalLoading ||
         this.chatWindowLoading ||
+        // 系统操作
+        this.systemChatWindowLoading ||
         this.aiDrawingLoading ||
         this.knowledgeBaseWindowLoading ||
         this.aiCalendarLoading
@@ -49,6 +53,7 @@ export const useSystemStore = defineStore({
       if (
         this.globalLoading ||
         this.chatWindowLoading ||
+        this.systemChatWindowLoading ||
         this.aiDrawingLoading ||
         this.knowledgeBaseWindowLoading ||
         this.aiCalendarLoading

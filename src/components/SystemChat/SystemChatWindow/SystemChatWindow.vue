@@ -268,7 +268,7 @@ const useBigModel = async () => {
     return
   }
   // 开启等待
-  systemStore.chatWindowLoading = true
+  systemStore.systemChatWindowLoading = true
   data.waitAnswer = true
   // 处理并清空问题输入
   const question = data.question.trim()
@@ -292,6 +292,11 @@ const useBigModel = async () => {
   if (clearContextMessageIndex >= 0) {
     bigModelMessageList = bigModelMessageList.slice(clearContextMessageIndex + 1)
   }
+
+  // 与后端对话，控制系统
+
+
+
   // 大模型通用选项
   const chat2bigModelOption: CommonChatOption = {
     sessionId: data.currentSessionId,

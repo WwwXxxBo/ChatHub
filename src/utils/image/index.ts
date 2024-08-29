@@ -6,9 +6,7 @@ export function convertImageToBase64(image: File): Promise<string> {
       const base64String = reader.result as string;
       resolve(base64String);
     };
-
     reader.onerror = reject;
-
     reader.readAsDataURL(image);
   });
 }

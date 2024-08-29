@@ -34,15 +34,6 @@ const edit = () => {
     <div class="assistant-name">
       {{ currentAssistant?.name }}
     </div>
-    <!-- 模型介绍 -->
-    <div class="assistant-desc">
-      <a-space :size="10">
-        <a-tag class="no-drag-area" @click="edit()">{{
-          $t(`bigModelProvider.${currentAssistant?.provider}`)
-        }}</a-tag>
-        <a-tag class="no-drag-area" @click="edit()">{{ currentAssistant?.model }}</a-tag>
-      </a-space>
-    </div>
     <!-- 三个点 -->
     <a-popover
       v-if="true"

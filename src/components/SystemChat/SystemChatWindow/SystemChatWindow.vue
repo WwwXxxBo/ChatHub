@@ -35,6 +35,10 @@ import dayjs from 'dayjs'
 // 引入国际化
 import { useI18n } from 'vue-i18n'
 import { APIUserAbortError } from 'openai'
+// 引入 vue-clipboard3 组件
+import useClipboard from "vue-clipboard3";
+// 引入页面选中信息组件
+import { getSelectedText } from "@/utils/window-util";
 
 const { t } = useI18n()
 // 状态
@@ -102,6 +106,19 @@ const {
 const chatMessageListScrollbarRef = ref()
 const chatInputTextareaRef = ref()
 const chatWindowHeaderRef = ref()
+
+
+// 复制
+const { toClipboard } = useClipboard();
+const clipboardWriteText = async (text: string) => {
+  try {
+    await toClipboard(text);
+    Message.success(t("common.copySuccess"));
+  } catch (e) {
+    Message.warning(e);
+  }
+};
+
 
 // 计算分页数据
 const chatMessageListPageData = computed(() => {
@@ -429,7 +446,9 @@ onMounted(() => {
 
             <!-- 右键菜单内容 -->
             <template #content>
-              <a-doption>
+              <a-doption 
+                @click="clipboardWriteText(getSelectedText(msg.content))"
+              >
                 {{ $t('chatWindow.copy') }}
               </a-doption>
               <a-doption>

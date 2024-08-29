@@ -4,6 +4,7 @@ import { httpInstance } from '@/utils/http-util'
 export const receiveSystemChatMessage = (id:string, assistant_id:string, role:string, content:string, createTime:number) => {
     return httpInstance({
         url: '/systemchat',
+        method:'POST',
         params:{
             id,
             assistant_id,

@@ -573,17 +573,14 @@ onMounted(() => {
             </a-space>
           </a-button>
         </div>
-
         <!-- 底部多选操作区域 -->
         <transition name="slide2top">
           <MultipleChoiceConsole
             v-if="multipleChoiceFlag"
-            :current-assistant="currentAssistant"
             :multiple-choice-list="multipleChoiceList"
             @close="multipleChoiceClose()"
           />
         </transition>
-
       </div>
     </div>
 

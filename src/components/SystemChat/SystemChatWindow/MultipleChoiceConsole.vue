@@ -180,7 +180,7 @@ const shareModalBeforeOk = async () => {
             <!-- 用户消息 -->
             <div v-if="msg.role === 'user'">{{ msg.content }}</div>
             <div
-              v-else-if="msg.role === assistant"
+              v-else-if="msg.role === 'assistant'"
               class="chat-message-md"
               v-html="renderMarkdown(msg.content, false)"
             >

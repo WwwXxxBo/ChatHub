@@ -1,10 +1,28 @@
-<script setup>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 const emits = defineEmits(['collect', 'delete', 'close'])
+// 接收父组件传递的数据
+const props = defineProps({
+  multipleChoiceList: {
+    type: Array,
+    default: () => [] as string[]
+  }
+})
+
+
+// 获取选中聊天信息
+
+// 收藏选中聊天信息
+const multipleChoiceCollect = () => {
+
+}
 </script>
 
 <template>
 <div class="multiple-choice-console">
-    <a-button shape="circle" class="multiple-choice-console-btn" @click="">
+    <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceCollect()">
       <icon-common class="multiple-choice-console-icon" />
     </a-button>
     <a-button shape="circle" class="multiple-choice-console-btn" @click="">

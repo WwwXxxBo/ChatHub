@@ -451,9 +451,9 @@ onMounted(() => {
               >
                 {{ $t('chatWindow.copy') }}
               </a-doption>
-              <a-doption>
+              <a-doption  @click="multipleChoiceOpen(msg.id)">
                 {{ $t('chatWindow.multipleChoice') }}
-              </a-doption @click="multipleChoiceOpen(msg.id)">
+              </a-doption>
             </template>
           </a-dropdown>
         </template>

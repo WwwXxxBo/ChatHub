@@ -1,47 +1,204 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
+import { reactive, toRefs } from "vue";
+import { ChatMessage, type CollectionItem } from "@/types";
+// 引入页面组件
+import ProviderAvatar from "@/components/Avatar/ProviderAvatar.vue";
+import UserAvatar from "@/components/Avatar/UserAvatar.vue";
+// 引入状态组件
+import { useAssistantStore } from "@/stores/assistant";
+import { useCollectionStore } from "@/stores/collection";
+// 引入工具方法
+import { randomUUID } from "@/utils/id-util";
+import { copyObj } from "@/utils/object-util";
+import { nowTimestamp } from "@/utils/date-util";
+import { renderMarkdown } from '@/utils/markdown-util'
+// 引入 UI 组件
+import { Message, Modal } from "@arco-design/web-vue";
+import { useI18n } from "vue-i18n";
+import html2canvas from 'html2canvas'
 
-const { t } = useI18n()
-const emits = defineEmits(['collect', 'delete', 'close'])
+const { t } = useI18n();
+const assistantStore = useAssistantStore();
+const collectionStore = useCollectionStore();
+const emits = defineEmits(["collect", "delete", "close"]);
 // 接收父组件传递的数据
 const props = defineProps({
   multipleChoiceList: {
     type: Array,
-    default: () => [] as string[]
-  }
-})
-
+    default: () => [] as string[],
+  },
+});
+// 响应式数据
+const data = reactive({
+  currentAssistant: assistantStore.getCurrentVirtualAssistant,
+  shareModalVisible: false,
+});
+const { currentAssistant, shareModalVisible } = toRefs(data);
 
 // 获取选中聊天信息
+const getSelectMessageList = () => {
+  const chatMessageList = [] as ChatMessage[];
+  props.multipleChoiceList.forEach((id) => {
+    const chatMessage = data.currentAssistant.chatMessageList.find(
+      (msg) => msg.id == id
+    );
+    if (chatMessage) {
+      chatMessageList.push(chatMessage);
+    }
+  });
+  chatMessageList.sort((m1, m2) => m1.createTime - m2.createTime);
+  return chatMessageList;
+};
 
 // 收藏选中聊天信息
 const multipleChoiceCollect = () => {
+  if (props.multipleChoiceList.length === 0) {
+    return;
+  }
+  // 获取选中的聊天信息
+  const selectChatMessageList = getSelectMessageList();
+  if (selectChatMessageList.length === 0) {
+    return;
+  }
+  // 创建一个收藏对象
+  const collecttionItem: CollectionItem = {
+    id: randomUUID(),
+    type: "chat",
+    chat: {
+      ...copyObj(assistantStore.getCurrentVirtualAssistant),
+      chatMessageList: selectChatMessageList,
+    },
+    createTime: nowTimestamp(),
+  };
+  collectionStore.collectionItemList.unshift(collecttionItem);
+  emits("close");
+  Message.success(t("chatWindow.collectSuccess"));
+};
 
+// 分享选中的消息
+const multipleChoiceShare = () => {
+  if (props.multipleChoiceList.length === 0) {
+    return;
+  }
+  data.shareModalVisible = true;
+};
+
+// 生成图片下载链接
+const shareModalBeforeOk = async () => {
+  await new Promise<void>((resolve, reject) => {
+    const el = document.getElementById('share-chat-message-list')
+    if(el){
+      html2canvas(el, {
+        scale: 2,
+        allowTaint: true,
+        useCORS: true
+      })
+      .then((canvas) => {
+        // 将图像下载到本地
+        const a = document.createElement('a')
+        a.download = `share-${nowTimestamp()}`
+        a.href = canvas.toDataURL('image/png')
+        a.dispatchEvent(new MouseEvent('click'))
+        emits('close')
+        resolve()
+      })
+      .catch((error) => {
+        Message.error(error)
+        reject()
+      })
+    }
+  })
+  return true
 }
+
 </script>
 
 <template>
-<div class="multiple-choice-console">
-    <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceCollect()">
+  <div class="multiple-choice-console">
+    <a-button
+      shape="circle"
+      class="multiple-choice-console-btn"
+      @click="multipleChoiceCollect()"
+    >
       <icon-common class="multiple-choice-console-icon" />
     </a-button>
     <a-button shape="circle" class="multiple-choice-console-btn" @click="">
       <icon-download class="multiple-choice-console-icon" />
     </a-button>
-    <a-button shape="circle" class="multiple-choice-console-btn" @click="">
+    <a-button
+      shape="circle"
+      class="multiple-choice-console-btn"
+      @click="multipleChoiceShare()"
+    >
       <icon-share-external class="multiple-choice-console-icon" />
     </a-button>
     <a-button shape="circle" class="multiple-choice-console-btn" @click="">
       <icon-delete class="multiple-choice-console-icon" />
     </a-button>
-    <a-button shape="circle" class="multiple-choice-console-btn" @click="emits('close')">
+    <a-button
+      shape="circle"
+      class="multiple-choice-console-btn"
+      @click="emits('close')"
+    >
       <icon-close class="multiple-choice-console-icon" />
     </a-button>
-</div>
+  </div>
+
+  <!-- 分享预览模态框 -->
+  <a-modal
+    v-model:visible="shareModalVisible"
+    :ok-text="$t('chatWindow.shareDownload')"
+    :cancel-text="$t('common.cancel')"
+    unmount-on-close
+    title-align="start"
+    width="80vw"
+    :on-before-ok="shareModalBeforeOk"
+  >
+    <!-- 标题 -->
+    <template #title>
+      {{ $t('chatWindow.sharePreview') }}
+    </template>
+
+    <div
+      class="chat-message-list-container"
+      style="height: 60vh; padding: 0 10px; overflow-y: auto"
+    >
+      <!-- 消息列表 -->
+      <div id="share-chat-message-list" class="chat-message-list">
+        <div v-for="msg in getSelectMessageList()" :key="msg.id" class="chat-message">
+          <!-- 消息头像 -->
+          <div class="chat-message-avatar">
+            <UserAvatar v-if="msg.role === 'user'" :size="30" />
+            <ProviderAvatar 
+              v-else-if="msg.role === 'assistant'"
+              :provider="currentAssistant.provider"
+              :size="30"
+            />
+          </div>
+          <!-- 消息内容 -->
+          <div class="chat-message-content select-text">
+            <!-- 用户消息 -->
+            <div v-if="msg.role === 'user'">{{ msg.content }}</div>
+            <div
+              v-else-if="msg.role === assistant"
+              class="chat-message-md"
+              v-html="renderMarkdown(msg.content, false)"
+            >
+            </div>
+          </div>
+        </div>
+        <!-- 尾部 -->
+        <div class="share-image-footer">
+          <div>{{ currentAssistant.provider }}</div>
+          <div>{{ currentAssistant.model }}</div>
+        </div>
+      </div>
+    </div>
+  </a-modal>
 </template>
 
 <style lang="less" scoped>
-@import '@/assets/css/chat-window.less';
+@import "@/assets/css/chat-window.less";
 
 .multiple-choice-console {
   position: absolute;

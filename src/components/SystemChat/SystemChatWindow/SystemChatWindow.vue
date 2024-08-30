@@ -40,6 +40,7 @@ import useClipboard from "vue-clipboard3";
 // 引入页面选中信息组件
 import { getSelectedText } from "@/utils/window-util";
 import { chat2system } from "@/utils/system-chat-util"
+import { type SystemChatOption } from "@/utils/systemchat"
 
 const { t } = useI18n()
 // 状态
@@ -299,45 +300,43 @@ const useSystemChat = async () => {
   const question = data.question.trim()
   data.question = ''
   // 用户消息追加
-  data.currentAssistant
+  data.currentAssistant.chatMessageList.push({
+    id: randomUUID(),
+    role: 'user',
+    name: 'system chat',
+    content: question,
+    createTime: nowTimestamp()
+  })
+  scrollToBottom(false)
+  // 后端接收的消息列表
+  let systemChatMessageList = data.currentAssistant.chatMessageList;
+  // 向后端传递的消息列表（此处只传递用户发出的最新一条消息)
+  const chat2systemOption: SystemChatOption = {
+    sessionId: data.currentSessionId,
+    messages: systemChatMessageList,
+    startAnswer: (sessionId: string, content?: string) => {
+      if(data.currentSessionId != sessionId){
+        return
+      }
+      data.currentAssistant.chatMessageList.push({
+        id: randomUUID(),
+        role: 'assistant',
+        name: 'system chat',
+        content: content ?? '',
+        createTime: nowTimestamp()
+      })
+      scrollToBottom(true)
+      data.waitAnswer = false
+    },
+    abortCtr: abortCtr,
+  }
+
 }
 
 
 // 使用大模型
 const useBigModel = async () => {
 
-  // 开启等待
-  systemStore.systemChatWindowLoading = true
-  data.waitAnswer = true
-  // 处理并清空问题输入
-  const question = data.question.trim()
-  data.question = ''
-
-  // 用户消息追加
-  data.currentAssistant.chatMessageList.push({
-    id: randomUUID(),
-    type: 'text',
-    role: 'user',
-    content: question,
-    createTime: nowTimestamp()
-  })
-  scrollToBottom(false)
-  // 大模型接收的消息列表
-  let bigModelMessageList = data.currentAssistant.chatMessageList
-  // 找到清空上下文的位置
-  const clearContextMessageIndex = bigModelMessageList.findIndex(
-    (msg) => msg.id === data.currentAssistant.clearContextMessageId
-  )
-  if (clearContextMessageIndex >= 0) {
-    bigModelMessageList = bigModelMessageList.slice(clearContextMessageIndex + 1)
-  }
-
-  // 与后端对话，控制系统
-
-
-
-
-  // 大模型通用选项
   const chat2bigModelOption: CommonChatOption = {
     sessionId: data.currentSessionId,
     model: data.currentAssistant.model,

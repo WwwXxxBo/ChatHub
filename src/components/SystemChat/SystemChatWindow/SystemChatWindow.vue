@@ -39,6 +39,7 @@ import { APIUserAbortError } from 'openai'
 import useClipboard from "vue-clipboard3";
 // 引入页面选中信息组件
 import { getSelectedText } from "@/utils/window-util";
+import { chat2system } from "@/utils/system-chat-util"
 
 const { t } = useI18n()
 // 状态
@@ -221,52 +222,90 @@ const selectPrompt = (prompt: string) => {
 // 发送提问
 const sendQuestion = async (event?: KeyboardEvent) => {
   // 加载中、内容为空、输入法回车，不发送消息
-  if (systemStore.chatWindowLoading || !data.question.trim() || event?.isComposing) {
+  if(systemStore.systemChatWindowLoading || !data.question.trim() || event?.isComposing){
     event?.preventDefault()
     return
-  } else if (event?.shiftKey) {
+  } else if (event?.shiftKey){
     return
   } else {
     event?.preventDefault()
   }
 
   // 检查输入 Token 数
-  if (getContentTokensLength(data.question.trim()) > data.currentAssistant.inputMaxTokens) {
+  if(getContentTokensLength(data.question.trim()) > data.currentAssistant.inputMaxTokens){
     Message.error(t('chatWindow.inputTokensLimit'))
     return
   }
 
+  // 用户发送的消息
+  let id = randomUUID()
+  let assistant_id  = assistantStore.getCurrentVirtualAssistant.id;
+  let role =  'user'
+  let content = data.question.trim();
+  let createTime = nowTimestamp()
+  console.log('assistant_id值', assistant_id)
+
   // 大模型调用
-  try {
-    await useBigModel()
-  } catch (e: any) {
-    // Logger.error('big model error: ', e?.message)
-    // 除了手动中断异常
-    if (!(e instanceof APIUserAbortError)) {
-      const errMsg = e ? e + '' : t(`chatWindow.error.${data.currentAssistant.provider}`)
-      Message.error(errMsg)
-      notificationStore.error(errMsg)
-    }
-    systemStore.chatWindowLoading = false
-    data.waitAnswer = false
+  try{
+    await chat2system(id, assistant_id, role, content, createTime)
+  }catch (e: any){
+    Message.error(e.message)
   }
+
+  data.waitAnswer = false
+  systemStore.systemChatWindowLoading = false
 }
+
+// // 发送提问
+// const sendQuestion = async (event?: KeyboardEvent) => {
+//   // 加载中、内容为空、输入法回车，不发送消息
+//   if (systemStore.chatWindowLoading || !data.question.trim() || event?.isComposing) {
+//     event?.preventDefault()
+//     return
+//   } else if (event?.shiftKey) {
+//     return
+//   } else {
+//     event?.preventDefault()
+//   }
+
+//   // 检查输入 Token 数
+//   if (getContentTokensLength(data.question.trim()) > data.currentAssistant.inputMaxTokens) {
+//     Message.error(t('chatWindow.inputTokensLimit'))
+//     return
+//   }
+
+//   // 大模型调用
+//   try {
+//     await useBigModel()
+//   } catch (e: any) {
+//     // Logger.error('big model error: ', e?.message)
+//     // 除了手动中断异常
+//     if (!(e instanceof APIUserAbortError)) {
+//       const errMsg = e ? e + '' : t(`chatWindow.error.${data.currentAssistant.provider}`)
+//       Message.error(errMsg)
+//       notificationStore.error(errMsg)
+//     }
+//     systemStore.chatWindowLoading = false
+//     data.waitAnswer = false
+//   }
+// }
+
+// 系统对话通用选项
+const useSystemChat = async () => {
+  // 开启等待
+  systemStore.systemChatWindowLoading = true
+  data.waitAnswer = true
+  // 处理并清空问题输入
+  const question = data.question.trim()
+  data.question = ''
+  // 用户消息追加
+  data.currentAssistant
+}
+
 
 // 使用大模型
 const useBigModel = async () => {
-  // 检查大模型配置
-  if(settingStore.checkBigModelConfig(data.currentAssistant.provider)){
-    Modal.confirm({
-      title: t('common.configError'),
-      content: t(`chatWindow.configMiss.${data.currentAssistant.provider}`),
-      okText: t('common.goSetting'),
-      cancelText: t('common.cancel'),
-      onOk: () => {
-        systemStore.openSettingModal('bigModel')
-      }
-    })
-    return
-  }
+
   // 开启等待
   systemStore.systemChatWindowLoading = true
   data.waitAnswer = true
@@ -294,6 +333,7 @@ const useBigModel = async () => {
   }
 
   // 与后端对话，控制系统
+
 
 
 

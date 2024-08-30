@@ -75,10 +75,19 @@ export interface BaseMessage {
   image?: string;
   fileList?: MessageFile[];
 }
+
 // 对话
 export interface ChatMessage extends BaseMessage {
   id: string;
   type: ChatMsgType;
+  createTime: number;
+}
+// 系统对话
+export interface SystemMessage {
+  id: string;
+  role: ChatRole;
+  name?: string;
+  content: string;
   createTime: number;
 }
 // Assistant

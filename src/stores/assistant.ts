@@ -11,7 +11,7 @@ import { defaultAssistant } from "@/utils/base-util";
 // 引入获取时间方法
 import { nowTimestamp } from "@/utils/date-util";
 // 引入接口
-import { type Assistant, type ChatMessage } from "@/types"
+import { type Assistant, type SystemChatMessage } from "@/types"
 
 export const useAssistantStore = defineStore({
   id: "assistant",
@@ -34,7 +34,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试开始",
           id: "1",
-          type: 'text',
           createTime: 111111
         },
         {
@@ -42,7 +41,6 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？",
           id: "2",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -50,7 +48,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试",
           id: "3",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -58,7 +55,6 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？",
           id: "4",
-          type: 'text',
           createTime: 11111111
         },
         {
@@ -66,7 +62,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试",
           id: "5",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -74,7 +69,6 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？",
           id: "6",
-          type: 'text',
           createTime: 11111111
         },
         {
@@ -82,7 +76,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试",
           id: "7",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -90,7 +83,6 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？",
           id: "8",
-          type: 'text',
           createTime: 11111111
         },
         {
@@ -98,7 +90,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试",
           id: "9",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -106,7 +97,6 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？",
           id: "10",
-          type: 'text',
           createTime: 11111111
         },
         {
@@ -114,7 +104,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试",
           id: "11",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -122,7 +111,6 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？",
           id: "12",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -130,7 +118,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试",
           id: "13",
-          type: 'text',
           createTime: 111111
         },
         {
@@ -138,7 +125,6 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？",
           id: "14",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -146,7 +132,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试",
           id: "15",
-          type: 'text',
           createTime: 111111
         },
         {
@@ -154,7 +139,6 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？",
           id: "16",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -162,7 +146,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试",
           id: "17",
-          type: 'text',
           createTime: 111111
         },
         {
@@ -170,7 +153,6 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？",
           id: "18",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -178,7 +160,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试",
           id: "19",
-          type: 'text',
           createTime: 111111
         },
         {
@@ -186,7 +167,6 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？",
           id: "20",
-          type: 'text',
           createTime: 1111111
         },
         {
@@ -194,7 +174,6 @@ export const useAssistantStore = defineStore({
           name: "测试",
           content: "测试",
           id: "21",
-          type: 'text',
           createTime: 111111
         },
         {
@@ -202,10 +181,9 @@ export const useAssistantStore = defineStore({
           name: "你好",
           content: "你好，请问有什么可以帮助您的吗？最后",
           id: "22",
-          type: 'text',
           createTime: 1111111
         },
-      ] as ChatMessage[]
+      ] as SystemChatMessage[]
       },
     ] as Assistant[],
     // 当前 Assistant 的 ID 值

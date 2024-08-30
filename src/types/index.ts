@@ -67,6 +67,7 @@ export interface MessageFile {
   name: string;
   size: number;
 }
+
 // 基础对话
 export interface BaseMessage {
   role: ChatRole;
@@ -82,14 +83,16 @@ export interface ChatMessage extends BaseMessage {
   type: ChatMsgType;
   createTime: number;
 }
+
 // 系统对话
-export interface SystemMessage {
+export interface SystemChatMessage {
   id: string;
   role: ChatRole;
   name?: string;
   content: string;
   createTime: number;
 }
+
 // Assistant
 export interface Assistant {
   // 通用

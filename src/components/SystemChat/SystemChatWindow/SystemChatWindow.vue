@@ -248,7 +248,7 @@ const sendQuestion = async (event?: KeyboardEvent) => {
 
   // 大模型调用
   try{
-    await chat2system(id, assistant_id, role, content, createTime)
+    await useSystemChat
   }catch (e: any){
     Message.error(e.message)
   }
@@ -328,71 +328,32 @@ const useSystemChat = async () => {
       scrollToBottom(true)
       data.waitAnswer = false
     },
-    abortCtr: abortCtr,
-  }
-
-}
-
-
-// 使用大模型
-const useBigModel = async () => {
-
-  const chat2bigModelOption: CommonChatOption = {
-    sessionId: data.currentSessionId,
-    model: data.currentAssistant.model,
-    instruction: data.currentAssistant.instruction,
-    inputMaxTokens: data.currentAssistant.inputMaxTokens,
-    maxTokens: data.currentAssistant.maxTokens,
-    contextSize: data.currentAssistant.contextSize,
-    messages: copyObj(bigModelMessageList),
-    abortCtr: abortCtr,
-    // chatPlugins: chatPluginStore.getPluginListByIds(data.currentAssistant.chatPluginIdList, true),
-    startAnswer: (sessionId: string, content?: string) => {
-      if (data.currentSessionId != sessionId) {
-        return
-      }
-      data.currentAssistant.chatMessageList.push({
-        id: randomUUID(),
-        type: 'text',
-        role: 'assistant' as ChatRole,
-        content: content ?? '',
-        createTime: nowTimestamp()
-      })
-      scrollToBottom(true)
-      data.waitAnswer = false
-    },
     appendAnswer: (sessionId: string, content: string) => {
-      if (data.currentSessionId != sessionId) {
+      if(data.currentSessionId != sessionId){
         return
       }
-      data.currentAssistant.chatMessageList[
-        data.currentAssistant.chatMessageList.length - 1
-      ].content += content
+      // 把新的消息附加在消息列表上
+      data.currentAssistant.chatMessageList[data.currentAssistant.chatMessageList.length - 1].content += content
       scrollToBottom(true)
     },
-    end: (sessionId: string, errMsg: any) => {
-      if (data.currentSessionId != sessionId) {
+    end:(sessionId: string, errMsg: any) => {
+      if(data.currentSessionId != sessionId){
         return
       }
-      if (errMsg != null) {
-        // 错误提示
+      if(errMsg != null){
+        // 显示错误提示
         Message.error(errMsg)
         // 添加提醒
         notificationStore.error(errMsg)
       }
       // 关闭等待
       data.waitAnswer = false
-      systemStore.chatWindowLoading = false
-    }
+      systemStore.systemChatWindowLoading = false
+    },
+    abortCtr: abortCtr,
   }
-  // 各家大模型特有选项
-  const otherOption = settingStore.getBigModelConfig(data.currentAssistant.provider)
-
-  // 大模型能力调用
-  await chat2bigModel(data.currentAssistant.provider, {
-    ...chat2bigModelOption,
-    ...otherOption
-  })
+  // 向后端发送请求
+  await chat2system(...chat2systemOption)
 }
 
 

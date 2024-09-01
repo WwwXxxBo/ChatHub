@@ -51,13 +51,6 @@ const edit = () => {
             type="text"
             style="width: 100%; color: var(--color-text-1)"
             size="small"
-            @click="edit"
-            >{{ $t("chatWindow.header.editChat") }}
-          </a-button>
-          <a-button
-            type="text"
-            style="width: 100%; color: var(--color-text-1)"
-            size="small"
             @click="exportChatMessageList"
             >{{ $t("chatWindow.header.export") }}</a-button
           >
@@ -80,23 +73,6 @@ const edit = () => {
         </a-space>
       </template>
     </a-popover>
-
-    <!-- 编辑助手Modal -->
-    <a-modal
-      v-model:visible="editModalVisible"
-      :ok-text="$t('common.ok')"
-      :cancel-text="$t('common.cancel')"
-      unmount-on-close
-      title-align="start"
-      width="80vw"
-    >
-      <template #title>
-        {{ $t("chatWindow.header.editChat") }}
-      </template>
-      <div style="height: 60vh; padding: 0 10px; overflow-y: auto">
-        <SystemChatWindowForm />
-      </div>
-    </a-modal>
   </div>
 </template>
 

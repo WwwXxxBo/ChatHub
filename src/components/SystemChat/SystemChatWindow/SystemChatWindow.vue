@@ -39,7 +39,7 @@ import { APIUserAbortError } from 'openai'
 import useClipboard from "vue-clipboard3";
 // 引入页面选中信息组件
 import { getSelectedText } from "@/utils/window-util";
-import { chat2system } from "@/utils/system-chat-util"
+import { chat2system } from "@/utils/systemchat/systemchat-util"
 import { type SystemChatOption } from "@/utils/systemchat"
 
 const { t } = useI18n()
@@ -238,58 +238,16 @@ const sendQuestion = async (event?: KeyboardEvent) => {
     return
   }
 
-  // 用户发送的消息
-  let id = randomUUID()
-  let assistant_id  = assistantStore.getCurrentVirtualAssistant.id;
-  let role =  'user'
-  let content = data.question.trim();
-  let createTime = nowTimestamp()
-  console.log('assistant_id值', assistant_id)
-
   // 大模型调用
   try{
-    await useSystemChat
+    await useSystemChat()
   }catch (e: any){
     Message.error(e.message)
+    
+    data.waitAnswer = false
+    systemStore.systemChatWindowLoading = false
   }
-
-  data.waitAnswer = false
-  systemStore.systemChatWindowLoading = false
 }
-
-// // 发送提问
-// const sendQuestion = async (event?: KeyboardEvent) => {
-//   // 加载中、内容为空、输入法回车，不发送消息
-//   if (systemStore.chatWindowLoading || !data.question.trim() || event?.isComposing) {
-//     event?.preventDefault()
-//     return
-//   } else if (event?.shiftKey) {
-//     return
-//   } else {
-//     event?.preventDefault()
-//   }
-
-//   // 检查输入 Token 数
-//   if (getContentTokensLength(data.question.trim()) > data.currentAssistant.inputMaxTokens) {
-//     Message.error(t('chatWindow.inputTokensLimit'))
-//     return
-//   }
-
-//   // 大模型调用
-//   try {
-//     await useBigModel()
-//   } catch (e: any) {
-//     // Logger.error('big model error: ', e?.message)
-//     // 除了手动中断异常
-//     if (!(e instanceof APIUserAbortError)) {
-//       const errMsg = e ? e + '' : t(`chatWindow.error.${data.currentAssistant.provider}`)
-//       Message.error(errMsg)
-//       notificationStore.error(errMsg)
-//     }
-//     systemStore.chatWindowLoading = false
-//     data.waitAnswer = false
-//   }
-// }
 
 // 系统对话通用选项
 const useSystemChat = async () => {
@@ -313,7 +271,9 @@ const useSystemChat = async () => {
   // 向后端传递的消息列表（此处只传递用户发出的最新一条消息)
   const chat2systemOption: SystemChatOption = {
     sessionId: data.currentSessionId,
+    assistantId: data.currentAssistant.id,
     messages: systemChatMessageList,
+    createTime: data.currentAssistant.chatMessageList[data.currentAssistant.chatMessageList.length - 1].createTime,
     startAnswer: (sessionId: string, content?: string) => {
       if(data.currentSessionId != sessionId){
         return
@@ -343,6 +303,7 @@ const useSystemChat = async () => {
       if(errMsg != null){
         // 显示错误提示
         Message.error(errMsg)
+        console.log(errMsg)
         // 添加提醒
         notificationStore.error(errMsg)
       }
@@ -353,7 +314,7 @@ const useSystemChat = async () => {
     abortCtr: abortCtr,
   }
   // 向后端发送请求
-  await chat2system(...chat2systemOption)
+  await chat2system({...chat2systemOption})
 }
 
 

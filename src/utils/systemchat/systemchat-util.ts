@@ -1,24 +1,34 @@
-import { receiveSystemChatMessage } from '@/api/systemChat'
-import { type SystemChatOption } from '@/utils/systemchat'
+import { receiveSystemChatMessage } from "@/api/systemChat";
+import { type SystemChatOption } from "@/utils/systemchat";
+import { type SystemChatMessage, type BaseMessage } from "@/types";
 
 export const chat2system = async (option: SystemChatOption) => {
-    const {
-        sessionId,
-        messages,
-        startAnswer,
-        appendAnswer,
-        end,
-        abortCtr
-    } = option
-    
+  const { sessionId, assistantId, messages, createTime, startAnswer, appendAnswer, end, abortCtr } =
+    option;
+  // 开始回答
+  startAnswer && startAnswer(sessionId);
+  const chatMessagesList = await getSystemChatMessages(messages as SystemChatMessage[])
+  const data = await receiveSystemChatMessage(sessionId, assistantId, chatMessagesList, createTime)
+  // 向现有消息列表添加后端返回数据
+  appendAnswer && appendAnswer(sessionId, data?.content ?? "");
+  // 结束
+  end && end(sessionId);
+};
 
-    
-    // 开始回答
-    startAnswer && startAnswer(sessionId)
-    // const data = await receiveSystemChatMessage(id, assistant_id, role, content, createTime)
-    // 向现有消息列表添加后端返回数据
-    // appendAnswer && appendAnswer(sessionId, data.content ?? "");
-    // 结束
-    end && end(sessionId);
-    console.log(messages)
-}
+export const getSystemChatMessages = async (
+  chatMessageList: SystemChatMessage[]
+) => {
+  const messages: BaseMessage[] = [];
+  let currentRole = "user" as "user" | "assistant";
+  for (let i = chatMessageList.length - 1; i >= 0; i--) {
+    const chatMessage = chatMessageList[i];
+    if (currentRole === chatMessage.role) {
+      messages.unshift({
+        role: chatMessage.role,
+        content: chatMessage.content,
+      });
+      currentRole = currentRole === "user" ? "assistant" : "user";
+    }
+  }
+  return messages;
+};

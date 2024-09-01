@@ -7,7 +7,7 @@ import { type Assistant, type ChatMessage, type ChatRole } from "@/types"
 // 引入页面组件
 import SystemChatWindowHeader from "@/components/SystemChat/SystemChatWindow/SystemChatWindowHeader.vue";
 import SystemChatWindowWelcome from "@/components/SystemChat/SystemChatWindow/SystemChatWindowWelcome.vue"
-import ProviderAvatar from "@/components/Avatar/ProviderAvatar.vue";
+import SystemAvatar from "@/components/Avatar/SystemAvatar.vue";
 import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 import MultipleChoiceConsole from "@/components/SystemChat/SystemChatWindow/MultipleChoiceConsole.vue"
 // 引入提示词列表
@@ -386,9 +386,8 @@ onMounted(() => {
               <!-- 消息头像 -->
               <div class="chat-message-avatar">
                 <UserAvatar v-if="msg.role === 'user'" :size="30" />
-                <ProviderAvatar
+                <SystemAvatar
                   v-else-if="msg.role === 'assistant'"
-                  :provider="currentAssistant.provider"
                   :size="30"
                 />
               </div>

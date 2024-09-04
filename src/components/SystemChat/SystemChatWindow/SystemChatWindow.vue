@@ -514,6 +514,7 @@ onMounted(() => {
             maxRows: 4,
           }"
           allow-clear
+          @keydown.enter="sendQuestion"
         />
         <!-- 按钮区域 -->
         <div class="chat-input-button">

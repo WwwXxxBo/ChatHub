@@ -99,7 +99,6 @@ const multipleChoiceDownload = () => {
   emits('close')
 }
 
-
 // 分享选中的消息
 const multipleChoiceShare = () => {
   if(props.multipleChoiceList.length === 0){
@@ -135,6 +134,33 @@ const shareModalBeforeOk = async () => {
   })
   return true
 }
+
+// 删除选中消息
+const multipleChoiceDelete = () => {
+  if(props.multipleChoiceList.length === 0){
+    return
+  }
+  Modal.confirm({
+    title: t('common.deleteConfirm'),
+    content: t('common.deleteConfirmContent'),
+    okText: t('common.ok'),
+    cancelText: t('common.cancel'),
+    onOk: () => {
+      props.multipleChoiceList.forEach((id) => {
+        // 找到选中消息的序号
+        const index = data.currentChatAssistant.chatMessageList.findIndex((msg) => msg.id === id)
+        if(index >= 0){
+          // 如果清除上下文的 ID 值指向的消息被删除，清除上下文的 ID 值设置为上一条消息的 ID
+          if(index > 0 && id === data.currentChatAssistant.clearContextMessageId){
+            data.currentChatAssistant.clearContextMessageId = data.currentChatAssistant.chatMessageList[index - 1].id
+          }
+          data.currentChatAssistant.chatMessageList.splice(index, 1)
+        }
+      })
+      emits('close')
+    }
+  })
+}
 </script>
 
 <template>
@@ -149,7 +175,7 @@ const shareModalBeforeOk = async () => {
     <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceShare()">
       <icon-share-external class="multiple-choice-console-icon" />
     </a-button>
-    <a-button shape="circle" class="multiple-choice-console-btn" @click="">
+    <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceDelete()">
       <icon-delete class="multiple-choice-console-icon" />
     </a-button>
     <a-button shape="circle" class="multiple-choice-console-btn" @click="emits('close')">

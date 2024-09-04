@@ -201,7 +201,7 @@ watch(
                 </a-space>
               </a-tab-pane>
 
-              <!-- 智谱 AI -->
+              <!-- 智谱清言 -->
               <a-tab-pane
                 key="zhipuAI"
                 :title="$t('setting.bigModel.zhipuAI.name')"
@@ -233,140 +233,6 @@ watch(
                           $t('common.pleaseEnter') +
                           ' ' +
                           $t('setting.bigModel.zhipuAI.apiKey')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- 天工 -->
-              <a-tab-pane
-                key="tiangong"
-                :title="$t('setting.bigModel.tiangong.name')"
-              >
-                <a-space
-                  direction="vertical"
-                  :size="25"
-                  fill
-                  class="setting-tab-content"
-                >
-                  <a-space
-                    direction="vertical"
-                    :size="25"
-                    fill
-                    class="setting-tab-content"
-                  >
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("common.officialWebsite") }}</div>
-                      <a-link
-                        @click="
-                          openInBrowser('https://model-platform.tiangong.cn')
-                        "
-                        >https://model-platform.tiangong.cn</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.tiangong.appKey") }}</div>
-                      <a-input-password
-                        v-model="settingStore.tiangong.appKey"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') +
-                          ' ' +
-                          $t('setting.bigModel.tiangong.appKey')
-                        "
-                      />
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.tiangong.appSecret") }}</div>
-                      <a-input-password
-                        v-model="settingStore.tiangong.appSecret"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') +
-                          ' ' +
-                          $t('setting.bigModel.tiangong.appSecret')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- 百川智能 -->
-              <a-tab-pane
-                key="baichuan"
-                :title="$t('setting.bigModel.baichuan.name')"
-              >
-                <a-space
-                  direction="vertical"
-                  :size="25"
-                  fill
-                  class="setting-tab-content"
-                >
-                  <a-space
-                    direction="vertical"
-                    :size="25"
-                    fill
-                    class="setting-tab-content"
-                  >
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("common.officialWebsite") }}</div>
-                      <a-link
-                        @click="openInBrowser('https://platform.baichuan-ai.com/')"
-                        >https://platform.baichuan-ai.com/</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.baichuan.apiKey") }}</div>
-                      <a-input-password
-                        v-model="settingStore.baichuan.apiKey"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') +
-                          ' ' +
-                          $t('setting.bigModel.baichuan.apiKey')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              
-              <!-- DeepSeek -->
-              <a-tab-pane
-                key="deepSeek"
-                :title="$t('setting.bigModel.deepSeek.name')"
-              >
-                <a-space
-                  direction="vertical"
-                  :size="25"
-                  fill
-                  class="setting-tab-content"
-                >
-                  <a-space
-                    direction="vertical"
-                    :size="25"
-                    fill
-                    class="setting-tab-content"
-                  >
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("common.officialWebsite") }}</div>
-                      <a-link
-                        @click="openInBrowser('https://platform.deepseek.com')"
-                        >https://platform.deepseek.com</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.deepSeek.apiKey") }}</div>
-                      <a-input-password
-                        v-model="settingStore.deepSeek.apiKey"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') +
-                          ' ' +
-                          $t('setting.bigModel.deepSeek.apiKey')
                         "
                       />
                     </a-space>
@@ -424,138 +290,6 @@ watch(
                         $t('common.pleaseEnter') +
                         ' ' +
                         $t('setting.bigModel.spark.key')
-                      "
-                    />
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- OpenAI -->
-              <a-tab-pane
-                key="openAI"
-                :title="$t('setting.bigModel.openAI.name')"
-              >
-                <a-space
-                  direction="vertical"
-                  :size="25"
-                  fill
-                  class="setting-tab-content"
-                >
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("common.officialWebsite") }}</div>
-                    <a-link @click="openInBrowser('https://openai.com')"
-                      >https://openai.com</a-link
-                    >
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.openAI.baseUrl") }}</div>
-                    <a-input
-                      v-model="settingStore.openAI.baseUrl"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.openAI.baseUrl')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.openAI.key") }}</div>
-                    <a-input-password
-                      v-model="settingStore.openAI.key"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.openAI.key')
-                      "
-                    />
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- Ollama -->
-              <a-tab-pane
-                key="ollama"
-                :title="$t('setting.bigModel.ollama.name')"
-              >
-                <a-space
-                  direction="vertical"
-                  :size="25"
-                  fill
-                  class="setting-tab-content"
-                >
-                  <a-space
-                    direction="vertical"
-                    :size="25"
-                    fill
-                    class="setting-tab-content"
-                  >
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("common.officialWebsite") }}</div>
-                      <a-link @click="openInBrowser('https://ollama.com')"
-                        >https://ollama.com</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.ollama.baseUrl") }}</div>
-                      <a-input
-                        v-model="settingStore.ollama.baseUrl"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') +
-                          ' ' +
-                          $t('setting.bigModel.ollama.baseUrl')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- Gemini -->
-              <a-tab-pane
-                key="gemini"
-                :title="$t('setting.bigModel.gemini.name')"
-              >
-                <a-space
-                  direction="vertical"
-                  :size="25"
-                  fill
-                  class="setting-tab-content"
-                >
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("common.officialWebsite") }}</div>
-                    <a-link
-                      @click="
-                        openInBrowser(
-                          'https://ai.google.dev/docs/gemini_api_overview'
-                        )
-                      "
-                      >https://ai.google.dev/docs/gemini_api_overview</a-link
-                    >
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.gemini.baseUrl") }}</div>
-                    <a-input
-                      v-model="settingStore.gemini.baseUrl"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.gemini.baseUrl')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.gemini.key") }}</div>
-                    <a-input-password
-                      v-model="settingStore.gemini.key"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.gemini.key')
                       "
                     />
                   </a-space>
@@ -646,6 +380,100 @@ watch(
                 </a-space>
               </a-tab-pane>
 
+              <!-- 百川智能 -->
+              <a-tab-pane
+                key="baichuan"
+                :title="$t('setting.bigModel.baichuan.name')"
+              >
+                <a-space
+                  direction="vertical"
+                  :size="25"
+                  fill
+                  class="setting-tab-content"
+                >
+                  <a-space
+                    direction="vertical"
+                    :size="25"
+                    fill
+                    class="setting-tab-content"
+                  >
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("common.officialWebsite") }}</div>
+                      <a-link
+                        @click="openInBrowser('https://platform.baichuan-ai.com/')"
+                        >https://platform.baichuan-ai.com/</a-link
+                      >
+                    </a-space>
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("setting.bigModel.baichuan.apiKey") }}</div>
+                      <a-input-password
+                        v-model="settingStore.baichuan.apiKey"
+                        size="small"
+                        :placeholder="
+                          $t('common.pleaseEnter') +
+                          ' ' +
+                          $t('setting.bigModel.baichuan.apiKey')
+                        "
+                      />
+                    </a-space>
+                  </a-space>
+                </a-space>
+              </a-tab-pane>
+
+              <!-- 天工开物 -->
+              <a-tab-pane
+                key="tiangong"
+                :title="$t('setting.bigModel.tiangong.name')"
+              >
+                <a-space
+                  direction="vertical"
+                  :size="25"
+                  fill
+                  class="setting-tab-content"
+                >
+                  <a-space
+                    direction="vertical"
+                    :size="25"
+                    fill
+                    class="setting-tab-content"
+                  >
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("common.officialWebsite") }}</div>
+                      <a-link
+                        @click="
+                          openInBrowser('https://model-platform.tiangong.cn')
+                        "
+                        >https://model-platform.tiangong.cn</a-link
+                      >
+                    </a-space>
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("setting.bigModel.tiangong.appKey") }}</div>
+                      <a-input-password
+                        v-model="settingStore.tiangong.appKey"
+                        size="small"
+                        :placeholder="
+                          $t('common.pleaseEnter') +
+                          ' ' +
+                          $t('setting.bigModel.tiangong.appKey')
+                        "
+                      />
+                    </a-space>
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("setting.bigModel.tiangong.appSecret") }}</div>
+                      <a-input-password
+                        v-model="settingStore.tiangong.appSecret"
+                        size="small"
+                        :placeholder="
+                          $t('common.pleaseEnter') +
+                          ' ' +
+                          $t('setting.bigModel.tiangong.appSecret')
+                        "
+                      />
+                    </a-space>
+                  </a-space>
+                </a-space>
+              </a-tab-pane>
+
               <!-- 阶跃星辰 -->
               <a-tab-pane
                 key="stepFun"
@@ -685,7 +513,129 @@ watch(
                   </a-space>
                 </a-space>
               </a-tab-pane>
+              
+              <!-- 深度求索 -->
+              <a-tab-pane
+                key="deepSeek"
+                :title="$t('setting.bigModel.deepSeek.name')"
+              >
+                <a-space
+                  direction="vertical"
+                  :size="25"
+                  fill
+                  class="setting-tab-content"
+                >
+                  <a-space
+                    direction="vertical"
+                    :size="25"
+                    fill
+                    class="setting-tab-content"
+                  >
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("common.officialWebsite") }}</div>
+                      <a-link
+                        @click="openInBrowser('https://platform.deepseek.com')"
+                        >https://platform.deepseek.com</a-link
+                      >
+                    </a-space>
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("setting.bigModel.deepSeek.apiKey") }}</div>
+                      <a-input-password
+                        v-model="settingStore.deepSeek.apiKey"
+                        size="small"
+                        :placeholder="
+                          $t('common.pleaseEnter') +
+                          ' ' +
+                          $t('setting.bigModel.deepSeek.apiKey')
+                        "
+                      />
+                    </a-space>
+                  </a-space>
+                </a-space>
+              </a-tab-pane>
+              
+              <!-- OpenAI -->
+              <a-tab-pane
+                key="openAI"
+                :title="$t('setting.bigModel.openAI.name')"
+              >
+                <a-space
+                  direction="vertical"
+                  :size="25"
+                  fill
+                  class="setting-tab-content"
+                >
+                  <a-space direction="vertical" :size="10" fill>
+                    <div>{{ $t("common.officialWebsite") }}</div>
+                    <a-link @click="openInBrowser('https://openai.com')"
+                      >https://openai.com</a-link
+                    >
+                  </a-space>
+                  <a-space direction="vertical" :size="10" fill>
+                    <div>{{ $t("setting.bigModel.openAI.baseUrl") }}</div>
+                    <a-input
+                      v-model="settingStore.openAI.baseUrl"
+                      size="small"
+                      :placeholder="
+                        $t('common.pleaseEnter') +
+                        ' ' +
+                        $t('setting.bigModel.openAI.baseUrl')
+                      "
+                    />
+                  </a-space>
+                  <a-space direction="vertical" :size="10" fill>
+                    <div>{{ $t("setting.bigModel.openAI.key") }}</div>
+                    <a-input-password
+                      v-model="settingStore.openAI.key"
+                      size="small"
+                      :placeholder="
+                        $t('common.pleaseEnter') +
+                        ' ' +
+                        $t('setting.bigModel.openAI.key')
+                      "
+                    />
+                  </a-space>
+                </a-space>
+              </a-tab-pane>
 
+              <!-- Ollama -->
+              <a-tab-pane
+                key="ollama"
+                :title="$t('setting.bigModel.ollama.name')"
+              >
+                <a-space
+                  direction="vertical"
+                  :size="25"
+                  fill
+                  class="setting-tab-content"
+                >
+                  <a-space
+                    direction="vertical"
+                    :size="25"
+                    fill
+                    class="setting-tab-content"
+                  >
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("common.officialWebsite") }}</div>
+                      <a-link @click="openInBrowser('https://ollama.com')"
+                        >https://ollama.com</a-link
+                      >
+                    </a-space>
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("setting.bigModel.ollama.baseUrl") }}</div>
+                      <a-input
+                        v-model="settingStore.ollama.baseUrl"
+                        size="small"
+                        :placeholder="
+                          $t('common.pleaseEnter') +
+                          ' ' +
+                          $t('setting.bigModel.ollama.baseUrl')
+                        "
+                      />
+                    </a-space>
+                  </a-space>
+                </a-space>
+              </a-tab-pane>
             </a-tabs>
           </a-tab-pane>
 

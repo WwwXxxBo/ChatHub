@@ -29,6 +29,7 @@ watch(
     }
   }
 )
+
 onMounted(async () => {
   if(assistant.value.provider === 'Ollama'){
     modelList = await getOllamaModelList(settingStore.ollama.baseUrl)

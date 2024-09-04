@@ -197,15 +197,15 @@
     "OpenAI": "OpenAI",
     "Ollama": "Ollama",
     "Gemini": "Gemini",
-    "ZhipuAI": "智谱AI",
+    "ZhipuAI": "智谱清言",
     "Spark": "讯飞星火",
     "ERNIE": "百度文心",
     "Tongyi": "阿里通义",
-    "Tiangong": "天工",
+    "Tiangong": "天工开物",
     "MoonshotAI": "月之暗面",
     "StepFun": "阶跃星辰",
-    "DeepSeek": "DeepSeek",
-    "BaiChuan": "BaiChuan"
+    "DeepSeek": "深度求索",
+    "BaiChuan": "百川智能"
   },
   "bigModelProviderWelcome": {
     "OpenAI": "我_是_ Open_AI _大_模_型，_请_问_有_什_么_可_以_帮_你_？",

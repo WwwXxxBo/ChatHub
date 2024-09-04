@@ -1,40 +1,24 @@
 {
-  "OpenAI": [
+  "MoonshotAI": [
     {
-      "name": "gpt-4o",
-      "value": "gpt-4o",
-      "type": "vision",
-      "isSupportImage": true,
-      "isSupportPlugin": true
-    },
-    {
-      "name": "gpt-4-turbo",
-      "value": "gpt-4-turbo",
-      "type": "vision",
-      "isSupportImage": true,
-      "isSupportPlugin": true
-    },
-    {
-      "name": "gpt-4",
-      "value": "gpt-4",
+      "name": "moonshot-v1-128k",
+      "value": "moonshot-v1-128k",
       "type": "text",
       "isSupportPlugin": true
     },
     {
-      "name": "gpt-3.5-turbo-instruct",
-      "value": "gpt-3.5-turbo-instruct",
+      "name": "moonshot-v1-32k",
+      "value": "moonshot-v1-32k",
       "type": "text",
-      "isSupportImage": true,
       "isSupportPlugin": true
     },
     {
-      "name": "gpt-3.5-turbo",
-      "value": "gpt-3.5-turbo",
+      "name": "moonshot-v1-8k",
+      "value": "moonshot-v1-8k",
       "type": "text",
       "isSupportPlugin": true
     }
   ],
-  "Ollama": [],
   "ZhipuAI": [
     {
       "name": "glm-4v",
@@ -53,37 +37,6 @@
       "value": "glm-3-turbo",
       "type": "text",
       "isSupportPlugin": true
-    }
-  ],
-  "Tongyi": [
-    {
-      "name": "qwen-turbo",
-      "value": "qwen-turbo",
-      "type": "text",
-      "isSupportPlugin": true,
-      "isSupportNetwork": true
-    }
-  ],
-  "ERNIE": [
-    { 
-      "name": "ERNIE-4.0-8k", 
-      "value": "ERNIE-4.0-8k", 
-      "type": "text" 
-    },
-    { 
-      "name": "ERNIE-3.5-8K", 
-      "value": "ERNIE-3.5-8K", 
-      "type": "text" 
-    },
-    { 
-      "name": "ERNIE-Speed-128K", 
-      "value": "ERNIE-Speed-128K", 
-      "type": "text" 
-    },
-    { 
-      "name": "ERNIE-Speed-8K", 
-      "value": "ERNIE-Speed-8K", 
-      "type": "text" 
     }
   ],
   "Spark": [
@@ -118,31 +71,64 @@
       "type": "text"
     }
   ],
+  "Tongyi": [
+    {
+      "name": "qwen-turbo",
+      "value": "qwen-turbo",
+      "type": "text",
+      "isSupportPlugin": true,
+      "isSupportNetwork": true
+    }
+  ],
+  "ERNIE": [
+    { 
+      "name": "ERNIE-4.0-8k", 
+      "value": "ERNIE-4.0-8k", 
+      "type": "text" 
+    },
+    { 
+      "name": "ERNIE-3.5-8K", 
+      "value": "ERNIE-3.5-8K", 
+      "type": "text" 
+    },
+    { 
+      "name": "ERNIE-Speed-128K", 
+      "value": "ERNIE-Speed-128K", 
+      "type": "text" 
+    },
+    { 
+      "name": "ERNIE-Speed-8K", 
+      "value": "ERNIE-Speed-8K", 
+      "type": "text" 
+    }
+  ],
+  "BaiChuan": [
+    {
+      "name": "Baichuan4",
+      "value": "Baichuan4",
+      "type": "text"
+    },
+    {
+      "name": "Baichuan3-Turbo",
+      "value": "Baichuan3-Turbo",
+      "type": "text"
+    },
+    {
+      "name": "Baichuan3-Turbo-128k",
+      "value": "Baichuan3-Turbo-128k",
+      "type": "text"
+    },
+    {
+      "name": "Baichuan2-Turbo",
+      "value": "Baichuan2-Turbo",
+      "type": "text"
+    }
+  ],
   "Tiangong": [
     {
       "name": "SkyChat-MegaVerse",
       "value": "SkyChat-MegaVerse",
       "type": "text"
-    }
-  ],
-  "MoonshotAI": [
-    {
-      "name": "moonshot-v1-128k",
-      "value": "moonshot-v1-128k",
-      "type": "text",
-      "isSupportPlugin": true
-    },
-    {
-      "name": "moonshot-v1-32k",
-      "value": "moonshot-v1-32k",
-      "type": "text",
-      "isSupportPlugin": true
-    },
-    {
-      "name": "moonshot-v1-8k",
-      "value": "moonshot-v1-8k",
-      "type": "text",
-      "isSupportPlugin": true
     }
   ],
   "StepFun": [
@@ -201,26 +187,40 @@
       "type": "text"
     }
   ],
-  "BaiChuan": [
+  "OpenAI": [
     {
-      "name": "Baichuan4",
-      "value": "Baichuan4",
-      "type": "text"
+      "name": "gpt-4o",
+      "value": "gpt-4o",
+      "type": "vision",
+      "isSupportImage": true,
+      "isSupportPlugin": true
     },
     {
-      "name": "Baichuan3-Turbo",
-      "value": "Baichuan3-Turbo",
-      "type": "text"
+      "name": "gpt-4-turbo",
+      "value": "gpt-4-turbo",
+      "type": "vision",
+      "isSupportImage": true,
+      "isSupportPlugin": true
     },
     {
-      "name": "Baichuan3-Turbo-128k",
-      "value": "Baichuan3-Turbo-128k",
-      "type": "text"
+      "name": "gpt-4",
+      "value": "gpt-4",
+      "type": "text",
+      "isSupportPlugin": true
     },
     {
-      "name": "Baichuan2-Turbo",
-      "value": "Baichuan2-Turbo",
-      "type": "text"
+      "name": "gpt-3.5-turbo-instruct",
+      "value": "gpt-3.5-turbo-instruct",
+      "type": "text",
+      "isSupportImage": true,
+      "isSupportPlugin": true
+    },
+    {
+      "name": "gpt-3.5-turbo",
+      "value": "gpt-3.5-turbo",
+      "type": "text",
+      "isSupportPlugin": true
     }
-  ]
+  ],
+  "Ollama": []
 }

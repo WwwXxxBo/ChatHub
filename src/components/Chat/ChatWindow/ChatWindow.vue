@@ -285,7 +285,6 @@ const useBigModel = async () => {
 
   // 处理并清空文件列表
   const questionFileList: MessageFile[] = []
-  console.log('上传文件长度', data.selectFileList.length)
   if(data.selectFileList.length > 0){
     for(const f of data.selectFileList){
       console.log('文件', f.file)

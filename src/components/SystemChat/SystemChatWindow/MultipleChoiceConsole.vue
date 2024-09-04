@@ -12,6 +12,7 @@ import { randomUUID } from "@/utils/id-util";
 import { copyObj } from "@/utils/object-util";
 import { nowTimestamp } from "@/utils/date-util";
 import { renderMarkdown } from '@/utils/markdown-util'
+import { exportTextFile } from '@/utils/download-util'
 // 引入 UI 组件
 import { Message, Modal } from "@arco-design/web-vue";
 import { useI18n } from "vue-i18n";
@@ -20,7 +21,7 @@ import html2canvas from 'html2canvas'
 const { t } = useI18n();
 const assistantStore = useAssistantStore();
 const collectionStore = useCollectionStore();
-const emits = defineEmits(["collect", "delete", "close"]);
+
 // 接收父组件传递的数据
 const props = defineProps({
   multipleChoiceList: {
@@ -34,6 +35,8 @@ const data = reactive({
   shareModalVisible: false,
 });
 const { currentAssistant, shareModalVisible } = toRefs(data);
+
+const emits = defineEmits(['collect', 'delete', 'close'])
 
 // 获取选中聊天信息
 const getSelectMessageList = () => {
@@ -49,6 +52,20 @@ const getSelectMessageList = () => {
   chatMessageList.sort((m1, m2) => m1.createTime - m2.createTime);
   return chatMessageList;
 };
+
+const multipleChoiceDownload = () => {
+  console.log('长度',props.multipleChoiceList.length)
+  if(props.multipleChoiceList.length === 0){
+    return
+  }
+  const selectChatMessageList = getSelectMessageList()
+  if(selectChatMessageList.length === 0){
+    return
+  }
+  const content = selectChatMessageList.map((r) => r.role + ': \n' + r.content).join('\n\n')
+  exportTextFile(`records-${nowTimestamp()}.md`, content)
+  emits('close')
+}
 
 // 收藏选中聊天信息
 const multipleChoiceCollect = () => {
@@ -115,21 +132,13 @@ const shareModalBeforeOk = async () => {
 
 <template>
   <div class="multiple-choice-console">
-    <a-button
-      shape="circle"
-      class="multiple-choice-console-btn"
-      @click="multipleChoiceCollect()"
-    >
+    <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceCollect()">
       <icon-common class="multiple-choice-console-icon" />
     </a-button>
-    <a-button shape="circle" class="multiple-choice-console-btn" @click="">
+    <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceDownload()">
       <icon-download class="multiple-choice-console-icon" />
     </a-button>
-    <a-button
-      shape="circle"
-      class="multiple-choice-console-btn"
-      @click="multipleChoiceShare()"
-    >
+    <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceShare()">
       <icon-share-external class="multiple-choice-console-icon" />
     </a-button>
     <a-button shape="circle" class="multiple-choice-console-btn" @click="">

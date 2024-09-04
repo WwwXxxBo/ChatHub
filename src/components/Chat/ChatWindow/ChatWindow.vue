@@ -287,7 +287,6 @@ const useBigModel = async () => {
   const questionFileList: MessageFile[] = []
   if(data.selectFileList.length > 0){
     for(const f of data.selectFileList){
-      console.log('文件', f.file)
       questionFileList.push({
         id: randomUUID(),
         name: f.file!.name,
@@ -487,8 +486,33 @@ const handleInputPaste = (event: ClipboardEvent) => {
       // 获取图片数据
       const blob = item.getAsFile()
       if(blob){
+        // 文件对象
+        const fileId = randomUUID()
+        const fileName = `${fileId}.png`
+        const file = new File([blob], fileName, { type: "image/png" });
         const reader = new FileReader()
-        
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          if(e.target && e.target.result){
+            // 获取 Base64 数据
+            const imageUrl = e.target.result as string
+            data.userUploadImageUrl = imageUrl;
+            if(!imageUrl){
+              return
+            }
+            const imageBase64 = imageUrl.split('base64,')[1]
+            if(!imageBase64){
+              return
+            }
+            // 生成随机文件名
+            const fileItem:FileItem = {
+              uid: fileId,
+              file: file,
+              name: fileName
+            }
+            data.selectImageList = [fileItem];
+          }
+        }
+        reader.readAsDataURL(blob)
       }
     }
   }

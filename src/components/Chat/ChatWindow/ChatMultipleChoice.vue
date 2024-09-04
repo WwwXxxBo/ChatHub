@@ -16,6 +16,8 @@ import { renderMarkdown } from '@/utils/markdown-util'
 import { copyObj } from "@/utils/object-util";
 // 引入时间处理函数
 import { nowTimestamp } from "@/utils/date-util";
+// 引入文件下载函数
+import { exportTextFile } from '@/utils/download-util'
 // 引入 UI 组件
 import { Message, Modal } from '@arco-design/web-vue'
 // 引入国际化
@@ -83,6 +85,21 @@ const multipleChoiceCollect = () => {
   Message.success(t('chatWindow.collectSuccess'))
 }
 
+// 下载选中的消息
+const multipleChoiceDownload = () => {
+  if(props.multipleChoiceList.length === 0){
+    return
+  }
+  const selectChatMessageList = getSelectMessageList()
+  if(selectChatMessageList.length === 0){
+    return
+  }
+  const content = selectChatMessageList.map((r) => r.role + ': \n' + r.content).join('\n\n')
+  exportTextFile(`records-${nowTimestamp()}.md`, content)
+  emits('close')
+}
+
+
 // 分享选中的消息
 const multipleChoiceShare = () => {
   if(props.multipleChoiceList.length === 0){
@@ -91,6 +108,7 @@ const multipleChoiceShare = () => {
   data.shareModalVisible = true
 }
 
+// 生成图片
 const shareModalBeforeOk = async () => {
   await new Promise<void>((resolve, reject) => {
     const el = document.getElementById('share-chat-message-list')
@@ -125,7 +143,7 @@ const shareModalBeforeOk = async () => {
     <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceCollect()">
       <icon-common class="multiple-choice-console-icon" />
     </a-button>
-    <a-button shape="circle" class="multiple-choice-console-btn" @click="">
+    <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceDownload()">
       <icon-download class="multiple-choice-console-icon" />
     </a-button>
     <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceShare()">

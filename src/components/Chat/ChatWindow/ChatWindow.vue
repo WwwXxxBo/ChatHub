@@ -471,6 +471,30 @@ const stopAnswer = () => {
   abortCtr = new AbortController();
 };
 
+const handleInputPaste = (event: ClipboardEvent) => {
+  // 获取粘贴的内容
+  const items = event.clipboardData?.items
+  if(!items){
+    return
+  }
+  // 支持图片上传
+  if(isSupportImageComputed.value){
+    // 只获取第一张照片
+    const item = items[0]
+    if(item && item.kind === 'file' && item.type.startsWith('image/')){
+      // 阻止默认粘贴行为
+      event.preventDefault()
+      // 获取图片数据
+      const blob = item.getAsFile()
+      if(blob){
+        const reader = new FileReader()
+        
+      }
+    }
+  }
+}
+
+
 // 挂载完毕
 onMounted(() => {
   // 对话记录滚动到底部
@@ -797,6 +821,7 @@ onMounted(() => {
           }"
           allow-clear
           @keydown.enter="sendQuestion"
+          @paste="handleInputPaste"
         />
 
         <!-- 发送按钮 -->

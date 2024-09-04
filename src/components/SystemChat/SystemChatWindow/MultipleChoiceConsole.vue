@@ -128,6 +128,30 @@ const shareModalBeforeOk = async () => {
   return true
 }
 
+// 删除选中的消息
+const multipleChoiceDelete = () => {
+  if(props.multipleChoiceList.length === 0){
+    return
+  }
+  Modal.confirm({
+    title: t('common.deleteConfirm'),
+    content: t('common.deleteConfirmContent'),
+    okText: t('common.ok'),
+    cancelText: t('common.cancel'),
+    onOk: () => {
+      console.log('选中消息的长度',props.multipleChoiceList.length)
+      props.multipleChoiceList.forEach((id) => {
+        const index = data.currentAssistant.chatMessageList.findIndex((msg) => msg.id === id)
+        if(index >= 0){
+          data.currentAssistant.chatMessageList.splice(index, 1)
+        }
+      })
+      console.log('现在的消息列表', data.currentAssistant.chatMessageList)
+      emits('close')
+    }
+  })
+}
+
 </script>
 
 <template>
@@ -141,14 +165,10 @@ const shareModalBeforeOk = async () => {
     <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceShare()">
       <icon-share-external class="multiple-choice-console-icon" />
     </a-button>
-    <a-button shape="circle" class="multiple-choice-console-btn" @click="">
+    <a-button shape="circle" class="multiple-choice-console-btn" @click="multipleChoiceDelete()">
       <icon-delete class="multiple-choice-console-icon" />
     </a-button>
-    <a-button
-      shape="circle"
-      class="multiple-choice-console-btn"
-      @click="emits('close')"
-    >
+    <a-button shape="circle" class="multiple-choice-console-btn" @click="emits('close')">
       <icon-close class="multiple-choice-console-icon" />
     </a-button>
   </div>

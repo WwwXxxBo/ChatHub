@@ -35,48 +35,6 @@ export const chat2moonshot = async (option: CommonChatOption) => {
     dangerouslyAllowBrowser: true,
   });
 
-  // 是否有插件 暂时弃用
-  // let pluginAnswer: ChatCompletion | null = null;
-  // if (chatPlugins && chatPlugins.length > 0) {
-  //   // 非流式插件提问
-  //   pluginAnswer = await openai.chat.completions.create(
-  //     {
-  //       messages: (await getMoonshotMessages(
-  //         messages!,
-  //         instruction,
-  //         inputMaxTokens,
-  //         contextSize
-  //       )) as ChatCompletionMessageParam[],
-  //       tools: chatPlugins.map((p) => {
-  //         return {
-  //           type: p.type,
-  //           function: {
-  //             name: p.id,
-  //             description: p.description,
-  //             parameters: {
-  //               type: "object",
-  //               properties: p.parameters.reduce((acc, param) => {
-  //                 acc[param.name] = {
-  //                   type: param.type,
-  //                   description: param.description,
-  //                 };
-  //                 return acc;
-  //               }, {}),
-  //               required: p.parameters.map((param) => param.name),
-  //             },
-  //           },
-  //         };
-  //       }),
-  //       model,
-  //       stream: false,
-  //       max_tokens: maxTokens,
-  //     },
-  //     {
-  //       signal: abortCtr?.signal,
-  //     }
-  //   );
-  // }
-
   // 现有消息列表
   const chatMessages = (await getMoonshotMessages(
     messages!,
@@ -84,33 +42,6 @@ export const chat2moonshot = async (option: CommonChatOption) => {
     inputMaxTokens,
     contextSize
   )) as ChatCompletionMessageParam[];
-
-  // 是否有插件
-  // if (
-  //   chatPlugins &&
-  //   pluginAnswer &&
-  //   pluginAnswer.choices[0].message.tool_calls
-  // ) {
-  //   // 插件运行
-  //   const tool_call_id = pluginAnswer.choices[0].message.tool_calls[0].id;
-  //   const pluginId =
-  //     pluginAnswer.choices[0].message.tool_calls[0].function.name;
-  //   const pluginParams =
-  //     pluginAnswer.choices[0].message.tool_calls[0].function.arguments;
-  //   const pluginResult = await executeJavaScript(
-  //     `var params = ${pluginParams};${
-  //       chatPlugins.find((p) => p.id === pluginId)?.code
-  //     }`
-  //   );
-  //   Logger.info("chat2moonshot pluginResult: ", pluginResult);
-  //   // 插件回复
-  //   chatMessages.push(pluginAnswer.choices[0].message);
-  //   chatMessages.push({
-  //     role: "tool",
-  //     tool_call_id: tool_call_id,
-  //     content: pluginResult,
-  //   });
-  // }
 
   // 流式对话
   const stream = await openai.chat.completions.create(
@@ -163,28 +94,6 @@ export const getMoonshotMessages = async (
   // 转换消息结构
   const openaiMessages: ChatCompletionMessageParam[] = [];
   for (const m of messages) {
-    // 处理用户消息中的图片 暂时弃用
-    // if (m.image && m.role === "user") {
-    //   const imageBase64Data = await readLocalImageBase64(m.image);
-    //   openaiMessages.push({
-    //     role: "user",
-    //     content: [
-    //       { type: "text", text: m.content },
-    //       {
-    //         type: "image_url",
-    //         image_url: {
-    //           // 这里和 OpenAI 不一样，不需要前缀
-    //           url: imageBase64Data,
-    //         },
-    //       },
-    //     ],
-    //   });
-    // } else {
-    //   openaiMessages.push({
-    //     role: m.role,
-    //     content: m.content,
-    //   } as ChatCompletionMessageParam);
-    // }
     openaiMessages.push({
         role: m.role,
         content: m.content,

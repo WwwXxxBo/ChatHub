@@ -290,7 +290,8 @@ const useBigModel = async () => {
       questionFileList.push({
         id: randomUUID(),
         name: f.file!.name,
-        size: f.file!.size
+        size: f.file!.size,
+        file: f.file
       })
     }
     // 情况文件列表
@@ -329,7 +330,6 @@ const useBigModel = async () => {
     contextSize: data.currentChatAssistant.contextSize,
     messages: copyObj(bigModelMessageList),
     abortCtr: abortCtr,
-    // chatPlugins: chatPluginStore.getPluginListByIds(data.currentAssistant.chatPluginIdList, true),
     startAnswer: (sessionId: string, content?: string) => {
       if (data.currentSessionId != sessionId) {
         return;

@@ -66,6 +66,7 @@ export interface MessageFile {
   id: string;
   name: string;
   size: number;
+  file: File;
 }
 
 // 基础对话

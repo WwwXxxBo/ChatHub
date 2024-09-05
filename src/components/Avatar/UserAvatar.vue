@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { reactive, toRefs } from 'vue'
-// 引入 System 状态
+// 引入 System、User 状态
 import { useSystemStore } from '@/stores/system'
-// 引入 User 状态
 import { useUserStore } from '@/stores/user'
 // 引入 UI 组件
 import { FileItem, RequestOption } from '@arco-design/web-vue'
@@ -27,27 +26,22 @@ defineProps({
 // 设置模态框是否可见
 const data = reactive({
   modalVisible: false,
-  avatarFile: { url: userStore.avatar } as FileItem
+  avatarFile: { url: userStore.avatar } as FileItem,
+  userAvatarUrl: ''
 })
 
-const { modalVisible, avatarFile } = toRefs(data)
+const { modalVisible, avatarFile, userAvatarUrl } = toRefs(data)
 
 const selectImageRequest = (option: RequestOption) => {
   const { fileItem, onSuccess } = option
-  const imagePath = fileItem.file?.path
-  if (imagePath) {
-    fileItem.url = fileItem.file?.path
-    data.avatarFile = fileItem
-    // 图片存储待解决
-    // saveFileByPath(
-    //   imagePath,
-    //   `${randomUUID()}${imagePath.substring(imagePath.lastIndexOf('.'))}`
-    // ).then((res) => {
-    //   userStore.avatar = res
-    //   onSuccess()
-    // })
+  data.avatarFile = fileItem
+  const reader =  new FileReader();
+  reader.onload = (e) => {
+    data.userAvatarUrl = e.target.result as string;
+    userStore.avatar = data.userAvatarUrl
   }
-
+  reader.readAsDataURL(fileItem.file);
+  onSuccess();
   return {
     abort: () => {}
   }
@@ -61,7 +55,7 @@ const selectImageRequest = (option: RequestOption) => {
     :size="size"
     @click="modalVisible = !systemStore.chatWindowLoading && editable"
   >
-    <img v-if="userStore.avatar" class="no-drag-area" :src="'file://' + userStore.avatar" alt="" />
+    <img v-if="userStore.avatar" class="no-drag-area" :src="userStore.avatar" alt="" />
     <img v-else class="no-drag-area" src="@/assets/images/avatar.png" alt="" />
   </a-avatar>
   <!-- 用户设置Modal -->
@@ -95,7 +89,7 @@ const selectImageRequest = (option: RequestOption) => {
               v-if="avatarFile && avatarFile.url"
               class="arco-upload-list-picture custom-upload-avatar"
             >
-              <img :src="'file://' + avatarFile.url" alt="" />
+              <img :src="userStore.avatar" alt="" />
               <div class="arco-upload-list-picture-mask">
                 <IconEdit />
               </div>

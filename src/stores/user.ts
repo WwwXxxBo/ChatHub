@@ -4,7 +4,7 @@ export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
     avatar: '',
-    nickname: 'Some one',
+    nickname: '用户',
     lastStartupTime: 0
   }),
   getters: {
@@ -33,5 +33,5 @@ export const useUserStore = defineStore({
       return importFlag
     }
   },
-  persist: true
+  persist: false
 })

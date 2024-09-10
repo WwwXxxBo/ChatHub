@@ -5,8 +5,9 @@ import { getChatTokensLength } from "@/utils/gpt-tokenizer-util"
 import { Message } from '@arco-design/web-vue'
 // 引入 Notification 状态
 import { useNotificationStore } from "@/stores/notification"
-// 引入 LangChain 处理方法
-// import { langChainLoadFile } from '@/utils/langchain'
+// 从后端获取文件内容方法
+import { getFileContent } from "@/api/fileChat"
+
 // 引入接口
 import {
   type Assistant,
@@ -52,9 +53,9 @@ export const isSupportImage = (
   modelName: string
 ) => {
   // Ollama 始终支持图片上传，暂不根据模型进行判断
-  // if (providerName === "Ollama") {
-  //   return true;
-  // }
+  if (providerName === "Ollama") {
+    return true;
+  }
   const models = chatModels[providerName];
   if (!models) {
     return false;
@@ -108,10 +109,10 @@ export const turnChat = async (chatMessageList: ChatMessage[]) => {
       if(chatMessage.fileList && chatMessage.fileList.length > 0){
         const fileContentList: Record<string, string> = {}
         for(const f of chatMessage.fileList){
-          
+          fileContentList[f.name] = (await getFileContent(f.file))?.content
         }
+        chatMessage.content = `Files Data:\n${JSON.stringify(fileContentList)}\n${chatMessage.content}`
       }
-      
       messages.unshift({
         role: chatMessage.role,
         content: chatMessage.content,

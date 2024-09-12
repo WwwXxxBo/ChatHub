@@ -4,11 +4,12 @@ import { type BaseMessage } from "@/types";
 export const getFileContent = (
   file: File
 ) => {
+  // 封装为 FormData
+  const formData = new FormData();
+  formData.append('file', file);
   return httpInstance({
     url: "/filechat",
-    method: "GET",
-    data: JSON.stringify({
-      file: file,
-    }),
+    method: "POST",
+    data: formData
   });
 };

@@ -16,7 +16,6 @@ import { exportTextFile } from "@/utils/download-util"
 import { nowTimestamp, formatDateTime } from "@/utils/date-util";
 // 引入国际化组件
 import { useI18n } from "vue-i18n";
-import { resolve } from "dns";
 
 // 获取父组件传递的数据
 const props = defineProps({

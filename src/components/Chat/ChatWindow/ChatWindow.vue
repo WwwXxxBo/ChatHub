@@ -54,6 +54,7 @@ import { useI18n } from "vue-i18n";
 import { APIUserAbortError } from "openai";
 // 引入 vue-clipboard3 组件
 import useClipboard from "vue-clipboard3";
+import { type } from "os";
 
 const { t } = useI18n();
 // 状态
@@ -294,6 +295,7 @@ const useBigModel = async () => {
         file: f.file
       })
     }
+    console.log('questionFileList:', questionFileList)
     // 情况文件列表
     data.selectFileList = []
   }
@@ -308,6 +310,7 @@ const useBigModel = async () => {
     fileList: questionFileList,
     createTime: nowTimestamp(),
   });
+  console.log('chatMessageList:', data.currentChatAssistant.chatMessageList)
   scrollToBottom(false);
   // 大模型接收的消息列表
   let bigModelMessageList = data.currentChatAssistant.chatMessageList;

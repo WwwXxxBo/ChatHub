@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const httpInstance = axios.create({
-    baseURL: "http://localhost:3004",
+    baseURL: "/filechat",
     timeout: 5000
 })
 // 拦截器

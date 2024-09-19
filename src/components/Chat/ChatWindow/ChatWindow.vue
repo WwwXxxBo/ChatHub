@@ -46,6 +46,8 @@ import { FileItem, Message, Modal, RequestOption } from "@arco-design/web-vue";
 import { SpeechStatus } from "@/utils/constant";
 // 引入页面选中信息组件
 import { getSelectedText } from "@/utils/window-util";
+// 从后端获取文件内容方法
+import { getFileContent } from "@/api/fileChat"
 // 引入时间组件
 import dayjs from "dayjs";
 // 引入国际化
@@ -288,14 +290,15 @@ const useBigModel = async () => {
   const questionFileList: MessageFile[] = []
   if(data.selectFileList.length > 0){
     for(const f of data.selectFileList){
+      console.log(f.file.name, f.file)
       questionFileList.push({
         id: randomUUID(),
         name: f.file!.name,
         size: f.file!.size,
-        file: f.file
+        file: f.file, 
+        content: (await getFileContent(f.file)).data
       })
     }
-    console.log('questionFileList:', questionFileList)
     // 情况文件列表
     data.selectFileList = []
   }
@@ -310,7 +313,6 @@ const useBigModel = async () => {
     fileList: questionFileList,
     createTime: nowTimestamp(),
   });
-  console.log('chatMessageList:', data.currentChatAssistant.chatMessageList)
   scrollToBottom(false);
   // 大模型接收的消息列表
   let bigModelMessageList = data.currentChatAssistant.chatMessageList;
@@ -323,6 +325,10 @@ const useBigModel = async () => {
       clearContextMessageIndex + 1
     );
   }
+
+  console.log('消息列表', bigModelMessageList)
+  console.log('处理后的消息列表', copyObj(bigModelMessageList))
+
   // 大模型通用选项
   const chat2bigModelOption: CommonChatOption = {
     sessionId: data.currentSessionId,

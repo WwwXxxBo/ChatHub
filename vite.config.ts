@@ -33,6 +33,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ernie/, '')
       },
+      '/filechat':{
+        target: 'http://localhost:3032',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/filechat/, '')
+      }
     },
     cors: true
   }

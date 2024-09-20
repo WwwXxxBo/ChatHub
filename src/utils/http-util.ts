@@ -16,3 +16,13 @@ httpInstance.interceptors.response.use(
     (res) => res.data,
     (err) => Promise.reject(err)
 )
+
+export const SystemHttpInstance = axios.create({
+    baseURL: "/systemchat",
+    timeout: 5000
+})
+//  axios 响应式拦截器
+SystemHttpInstance.interceptors.response.use(
+    (res) => res.data,
+    (err) => Promise.reject(err)
+)

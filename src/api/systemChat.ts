@@ -1,4 +1,4 @@
-import { httpInstance } from "@/utils/http-util";
+import { httpInstance, SystemHttpInstance } from "@/utils/http-util";
 import { type BaseMessage } from "@/types";
 
 /**
@@ -9,23 +9,46 @@ import { type BaseMessage } from "@/types";
  *
  * */
 export const receiveSystemChatMessage = (
-  id: string,
-  assistant_id: string,
-  messages: BaseMessage[],
-  createTime: number
+  id: number,
+  message: string,
 ) => {
-  return httpInstance({
-    url: "/systemchat",
-    method: "GET",
+  return SystemHttpInstance({
+    url: "/llmapi/",
+    method: "POST",
     data: JSON.stringify({
-      id: id,
-      assistant_id: assistant_id,
-      name: "system chat",
-      content: messages,
-      createTime: createTime,
+      user_id: '9',
+      content: message
     }),
     headers: {
-      "content-type": "application/json",
+      "Content-Type": "application/json; charset=utf-8"
     },
+    withCredentials: true
   });
 };
+
+
+
+
+
+
+// export const receiveSystemChatMessage = (
+//   id: string,
+//   assistant_id: string,
+//   messages: BaseMessage[],
+//   createTime: number
+// ) => {
+//   return httpInstance({
+//     url: "/systemchat",
+//     method: "GET",
+//     data: JSON.stringify({
+//       id: id,
+//       assistant_id: assistant_id,
+//       name: "system chat",
+//       content: messages,
+//       createTime: createTime,
+//     }),
+//     headers: {
+//       "content-type": "application/json",
+//     },
+//   });
+// };

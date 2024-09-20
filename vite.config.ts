@@ -37,6 +37,11 @@ export default defineConfig({
         target: 'http://localhost:3032',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/filechat/, '')
+      },
+      '/systemchat': {
+        target: 'http://8.142.78.0:30027/olexp_server',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/systemchat/, '')
       }
     },
     cors: true

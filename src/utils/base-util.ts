@@ -106,13 +106,13 @@ export const turnChat = async (chatMessageList: ChatMessage[]) => {
     const chatMessage = chatMessageList[i];
     if (currentRole === chatMessage.role) {
       // 将文件内容拼接到用户消息中
-      // if(chatMessage.fileList && chatMessage.fileList.length > 0){
-      //   const fileContentList: Record<string, string> = {}
-      //   for(const f of chatMessage.fileList){
-      //     fileContentList[f.name] = (await getFileContent(f.file)).data
-      //   }
-      //   chatMessage.content = `Files Data:\n${JSON.stringify(fileContentList)}\n${chatMessage.content}`
-      // }
+      if(chatMessage.fileList && chatMessage.fileList.length > 0){
+        const fileContentList: Record<string, string> = {}
+        for(const f of chatMessage.fileList){
+          fileContentList[f.name] = f.content as string
+        }
+        chatMessage.content = `Files Data:\n${JSON.stringify(fileContentList)}\n${chatMessage.content}`
+      }
       messages.unshift({
         role: chatMessage.role,
         content: chatMessage.content,

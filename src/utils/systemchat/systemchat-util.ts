@@ -8,9 +8,11 @@ export const chat2system = async (option: SystemChatOption) => {
   // 开始回答
   startAnswer && startAnswer(sessionId);
   const chatMessagesList = await getSystemChatMessages(messages as SystemChatMessage[])
-  const data = await receiveSystemChatMessage(sessionId, assistantId, chatMessagesList, createTime)
+  console.log('chatMessagesList:', chatMessagesList[0].content)
+  const data = await receiveSystemChatMessage(9, chatMessagesList[0].content)
+  console.log(data)
   // 向现有消息列表添加后端返回数据
-  appendAnswer && appendAnswer(sessionId, data?.content ?? "");
+  appendAnswer && appendAnswer(sessionId, data?.message ?? "");
   // 结束
   end && end(sessionId);
 };

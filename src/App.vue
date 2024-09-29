@@ -9,6 +9,7 @@ import SystemChat from "@/components/SystemChat/SystemChat.vue";
 import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 import Setting from "@/components/Modal/Setting.vue"
 import Collect from "@/components/Collect/Collect.vue"
+import Login from "@//components/Login/Login.vue"
 // 引入国际化组件
 import { useI18n } from "vue-i18n";
 import enUS from "@arco-design/web-vue/es/locale/lang/en-us";
@@ -118,7 +119,7 @@ onMounted(() => {
 <template>
   <a-config-provider :locale="arcoDesignLocal">
     <!-- 欢迎页 -->
-    <Welcome v-if="systemStore.isWelcomeShow" />
+    <Login v-if="systemStore.isWelcomeShow" />
     <div class="app fade-in-from" :class="{ 'fade-in-to': !systemStore.isWelcomeShow }">
       <!-- 侧边栏 -->
       <div class="app-sidebar drag-area">

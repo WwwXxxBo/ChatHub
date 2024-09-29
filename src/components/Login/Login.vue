@@ -3,11 +3,14 @@ import { ref } from 'vue'
 // 引入 UI 库中的提示组件
 import { Message } from "@arco-design/web-vue";
 import { getUserData } from "@/api/login"
+import { useSystemStore } from '@/stores/system'
 
 const loginForm = ref({
   phone:'',
   password:''
 })
+
+const systemStore = useSystemStore()
 
 // 检查登录密码
 const validatePhone = (phone: string) => {
@@ -35,8 +38,24 @@ const toLogin = async () => {
   if (!validatePassword(loginForm.value.password)){
     Message.error('密码格式错误，密码由字母与数字组成')
   }
+  
   const data = await getUserData(loginForm.value.phone, loginForm.value.password)
-  console.log('返回的数据', data)
+
+  if(data.status == 0){
+    Message.success("登录成功")
+  }
+  // 存储用户登录状态
+  if(data.data){
+    sessionStorage.userId = data.data.id
+    sessionStorage.name = data.data.name
+    sessionStorage.email = data.data.email
+    sessionStorage.phone = data.data.phone
+    sessionStorage.userType = data.data.type
+    sessionStorage.userName = data.data.user_name
+    sessionStorage.idcard = data.data.idcard
+  }
+  // 关闭登录页
+  systemStore.isWelcomeShow = false
 }
 </script>
 

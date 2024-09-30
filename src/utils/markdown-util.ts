@@ -7,15 +7,30 @@ import hljs from "highlight.js";
 import MarkdownIt from "markdown-it";
 // 引入 Markdown 数学插件
 import mk from 'markdown-it-katex'
+// 引入提示框 UI 组件
+import { Message } from '@arco-design/web-vue'
+// 引入高亮插件
 import 'highlight.js/scss/github-dark.scss'
 // 引入 Markdown 的样式
 import "@/assets/css/markdown-code.less";
-// 引入 UI 组件
-import { Message } from "@arco-design/web-vue";
+// 引入 ClipboardJS
+import ClipboardJS from 'clipboard'
 // 引入格式转换方法
 import { textToBase64, base64ToText } from '@/utils/base64-util'
 
-const { t } = i18n.global;
+// 国际化支持
+const { t } = i18n.global
+
+// 增加代码复制功能
+const clipboard = new ClipboardJS('.code-header-copy', {
+  text: function (trigger) {
+    const base64Str = trigger.getAttribute('data-clipboard-text-base64')
+    return base64Str ? base64ToText(base64Str) : ''
+  }
+})
+clipboard.on('success', () => {
+  Message.success(t('common.copySuccess'))
+})
 
 // 增加代码高亮
 const markdown = new MarkdownIt({

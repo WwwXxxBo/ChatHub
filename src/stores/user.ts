@@ -4,7 +4,7 @@ export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
     avatar: '',
-    nickname: '用户',
+    nickname: '',
     lastStartupTime: 0,
     isLogin: false
   }),

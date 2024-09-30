@@ -79,8 +79,10 @@ const toLogin = async () => {
     userStore.isLogin = true;
     Message.success("登录成功");
   }
-  // 存储用户登录状态
   if (userData.data) {
+    // 保存用户的登录信息状态
+    userStore.nickname = userData.data.name;
+    // 存储用户登录状态
     sessionStorage.userId = userData.data.id;
     sessionStorage.name = userData.data.name;
     sessionStorage.email = userData.data.email;

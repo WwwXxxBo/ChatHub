@@ -107,7 +107,7 @@ const selectImageRequest = (option: RequestOption) => {
       </a-upload>
       <a-space direction="horizontal" :size="10" fill>
         <div>{{ $t('userSetting.nickname') }}</div>
-        <a-input v-model="userStore.nickname" size="small" />
+        <a-input v-model="userStore.nickname" size="small" disabled />
       </a-space>
     </div>
   </a-modal>

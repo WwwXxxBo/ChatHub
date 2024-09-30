@@ -76,6 +76,7 @@ const toLogin = async () => {
   );
 
   if (userData.status == 0) {
+    userStore.isLogin = true;
     Message.success("登录成功");
   }
   // 存储用户登录状态

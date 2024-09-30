@@ -14,22 +14,17 @@ import Login from "@//components/Login/Login.vue"
 import { useI18n } from "vue-i18n";
 import enUS from "@arco-design/web-vue/es/locale/lang/en-us";
 import zhCN from "@arco-design/web-vue/es/locale/lang/zh-cn";
-// 引入 System 和 Setting 状态
+// 引入 System、Setting、User 状态
 import { useSystemStore } from '@/stores/system'
 import { useSettingStore } from "@/stores/setting";
+import { useUserStore } from "@/stores/user"
 // 引入 Theme 相关工具方法
 import { startDarkThemeListener, setCustomTheme, setDefaultTheme, changeTheme } from '@/utils/theme-util'
 
-
-
+const userStore = useUserStore();
 const systemStore = useSystemStore()
 const settingStore = useSettingStore();
-
-
 const { locale } = useI18n();
-
-
-
 const data = reactive({
   sidebarConfig: [
     {
@@ -119,7 +114,7 @@ onMounted(() => {
 <template>
   <a-config-provider :locale="arcoDesignLocal">
     <!-- 欢迎页 -->
-    <Login v-if="systemStore.isWelcomeShow" />
+    <Login v-if="!userStore.isLogin" />
     <div class="app fade-in-from" :class="{ 'fade-in-to': !systemStore.isWelcomeShow }">
       <!-- 侧边栏 -->
       <div class="app-sidebar drag-area">

@@ -5,7 +5,8 @@ export const useUserStore = defineStore({
   state: () => ({
     avatar: '',
     nickname: '用户',
-    lastStartupTime: 0
+    lastStartupTime: 0,
+    isLogin: false
   }),
   getters: {
     getStoreJson(): string {

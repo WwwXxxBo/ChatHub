@@ -171,22 +171,24 @@ const toLogin = async () => {
           </a-row>
         </div>
       </div>
-      <div class="introduction-footer">&copy; 2024 北京邮电大学 MAIR</div>
     </div>
     <!-- 右侧区域 -->
     <div class="right-panel">
       <a-space direction="vertical" size="large">
-        <a-form :model="loginForm" :style="{ width: '400px' }">
-          <a-form-item required label="手机号">
-            <a-input v-model="loginForm.phone" />
-          </a-form-item>
-          <a-form-item required label="密码">
-            <a-input v-model="loginForm.password" />
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" long @click="toLogin">登录</a-button>
-          </a-form-item>
-        </a-form>
+        <div class="login-tile">登录</div>
+        <!-- 手机号输入 -->
+        <a-input placeholder="请输入您的手机号" :style="{width:'320px'}" v-model="loginForm.phone">
+          <template #prefix>
+            <icon-phone />
+          </template>
+        </a-input>
+        <!-- 密码输入 -->
+        <a-input-password placeholder="请输入您的密码" v-model="loginForm.password">
+          <template #prefix>
+            <icon-stamp />
+          </template>
+        </a-input-password>
+          <a-button type="primary" shape="round" @click="toLogin" long>登录</a-button>
       </a-space>
     </div>
   </div>
@@ -244,9 +246,19 @@ const toLogin = async () => {
     align-items: center;
     flex-direction: column;
     justify-content: center;
+    text-align: center;
     // 右侧登录区背景颜色
-    background-image: linear-gradient(to top, #accbee 0%, #e7f0fd 100%);
+    background-color: #8EC5FC;
+    background-image: -webkit-linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    background-image: -moz-linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    background-image: -o-linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
     width: 50%;
+    .login-tile {
+      font-weight: 1000;
+      font-size: var(--font-size-xxxl);
+      color: rgb(var(--arcoblue-6));
+    }
   }
 }
 .content {
@@ -265,6 +277,11 @@ const toLogin = async () => {
     font-weight: 500;
   }
 }
+  .content:hover {
+    transform: translateY(-4px);
+    box-shadow: #e2ebf0;
+    background-color: rgb(var(--arcoblue-1));
+  }
 .function-avatar {
   :deep(.arco-avatar-image) {
     background-color: var(--color-bg-white);
@@ -274,4 +291,5 @@ const toLogin = async () => {
     }
   }
 }
+
 </style>

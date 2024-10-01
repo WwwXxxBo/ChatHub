@@ -13,9 +13,8 @@ import Collect from "@/components/Collect/Collect.vue"
 import { useI18n } from "vue-i18n";
 import enUS from "@arco-design/web-vue/es/locale/lang/en-us";
 import zhCN from "@arco-design/web-vue/es/locale/lang/zh-cn";
-// 引入 System 状态
+// 引入 System 和 Setting 状态
 import { useSystemStore } from '@/stores/system'
-// 引入 Setting 状态
 import { useSettingStore } from "@/stores/setting";
 // 引入 Theme 相关工具方法
 import { startDarkThemeListener, setCustomTheme, setDefaultTheme, changeTheme } from '@/utils/theme-util'

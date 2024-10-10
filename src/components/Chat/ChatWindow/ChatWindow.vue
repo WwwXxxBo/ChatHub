@@ -26,8 +26,6 @@ import { useSettingStore } from "@/stores/setting";
 import { useNotificationStore } from "@/stores/notification";
 // 引入模型能力检查
 import { isSupportImage } from "@/utils/base-util";
-// 引入文件处理方法
-import { saveFileByPath } from "@/utils/file-util";
 // 引入复制对象方法
 import { copyObj } from "@/utils/object-util";
 // 引入图片处理

@@ -76,6 +76,7 @@ const toLogin = async () => {
   );
 
   if (userData.status == 0) {
+    // 关闭登录页
     userStore.isLogin = true;
     Message.success("登录成功");
   }
@@ -90,9 +91,8 @@ const toLogin = async () => {
     sessionStorage.userType = userData.data.type;
     sessionStorage.userName = userData.data.user_name;
     sessionStorage.idcard = userData.data.idcard;
+    localStorage.setItem('loginflag', 'true');
   }
-  // 关闭登录页
-  systemStore.isWelcomeShow = false;
 };
 </script>
 

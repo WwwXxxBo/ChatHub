@@ -12,17 +12,22 @@ export const receiveSystemChatMessage = (
   id: number,
   message: string,
 ) => {
+  // 获取 Cookie 值
+  // document.cookie = "ioiopipoadiasdasdbasdbas"
+  // const cookies = document.cookie;
+  // console.log(cookies)
+  // console.log('@@@@@',message, sessionStorage.userId)
   return SystemHttpInstance({
     url: "/llmapi/",
     method: "POST",
     data: JSON.stringify({
-      user_id: '9',
+      user_id: sessionStorage.userId,
       content: message
     }),
+    withCredentials: true,
     headers: {
       "Content-Type": "application/json; charset=utf-8"
-    },
-    withCredentials: true
+    }
   });
 };
 

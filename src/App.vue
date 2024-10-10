@@ -115,6 +115,7 @@ onMounted(() => {
   <a-config-provider :locale="arcoDesignLocal">
     <!-- 欢迎页 -->
     <Login v-if="!userStore.isLogin" />
+    <Welcome v-if="systemStore.isWelcomeShow && userStore.isLogin"/>
     <div class="app fade-in-from" :class="{ 'fade-in-to': !systemStore.isWelcomeShow }">
       <!-- 侧边栏 -->
       <div class="app-sidebar drag-area">

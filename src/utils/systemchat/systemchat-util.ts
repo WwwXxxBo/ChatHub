@@ -9,7 +9,9 @@ export const chat2system = async (option: SystemChatOption) => {
   startAnswer && startAnswer(sessionId);
   const chatMessagesList = await getSystemChatMessages(messages as SystemChatMessage[])
   const data = await receiveSystemChatMessage(9, chatMessagesList[0].content)
+  console.log(data)
   appendAnswer && appendAnswer(sessionId, data?.data ?? "");
+  console.log('!!!!!!',sessionStorage.userId)
   // 结束
   end && end(sessionId);
 };

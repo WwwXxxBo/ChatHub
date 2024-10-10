@@ -18,7 +18,7 @@ httpInstance.interceptors.response.use(
 )
 
 export const SystemHttpInstance = axios.create({
-    baseURL: "/systemchat",
+    baseURL: "http://8.142.78.0:30027/olexp_server",
     timeout: 5000
 })
 //  axios 响应式拦截器

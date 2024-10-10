@@ -8,7 +8,7 @@ export const getFileContent = async (
   const formData = new FormData();
   formData.append('file', file);
   return httpInstance({
-    url: "/file",
+    url: "file",
     method: "POST",
     data: formData,
     headers: {'content-type': 'multipart/form-data'},

@@ -64,6 +64,9 @@ export const useChatAssistantStore = defineStore({
       }
       return importFlag;
     },
+    updateChatAssistantList(newAssistantList: Assistant[]) {
+      this.chatAssistantList = newAssistantList;
+    },
   },
   persist: false,
 });

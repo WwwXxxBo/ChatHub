@@ -3,7 +3,7 @@ import { computed, reactive, toRefs } from "vue";
 // 引入类型限制
 import { type CollectionItemType, type CollectionItem } from "@/types"
 // 引入 UI 组件
-import { Modal } from '@arco-design/web-vue'
+import { Modal, Message } from '@arco-design/web-vue'
 // 引入页面组件
 import ProviderAvatar from "@/components/Avatar/ProviderAvatar.vue";
 import UserAvatar from "@/components/Avatar/UserAvatar.vue";
@@ -20,6 +20,8 @@ import { exportTextFile } from '@/utils/download-util'
 import { nowTimestamp, formatDateTime } from "@/utils/date-util";
 // 引入国际化组件
 import { useI18n } from "vue-i18n";
+// 引入 Assistant API
+import { deleteChatCollection, createNoteCollection, deleteNoteCollection, modifyNoteCollection } from "@/api/assistant";
 
 const { t } = useI18n();
 
@@ -39,7 +41,7 @@ const currentCollectionItem = computed(() => {
 })
 
 // 新建笔记
-const newNote = () => {
+const newNote = async () => {
   const id = randomUUID()
   const collectionItem: CollectionItem ={
     id: id,
@@ -49,6 +51,12 @@ const newNote = () => {
       content: ''
     },
     createTime: nowTimestamp()
+  }
+  const res = await createNoteCollection(collectionItem.id, sessionStorage.userId, collectionItem.type, collectionItem.note.title, collectionItem.note.content, collectionItem.createTime)
+  if(res.status == 0){
+    Message.success("笔记收藏创建成功!");
+  } else {
+    Message.success("笔记收藏创建失败!");
   }
   collectionStore.collectionItemList.unshift(collectionItem)
   data.currentCollectionItemId = id
@@ -71,6 +79,24 @@ const collectionItemListFilter = computed(() => {
   )
 })
 
+// 修改
+const modifyCollection = async () => {
+  const res = await modifyNoteCollection(
+    currentCollectionItem.value.id,
+    sessionStorage.userId,
+    currentCollectionItem.value.type,
+    currentCollectionItem.value.note.title,
+    currentCollectionItem.value.note.content,
+    currentCollectionItem.value.createTime
+  )
+  if(res.status == 0){
+    Message.success("笔记收藏保存成功!");
+  } else {
+    Message.success("笔记收藏保存失败!");
+  }
+}
+
+
 // 删除确认
 const deleteConfirm = (id: string) => {
   Modal.confirm({
@@ -78,9 +104,24 @@ const deleteConfirm = (id: string) => {
     content: t('common.deleteConfirmContent'),
     okText: t('common.ok'),
     cancelText: t('common.cancel'),
-    onOk: () => {
+    onOk:  async () => {
       const index = collectionStore.collectionItemList.findIndex((c) => c.id === id)
-      console.log('删除id:',index)
+      const collectionItem = collectionStore.collectionItemList.find((c) => c.id === id) as any
+      if(collectionItem.type == 'chat'){
+        const res = await deleteChatCollection(id);
+        if(res.status == 0){
+          Message.success("聊天消息收藏删除成功!");
+        } else {
+          Message.success("聊天消息收藏删除失败!");
+        }
+      } else {
+        const res = await deleteNoteCollection(id);
+        if(res.status == 0){
+          Message.success("笔记收藏删除成功!");
+        } else {
+          Message.success("笔记收藏删除失败!");
+        }       
+      }
       if(index >= 0){
         collectionStore.collectionItemList.splice(index, 1)
       }
@@ -229,6 +270,14 @@ const exportChatMessageList = (id: string) => {
             v-model="currentCollectionItem.note!.title"
             class="note-title-input no-drag-area"
           />
+          <a-button
+            v-if="currentCollectionItem.type === 'note'"
+            type="primary"
+            @click="modifyCollection()"
+          >
+            保存修改
+          </a-button>
+
           <!-- 显示模型名称和供应商 -->
           <template v-else>
             <div class="assistant-name">

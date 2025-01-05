@@ -17,12 +17,12 @@ httpInstance.interceptors.response.use(
     (err) => Promise.reject(err)
 )
 
-export const SystemHttpInstance = axios.create({
-    baseURL: "http://8.142.78.0:30027/olexp_server",
+export const AssistantHttpInstance = axios.create({
+    baseURL: "/assistant",
     timeout: 5000
 })
 //  axios 响应式拦截器
-SystemHttpInstance.interceptors.response.use(
+AssistantHttpInstance.interceptors.response.use(
     (res) => res.data,
     (err) => Promise.reject(err)
 )

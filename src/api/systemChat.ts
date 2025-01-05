@@ -1,4 +1,4 @@
-import { httpInstance, SystemHttpInstance } from "@/utils/http-util";
+import { httpInstance, AssistantHttpInstance } from "@/utils/http-util";
 import { type BaseMessage } from "@/types";
 
 /**
@@ -17,7 +17,7 @@ export const receiveSystemChatMessage = (
   // const cookies = document.cookie;
   // console.log(cookies)
   // console.log('@@@@@',message, sessionStorage.userId)
-  return SystemHttpInstance({
+  return AssistantHttpInstance({
     url: "/llmapi/",
     method: "POST",
     data: JSON.stringify({

@@ -37,12 +37,12 @@ export default defineConfig({
         target: 'http://47.113.194.28:3032/',
         changeOrigin: false,
         rewrite: (path) => path.replace(/^\/filechat/, '')
+      },
+      '/assistant': {
+        target: 'http://8.155.19.142:30027/olexp_server',
+        changeOrigin: false,
+        rewrite: (path) => path.replace(/^\/assistant/, '')
       }
-      // '/systemchat': {
-      //   target: 'http://8.142.78.0:30027/olexp_server',
-      //   changeOrigin: false,
-      //   rewrite: (path) => path.replace(/^\/systemchat/, '')
-      // }
     },
     cors: true
   }

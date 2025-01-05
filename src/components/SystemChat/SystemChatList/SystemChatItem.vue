@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { watch } from 'vue'
+import { Message } from '@arco-design/web-vue'
 // 引入 Assistant 状态
 import { useAssistantStore } from "@/stores/assistant";
 // 引入 System 状态
@@ -10,6 +11,7 @@ import { useI18n } from "vue-i18n";
 import { type Assistant, type ChatMessage } from "@/types"
 // 引入时间组件
 import dayjs from 'dayjs'
+import { deleteSystemAssistant } from "@/api/assistant"
 
 const { t } = useI18n();
 const assistantStore = useAssistantStore();
@@ -46,12 +48,18 @@ const assistantItemActive = () => {
 }
 
 // 删除对话
-const deleteChat = () => {
+const deleteChat = async () => {
   assistantStore.virtualAssistantList = assistantStore.virtualAssistantList.filter(
     (a) => a.id != props.assistant.id
   )
   if (assistantStore.currentVirtualAssistantId === props.assistant.id) {
     assistantStore.currentVirtualAssistantId = null
+  }
+  const res = await deleteSystemAssistant(props.assistant.id);
+  if(res.status === 0) {
+    Message.success("系统对话助手删除成功");
+  } else {
+    Message.error("系统对话助手删除失败");
   }
 }
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { watch } from 'vue'
+import { Message } from '@arco-design/web-vue'
 // 引入 Chat Assistant 状态
 import { useChatAssistantStore } from "@/stores/chatAssistant";
 // 引入 System 状态
@@ -10,6 +11,8 @@ import { useI18n } from "vue-i18n";
 import { type Assistant, type ChatMessage } from "@/types"
 // 引入时间组件
 import dayjs from 'dayjs'
+// 引入 Assistant API
+import { deleteAssistant } from "@/api/assistant"
 
 const { t } = useI18n();
 const chatAssistantStore = useChatAssistantStore();
@@ -47,12 +50,18 @@ const assistantItemActive = () => {
 }
 
 // 删除对话
-const deleteChat = () => {
+const deleteChat = async () => {
   chatAssistantStore.chatAssistantList = chatAssistantStore.chatAssistantList.filter(
     (a) => a.id != props.assistant.id
   )
   if (chatAssistantStore.currentChatAssistantId === props.assistant.id) {
     chatAssistantStore.currentChatAssistantId = null
+  }
+  const res = await deleteAssistant(props.assistant.id);
+  if(res.status === 0) {
+    Message.success("对话助手删除成功");
+  } else {
+    Message.error("对话助手删除失败");
   }
 }
 
@@ -102,9 +111,6 @@ watch(
     <!-- 删除按钮 -->
     <icon-close-circle class="assistant-item-delete-btn" @click.stop="deleteChat()"/>
   </div>
-
-
-
 </template>
 
 <style lang="less" scoped>

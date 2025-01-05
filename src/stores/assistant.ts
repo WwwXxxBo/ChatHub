@@ -29,161 +29,7 @@ export const useAssistantStore = defineStore({
         // 对话消息列表
         // chatMessageList: new Array<ChatMessage>(),
         // 测试消息
-        chatMessageList: [{
-          role: "user",
-          name: "测试",
-          content: "测试开始",
-          id: "1",
-          createTime: 111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？",
-          id: "2",
-          createTime: 1111111
-        },
-        {
-          role: "user",
-          name: "测试",
-          content: "测试",
-          id: "3",
-          createTime: 1111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？",
-          id: "4",
-          createTime: 11111111
-        },
-        {
-          role: "user",
-          name: "测试",
-          content: "测试",
-          id: "5",
-          createTime: 1111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？",
-          id: "6",
-          createTime: 11111111
-        },
-        {
-          role: "user",
-          name: "测试",
-          content: "测试",
-          id: "7",
-          createTime: 1111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？",
-          id: "8",
-          createTime: 11111111
-        },
-        {
-          role: "user",
-          name: "测试",
-          content: "测试",
-          id: "9",
-          createTime: 1111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？",
-          id: "10",
-          createTime: 11111111
-        },
-        {
-          role: "user",
-          name: "测试",
-          content: "测试",
-          id: "11",
-          createTime: 1111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？",
-          id: "12",
-          createTime: 1111111
-        },
-        {
-          role: "user",
-          name: "测试",
-          content: "测试",
-          id: "13",
-          createTime: 111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？",
-          id: "14",
-          createTime: 1111111
-        },
-        {
-          role: "user",
-          name: "测试",
-          content: "测试",
-          id: "15",
-          createTime: 111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？",
-          id: "16",
-          createTime: 1111111
-        },
-        {
-          role: "user",
-          name: "测试",
-          content: "测试",
-          id: "17",
-          createTime: 111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？",
-          id: "18",
-          createTime: 1111111
-        },
-        {
-          role: "user",
-          name: "测试",
-          content: "测试",
-          id: "19",
-          createTime: 111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？",
-          id: "20",
-          createTime: 1111111
-        },
-        {
-          role: "user",
-          name: "测试",
-          content: "测试",
-          id: "21",
-          createTime: 111111
-        },
-        {
-          role: "assistant",
-          name: "你好",
-          content: "你好，请问有什么可以帮助您的吗？最后",
-          id: "22",
-          createTime: 1111111
-        },
-      ] as SystemChatMessage[]
+        chatMessageList: new Array<SystemChatMessage>()
       },
     ] as Assistant[],
     // 当前 Assistant 的 ID 值
@@ -219,7 +65,10 @@ export const useAssistantStore = defineStore({
         importFlag = true
       }
       return importFlag
-    }
+    },
+    updateVirtualAssistantList(newVirtualAssistantList: Assistant[]) {
+      this.virtualAssistantList = newVirtualAssistantList;
+    },
   },
   persist: false
 });

@@ -19,6 +19,7 @@ import { randomUUID } from "@/utils/id-util";
 import { nowTimestamp } from "@/utils/date-util";
 // 引入 draggable 组件
 import draggable from 'vuedraggable'
+import { createSystemAssistant } from "@/api/assistant"
 
 const { t } = useI18n();
 const assistantStore = useAssistantStore();
@@ -30,7 +31,7 @@ const data = reactive({
 const { assistantForm, keyword } = toRefs(data);
 
 // 新增 Assistant
-const newAssistant = () => {
+const newAssistant = async () => {
   const id = randomUUID();
   assistantStore.virtualAssistantList.unshift({
     ...copyObj(
@@ -46,6 +47,31 @@ const newAssistant = () => {
   });
   // 将新建的 Assistant 设置为当前 Assistant
   assistantStore.currentVirtualAssistantId = id;
+
+  // 获取当前聊天助手信息
+  let currentVirtualAssistant = {...copyObj(assistantStore.getCurrentVirtualAssistant)}
+  const res = await createSystemAssistant(
+    currentVirtualAssistant.id, 
+    sessionStorage.userId, 
+    currentVirtualAssistant.name, 
+    currentVirtualAssistant.type,
+    currentVirtualAssistant.instruction, 
+    currentVirtualAssistant.provider, 
+    currentVirtualAssistant.model, 
+    currentVirtualAssistant.maxTokens,
+    currentVirtualAssistant.inputMaxTokens, 
+    currentVirtualAssistant.contextSize, 
+    currentVirtualAssistant.speechModel, 
+    currentVirtualAssistant.speechVoice,
+    currentVirtualAssistant.speechSpeed, 
+    currentVirtualAssistant.createTime, 
+    currentVirtualAssistant.lastUpdateTime,
+  )
+  if(res.status === 0) {
+    Message.success("系统对话助手创建成功");
+  } else {
+    Message.error("系统对话助手创建失败");
+  }
 };
 
 onMounted(() => {

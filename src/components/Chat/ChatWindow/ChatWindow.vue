@@ -4,7 +4,6 @@ import { ref, reactive, toRefs, onMounted, nextTick, computed } from "vue";
 import { CommonChatOption, chat2bigModel } from "@/utils/bigmodel";
 // 引入类型检查
 import {
-  type Assistant,
   type ChatMessage,
   type ChatRole,
   type MessageFile,
@@ -39,7 +38,7 @@ import { renderMarkdown } from "@/utils/markdown-util";
 // 引入计算用户输入 Token 函数
 import { getContentTokensLength } from "@/utils/gpt-tokenizer-util";
 // 引入组件
-import { FileItem, Message, Modal, RequestOption } from "@arco-design/web-vue";
+import { type FileItem, Message, Modal, type RequestOption } from "@arco-design/web-vue";
 // 引入发音标识枚举类型
 import { SpeechStatus } from "@/utils/constant";
 // 引入页面选中信息组件
@@ -54,7 +53,8 @@ import { useI18n } from "vue-i18n";
 import { APIUserAbortError } from "openai";
 // 引入 vue-clipboard3 组件
 import useClipboard from "vue-clipboard3";
-import { type } from "os";
+// 引入 Assistant API
+import { createAssistantMessage } from "@/api/assistant"
 
 const { t } = useI18n();
 // 状态
@@ -113,7 +113,7 @@ const data = reactive({
   // 文件上传列表modal
   fileListModalVisible: false,
   // 用户上传图片地址
-  userUploadImageUrl:null
+  userUploadImageUrl: null as any
 });
 
 const {
@@ -250,6 +250,8 @@ const sendQuestion = async (event?: KeyboardEvent) => {
     systemStore.chatWindowLoading = false;
     data.waitAnswer = false;
   }
+
+  console.log('现在的聊天列表', data.currentChatAssistant.chatMessageList)
 };
 
 // 使用大模型
@@ -311,6 +313,9 @@ const useBigModel = async () => {
     fileList: questionFileList,
     createTime: nowTimestamp(),
   });
+
+
+
   scrollToBottom(false);
   // 大模型接收的消息列表
   let bigModelMessageList = data.currentChatAssistant.chatMessageList;
@@ -356,7 +361,7 @@ const useBigModel = async () => {
       ].content += content;
       scrollToBottom(true);
     },
-    end: (sessionId: string, errMsg: any) => {
+    end: async (sessionId: string, errMsg: any) => {
       if (data.currentSessionId != sessionId) {
         return;
       }
@@ -369,6 +374,33 @@ const useBigModel = async () => {
       // 关闭等待
       data.waitAnswer = false;
       systemStore.chatWindowLoading = false;
+
+      // 将新生成的内容存入数据库
+      const lastMessage_1 = data.currentChatAssistant.chatMessageList[data.currentChatAssistant.chatMessageList.length - 2]
+      const lastMessage_2 = data.currentChatAssistant.chatMessageList[data.currentChatAssistant.chatMessageList.length - 1]
+      const res_1 = await  createAssistantMessage(
+        lastMessage_1.id, 
+        data.currentChatAssistant.id, 
+        lastMessage_1.name || '', 
+        lastMessage_1.role, 
+        lastMessage_1.type, 
+        lastMessage_1.content, 
+        lastMessage_1.image || '', 
+        lastMessage_1.createTime
+      )
+      const res_2 = await  createAssistantMessage(
+        lastMessage_2.id, 
+        data.currentChatAssistant.id, 
+        lastMessage_2.name || '', 
+        lastMessage_2.role, 
+        lastMessage_2.type, 
+        lastMessage_2.content, 
+        lastMessage_2.image || '', 
+        lastMessage_2.createTime
+      )
+      if(res_1.status !== 0 || res_2.status !== 0) {
+        Message.error("聊天消息数据存入数据库失败！");
+      }
     },
   };
   // 各家大模型特有选项

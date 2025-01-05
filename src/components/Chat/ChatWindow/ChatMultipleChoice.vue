@@ -24,7 +24,8 @@ import { Message, Modal } from '@arco-design/web-vue'
 import { useI18n } from 'vue-i18n'
 // 引入绘图库
 import html2canvas from 'html2canvas'
-
+// 引入 Assistant Message API
+import { deleteAssistantMessage, createChatCollection, createChatCollectionMessage } from "@/api/assistant"
 
 const { t } = useI18n()
 // 引入状态
@@ -61,7 +62,7 @@ const getSelectMessageList = () => {
 }
 
 // 收藏选中聊天信息
-const multipleChoiceCollect = () => {
+const multipleChoiceCollect = async () => {
   if(props.multipleChoiceList.length === 0){
     return
   }
@@ -80,7 +81,21 @@ const multipleChoiceCollect = () => {
     },
     createTime: nowTimestamp()
   }
+
+  for(var message of selectChatMessageList) {
+    const chatCollectionMessageRes = await createChatCollectionMessage(
+      message.id,
+      collectionItem.id,
+      message.name,
+      message.role,
+      message.type,
+      message.content,
+      message.image,
+      message.createTime
+    );
+  }
   collectionStore.collectionItemList.unshift(collectionItem)
+  const res = await createChatCollection(collectionItem.id, chatAssistantStore.getCurrentChatAssistant.id, sessionStorage.userId, collectionItem.type, collectionItem.createTime);
   emits('close')
   Message.success(t('chatWindow.collectSuccess'))
 }
@@ -146,7 +161,7 @@ const multipleChoiceDelete = () => {
     okText: t('common.ok'),
     cancelText: t('common.cancel'),
     onOk: () => {
-      props.multipleChoiceList.forEach((id) => {
+      props.multipleChoiceList.forEach(async (id) => {
         // 找到选中消息的序号
         const index = data.currentChatAssistant.chatMessageList.findIndex((msg) => msg.id === id)
         if(index >= 0){
@@ -154,6 +169,14 @@ const multipleChoiceDelete = () => {
           if(index > 0 && id === data.currentChatAssistant.clearContextMessageId){
             data.currentChatAssistant.clearContextMessageId = data.currentChatAssistant.chatMessageList[index - 1].id
           }
+          // 删除数据库中选中的消息
+          const res = await deleteAssistantMessage(data.currentChatAssistant.chatMessageList[index].id);
+          if(res.status === 0){
+            Message.success("消息删除成功!");
+          } else {
+            Message.success("消息删除失败!");
+          }
+
           data.currentChatAssistant.chatMessageList.splice(index, 1)
         }
       })

@@ -5,7 +5,7 @@ import { type CollectionItemType } from "@/types"
 export const useCollectionStore = defineStore({
     id: 'collection',
     state: () => ({
-        collectionItemList: [] as CollectionItemType[]
+        collectionItemList: [] as any
     }),
     getters: {
         getStoreJson(): string {

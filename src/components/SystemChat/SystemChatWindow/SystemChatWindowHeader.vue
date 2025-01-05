@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { reactive, ref, toRefs } from "vue";
+import { Message, Modal } from '@arco-design/web-vue'
 // 引入 Assistant 状态
 import { useAssistantStore } from "@/stores/assistant";
+import { useSystemStore } from "@/stores/system"
+import { nowTimestamp, formatDateTime } from "@/utils/date-util";
+import { exportTextFile } from "@/utils/download-util"
+import { deleteSystemAssistant } from "@/api/assistant"
 // 引入接口
-import { type Assistant, type ChatMessage } from "@/types";
+import { ChatMessage, type Assistant } from "@/types";
 // 引入页面组件
 import SystemChatWindowForm from "@/components/SystemChat/SystemChatWindow/SystemChatWindowForm.vue";
 // 引入国际化组件
 import { useI18n } from "vue-i18n";
+import { deleteSystemAssistantMessage } from "@/api/assistant"
 
 // 获取父组件传递的数据
 const props = defineProps({
@@ -20,12 +26,87 @@ const props = defineProps({
 const { t } = useI18n();
 
 const assistantStore = useAssistantStore();
-const editModalVisible = ref(false);
+const systemStore = useSystemStore();
 
-// 打开模态框
-const edit = () => {
-  editModalVisible.value = true;
-};
+// 一些数据
+const data = reactive({
+  currentAssistant: props.currentAssistant,
+  editModalVisible: false,
+  assistantForm: {} as Assistant
+})
+const { editModalVisible, assistantForm } = toRefs(data)
+
+
+// 导出聊天记录
+const exportChatMessageList = () => {
+  if (systemStore.chatWindowLoading) {
+    return
+  }
+  const content = data.currentAssistant.chatMessageList
+  .map((r) => `[${formatDateTime(new Date(r.createTime))}] ${r.role} : \n${r.content}`)
+  .join('\n\n')
+  exportTextFile(`chat-records-${nowTimestamp()}.md`, content)
+}
+
+// 删除聊天助手确认
+const deleteConfirm = () => {
+  if (systemStore.chatWindowLoading) {
+    return
+  }
+  Modal.confirm({
+    title: t('common.deleteConfirm'),
+    content: t('common.deleteConfirmContent'),
+    okText: t('common.ok'),
+    cancelText: t('common.cancel'),
+    onOk: () => {
+      assistantDelete()
+    }
+  })
+}
+
+// 清空聊天记录
+const clearConfirm = () => {
+  if (systemStore.chatWindowLoading) {
+    return
+  }
+  Modal.confirm({
+    title: t('common.clearConfirm'),
+    content: t('common.clearConfirmContent'),
+    okText: t('common.ok'),
+    cancelText: t('common.cancel'),
+    onOk: async () => {
+      for(var chatMessage of data.currentAssistant.chatMessageList){
+        const res = await deleteSystemAssistantMessage(chatMessage.id);
+        if(res.status !== 0){
+          Message.error("聊天记录清空失败！");
+        }
+      }
+      data.currentAssistant.chatMessageList = []
+      // 清除上下文 ID 设置为 NULL
+      data.currentAssistant.clearContextMessageId = null
+      Message.success("聊天记录清空成功！");
+    }
+  })
+}
+
+// 删除聊天助手
+const assistantDelete = async () => {
+  assistantStore.virtualAssistantList = assistantStore.virtualAssistantList.filter(
+      (a) => a.id != data.currentAssistant.id
+    )
+  const res = await deleteSystemAssistant(data.currentAssistant.id);
+  if(res.status === 0) {
+    Message.success("系统对话助手删除成功");
+  } else {
+    Message.error("系统对话助手删除失败");
+  }
+  assistantStore.currentVirtualAssistantId = null
+}
+
+
+defineExpose({
+  clearConfirm
+})
 </script>
 
 <template>

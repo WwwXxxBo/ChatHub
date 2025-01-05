@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, reactive, toRefs } from "vue";
+import { reactive, toRefs } from "vue";
 import { Message, Modal } from '@arco-design/web-vue'
 // 引入 Chat Assistant、System 状态
 import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { useSystemStore } from "@/stores/system"
 // 引入类型检查
-import { type Assistant, type ChatMessage } from "@/types";
+import { type Assistant } from "@/types";
 // 引入组件
 import ChatWindowForm from "@/components/Chat/ChatWindow/ChatWindowForm.vue";
 // 引入复制对象方法
@@ -16,6 +16,10 @@ import { exportTextFile } from "@/utils/download-util"
 import { nowTimestamp, formatDateTime } from "@/utils/date-util";
 // 引入国际化组件
 import { useI18n } from "vue-i18n";
+// 引入 Assistant API
+import { modifyAssistant } from '@/api/assistant';
+import { deleteAssistant } from "@/api/assistant"
+import { deleteAssistantMessage } from "@/api/assistant"
 
 // 获取父组件传递的数据
 const props = defineProps({
@@ -86,10 +90,17 @@ const clearConfirm = () => {
     content: t('common.clearConfirmContent'),
     okText: t('common.ok'),
     cancelText: t('common.cancel'),
-    onOk:() => {
+    onOk: async () => {
+      for(var chatMessage of data.currentAssistant.chatMessageList){
+        const res = await deleteAssistantMessage(chatMessage.id);
+        if(res.status !== 0){
+          Message.error("聊天记录清空失败！");
+        }
+      }
       data.currentAssistant.chatMessageList = []
       // 清除上下文 ID 设置为 NULL
       data.currentAssistant.clearContextMessageId = null
+      Message.success("聊天记录清空成功！");
     }
   })
 }
@@ -111,18 +122,46 @@ const deleteConfirm = () => {
 }
 
 // 删除聊天助手
-const assistantDelete = () => {
+const assistantDelete = async () => {
   chatAssistantStore.chatAssistantList = chatAssistantStore.chatAssistantList.filter(
       (a) => a.id != data.currentAssistant.id
     )
-    chatAssistantStore.currentChatAssistantId = null
+  const res = await deleteAssistant(data.currentAssistant.id);
+  if(res.status === 0) {
+    Message.success("系统对话助手删除成功");
+  } else {
+    Message.error("系统对话助手删除失败");
+  }
+  chatAssistantStore.currentChatAssistantId = null
 }
 
 // 聊天助手更新
-const assistantUpdate = (newAssistant: Assistant) => {
+const assistantUpdate = async (newAssistant: Assistant) => {
   const index = chatAssistantStore.chatAssistantList.findIndex((a) => a.id === newAssistant.id)
   if(index < 0){
     return
+  }
+  const res = await modifyAssistant(
+    newAssistant.id,
+    sessionStorage.userId,
+    newAssistant.name,
+    newAssistant.type,
+    newAssistant.instruction,
+    newAssistant.provider,
+    newAssistant.model,
+    newAssistant.maxTokens,
+    newAssistant.inputMaxTokens,
+    newAssistant.contextSize,
+    newAssistant.speechModel,
+    newAssistant.speechVoice,
+    newAssistant.speechSpeed,
+    newAssistant.createTime,
+    newAssistant.lastUpdateTime
+  );
+  if(res.status === 0) {
+    Message.success("对话助手修改成功");
+  } else {
+    Message.error("对话助手修改失败");
   }
   copyFields(
     newAssistant,

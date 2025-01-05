@@ -41,6 +41,7 @@ import useClipboard from "vue-clipboard3";
 import { getSelectedText } from "@/utils/window-util";
 import { chat2system } from "@/utils/systemchat/systemchat-util"
 import { type SystemChatOption } from "@/utils/systemchat"
+import { createSystemAssistantMessage } from "@/api/assistant"
 
 const { t } = useI18n()
 // 状态
@@ -51,7 +52,7 @@ const notificationStore = useNotificationStore()
 // 阻断控制
 let abortCtr = new AbortController()
 
-const SystemChatWindowHeaderRef = ref()
+const systemWindowHeaderRef = ref()
 
 // 数据绑定
 const data = reactive({
@@ -260,7 +261,7 @@ const useSystemChat = async () => {
   // 用户消息追加
   data.currentAssistant.chatMessageList.push({
     id: randomUUID(),
-    role: 'user',
+    role: 'user' as ChatRole,
     name: 'system chat',
     content: question,
     createTime: nowTimestamp()
@@ -280,7 +281,7 @@ const useSystemChat = async () => {
       }
       data.currentAssistant.chatMessageList.push({
         id: randomUUID(),
-        role: 'assistant',
+        role: 'assistant' as ChatRole,
         name: 'system chat',
         content: content ?? '',
         createTime: nowTimestamp()
@@ -296,7 +297,7 @@ const useSystemChat = async () => {
       data.currentAssistant.chatMessageList[data.currentAssistant.chatMessageList.length - 1].content += content
       scrollToBottom(true)
     },
-    end:(sessionId: string, errMsg: any) => {
+    end: async (sessionId: string, errMsg: any) => {
       if(data.currentSessionId != sessionId){
         return
       }
@@ -310,6 +311,29 @@ const useSystemChat = async () => {
       // 关闭等待
       data.waitAnswer = false
       systemStore.systemChatWindowLoading = false
+
+      // 将新生成的内容存入数据库
+      const lastMessage_1 = data.currentAssistant.chatMessageList[data.currentAssistant.chatMessageList.length - 2]
+      const lastMessage_2 = data.currentAssistant.chatMessageList[data.currentAssistant.chatMessageList.length - 1]
+      const res_1 = await  createSystemAssistantMessage(
+        lastMessage_1.id, 
+        data.currentAssistant.id, 
+        lastMessage_1.name || '', 
+        lastMessage_1.role, 
+        lastMessage_1.content, 
+        lastMessage_1.createTime
+      )
+      const res_2 = await  createSystemAssistantMessage(
+        lastMessage_2.id, 
+        data.currentAssistant.id, 
+        lastMessage_2.name || '', 
+        lastMessage_2.role, 
+        lastMessage_2.content, 
+        lastMessage_2.createTime
+      )
+      if(res_1.status !== 0 || res_2.status !== 0) {
+        Message.error("聊天消息数据存入数据库失败！");
+      }
     },
     abortCtr: abortCtr,
   }
@@ -329,7 +353,7 @@ onMounted(() => {
   <div class="chat-window">
     <!-- 头部 -->
     <SystemChatWindowHeader 
-      ref="chatWindowHeaderRef"
+      ref="systemWindowHeaderRef"
       :current-assistant="currentAssistant"
     />
     <!-- 消息列表滚动 -->
@@ -448,19 +472,7 @@ onMounted(() => {
           <a-button size="mini" shape="round">
             <icon-settings :size="15" />
           </a-button>
-        </a-tooltip>
-
-        <!-- 清空上下文 -->
-        <a-tooltip
-          :content="$t('chatWindow.clearContext')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
-          <a-button size="mini" shape="round">
-            <icon-eraser :size="15" />
-          </a-button>
-        </a-tooltip>
+        </a-tooltip>  
 
         <!-- 清空记录 -->
         <a-tooltip
@@ -469,7 +481,7 @@ onMounted(() => {
           mini
           :content-style="{ fontSize: 'var(--font-size-xs)' }"
         >
-          <a-button size="mini" shape="round">
+          <a-button size="mini" shape="round"  @click="systemWindowHeaderRef.clearConfirm()">
             <icon-delete :size="15" />
           </a-button>
         </a-tooltip>

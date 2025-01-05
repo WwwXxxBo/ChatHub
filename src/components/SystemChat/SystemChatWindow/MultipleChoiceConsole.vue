@@ -17,6 +17,7 @@ import { exportTextFile } from '@/utils/download-util'
 import { Message, Modal } from "@arco-design/web-vue";
 import { useI18n } from "vue-i18n";
 import html2canvas from 'html2canvas'
+import { deleteSystemAssistantMessage } from "@/api/assistant"
 
 const { t } = useI18n();
 const assistantStore = useAssistantStore();
@@ -54,7 +55,6 @@ const getSelectMessageList = () => {
 };
 
 const multipleChoiceDownload = () => {
-  console.log('长度',props.multipleChoiceList.length)
   if(props.multipleChoiceList.length === 0){
     return
   }
@@ -139,14 +139,19 @@ const multipleChoiceDelete = () => {
     okText: t('common.ok'),
     cancelText: t('common.cancel'),
     onOk: () => {
-      console.log('选中消息的长度',props.multipleChoiceList.length)
-      props.multipleChoiceList.forEach((id) => {
+      props.multipleChoiceList.forEach(async (id) => {
         const index = data.currentAssistant.chatMessageList.findIndex((msg) => msg.id === id)
         if(index >= 0){
+          // 删除数据库中的消息
+          const res = await deleteSystemAssistantMessage(data.currentAssistant.chatMessageList[index].id);
+          if(res.status === 0){
+            Message.success("消息删除成功!");
+          } else {
+            Message.success("消息删除失败!");
+          }         
           data.currentAssistant.chatMessageList.splice(index, 1)
         }
       })
-      console.log('现在的消息列表', data.currentAssistant.chatMessageList)
       emits('close')
     }
   })

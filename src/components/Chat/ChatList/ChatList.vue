@@ -19,6 +19,7 @@ import { randomUUID } from "@/utils/id-util";
 import { nowTimestamp } from "@/utils/date-util";
 // 引入 draggable 组件
 import draggable from 'vuedraggable'
+import { createAssistant } from "@/api/assistant"
 
 
 const { t } = useI18n();
@@ -27,11 +28,12 @@ const chatAssistantStore = useChatAssistantStore();
 const data = reactive({
   assistantForm: copyObj(defaultAssistant) as Assistant,
   keyword: "",
+  newChatAssistantList: [] as any
 });
 const { assistantForm, keyword } = toRefs(data);
 
 // 新增 Assistant
-const newChatAssistant = () => {
+const newChatAssistant = async () => {
   const id = randomUUID();
   chatAssistantStore.chatAssistantList.unshift({
     ...copyObj(
@@ -47,9 +49,34 @@ const newChatAssistant = () => {
   });
   // 将新建的 Chat Assistant 设置为当前 Chat Assistant
   chatAssistantStore.currentChatAssistantId = id;
+
+  // 获取当前聊天助手信息
+  let currentChatAssistant = {...copyObj(chatAssistantStore.getCurrentChatAssistant)}
+  const res = await createAssistant(
+    currentChatAssistant.id, 
+    sessionStorage.userId, 
+    currentChatAssistant.name, 
+    currentChatAssistant.type,
+    currentChatAssistant.instruction, 
+    currentChatAssistant.provider, 
+    currentChatAssistant.model, 
+    currentChatAssistant.maxTokens,
+    currentChatAssistant.inputMaxTokens, 
+    currentChatAssistant.contextSize, 
+    currentChatAssistant.speechModel, 
+    currentChatAssistant.speechVoice,
+    currentChatAssistant.speechSpeed, 
+    currentChatAssistant.createTime, 
+    currentChatAssistant.lastUpdateTime,
+  )
+  if(res.status === 0) {
+    Message.success("对话助手创建成功");
+  } else {
+    Message.error("对话助手创建失败");
+  }
 };
 
-onMounted(() => {
+onMounted(async () => {
   // 将当前 Chat Assistant 显示到视窗
   document.querySelector('.assistant-item-active')?.scrollIntoView()
 })

@@ -1,8 +1,8 @@
-import { SystemHttpInstance } from "@/utils/http-util";
+import { AssistantHttpInstance } from "@/utils/http-util";
 
 // 接收后端传递的用户数据
 export const getUserData = (phone: string, password: string) => {
-  return SystemHttpInstance({
+  return AssistantHttpInstance({
     url: "/identify/",
     method: "GET",
     params: {

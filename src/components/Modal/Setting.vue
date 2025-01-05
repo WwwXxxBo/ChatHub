@@ -4,6 +4,7 @@ import { watch } from "vue";
 import { useSystemStore } from "@/stores/system";
 // 引入 Setting 状态
 import { useSettingStore } from "@/stores/setting";
+import { Message } from "@arco-design/web-vue";
 // 引入国际化组件
 import { useI18n } from "vue-i18n";
 // 引入打开网址工具
@@ -11,6 +12,7 @@ import { openInBrowser } from "@/utils/window-util";
 // 引入主题表
 import { defaultCustomThemeMap, setCustomFontSize, setCustomTheme } from "@/utils/theme-util";
 import { copyObj } from "@/utils/object-util";
+import { modifyCommonSetting } from "@/api/setting"
 
 const { t } = useI18n();
 
@@ -24,6 +26,31 @@ watch(
     setCustomFontSize(value)
   }
 )
+
+const saveCommonSetting = async() => {
+  const res = await modifyCommonSetting(
+    sessionStorage.userId,
+    settingStore.openAI.key,
+    settingStore.zhipuAI.apiKey,
+    settingStore.ernie.apiKey,
+    settingStore.ernie.secretKey,
+    settingStore.spark.appId,
+    settingStore.spark.secret,
+    settingStore.spark.key,
+    settingStore.tongyi.apiKey,
+    settingStore.moonshotAI.apiKey,
+    settingStore.tiangong.appKey,
+    settingStore.tiangong.appSecret,
+    settingStore.stepFun.apiKey,
+    settingStore.deepSeek.apiKey,
+    settingStore.baichuan.apiKey
+  )
+  if(res.status === 0){
+    Message.success("通用设置保存成功");
+  } else {
+    Message.success("通用设置保存失败");
+  }
+}
 
 // 自定义样式实时生效
 watch(
@@ -198,6 +225,7 @@ watch(
                       />
                     </a-space>
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
 
@@ -237,6 +265,7 @@ watch(
                       />
                     </a-space>
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
               
@@ -293,6 +322,7 @@ watch(
                       "
                     />
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
 
@@ -333,6 +363,7 @@ watch(
                       />
                     </a-space>
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
 
@@ -377,6 +408,7 @@ watch(
                       "
                     />
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
 
@@ -417,6 +449,7 @@ watch(
                       />
                     </a-space>
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
 
@@ -471,6 +504,7 @@ watch(
                       />
                     </a-space>
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
 
@@ -511,6 +545,7 @@ watch(
                       />
                     </a-space>
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
               
@@ -551,6 +586,7 @@ watch(
                       />
                     </a-space>
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
               
@@ -595,6 +631,7 @@ watch(
                       "
                     />
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
 
@@ -634,6 +671,7 @@ watch(
                       />
                     </a-space>
                   </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
             </a-tabs>

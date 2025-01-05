@@ -11,14 +11,15 @@ import { getOllamaModelList } from "@/utils/bigmodel/ollama-util"
 
 const settingStore = useSettingStore();
 
-let  modelList = []
+let  modelList = [] as any
 const assistant = defineModel<Assistant>('assistant', { default: () => ({}) })
 watch(
   // 自动显示模型
   () => assistant.value.provider,
-  (value) => {
+  async (value) => {
     // 如果模型是 Ollama 本地模型
     if(value === 'Ollama'){
+      modelList = await getOllamaModelList(settingStore.ollama.baseUrl)
       assistant.value.model = modelList[0]?.name ?? ''
     }
     // 如果模型是其他模型
@@ -29,12 +30,6 @@ watch(
     }
   }
 )
-
-onMounted(async () => {
-  if(assistant.value.provider === 'Ollama'){
-    modelList = await getOllamaModelList(settingStore.ollama.baseUrl)
-  }
-})
 </script>
 
 <template>

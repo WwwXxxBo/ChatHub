@@ -1,5 +1,4 @@
 import { httpInstance } from "@/utils/http-util";
-import { type BaseMessage } from "@/types";
 
 export const getFileContent = async (
   file: File

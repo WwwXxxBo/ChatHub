@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, toRefs, onMounted, nextTick, computed } from "vue";
 // 引入模型接口
-import { CommonChatOption, chat2bigModel } from "@/utils/bigmodel";
+import { type CommonChatOption, chat2bigModel } from "@/utils/bigmodel";
 // 引入类型检查
 import {
   type ChatMessage,
@@ -250,8 +250,6 @@ const sendQuestion = async (event?: KeyboardEvent) => {
     systemStore.chatWindowLoading = false;
     data.waitAnswer = false;
   }
-
-  console.log('现在的聊天列表', data.currentChatAssistant.chatMessageList)
 };
 
 // 使用大模型
@@ -313,8 +311,6 @@ const useBigModel = async () => {
     fileList: questionFileList,
     createTime: nowTimestamp(),
   });
-
-
 
   scrollToBottom(false);
   // 大模型接收的消息列表
@@ -828,7 +824,7 @@ onMounted(() => {
         </div>
 
         <!-- 选择文档 -->
-        <a-tooltip
+        <!-- <a-tooltip
           :content="$t('chatWindow.selectFile')"
           position="top"
           mini
@@ -842,7 +838,7 @@ onMounted(() => {
           >
             <icon-file :size="15" />
           </a-button>
-        </a-tooltip>
+        </a-tooltip> -->
       </div>
       <div class="chat-input">
         <!-- 如果用户选择了图片 -->

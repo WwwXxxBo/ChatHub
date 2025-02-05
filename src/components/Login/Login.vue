@@ -80,7 +80,6 @@ const toLogin = async () => {
     loginForm.value.phone,
     loginForm.value.password
   );
-
   if (userData.status == 0) {
     // 关闭登录页
     userStore.isLogin = true;

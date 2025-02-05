@@ -34,7 +34,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/ernie/, '')
       },
       '/filechat':{
-        target: 'http://47.113.194.28:3032/',
+        target: 'http://localhost:3032/',
         changeOrigin: false,
         rewrite: (path) => path.replace(/^\/filechat/, '')
       },

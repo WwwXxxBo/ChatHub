@@ -45,10 +45,11 @@ const saveCommonSetting = async() => {
     settingStore.deepSeek.apiKey,
     settingStore.baichuan.apiKey
   )
+  console.log(res);
   if(res.status === 0){
     Message.success("通用设置保存成功");
   } else {
-    Message.success("通用设置保存失败");
+    Message.error("通用设置保存失败");
   }
 }
 

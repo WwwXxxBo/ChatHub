@@ -6,7 +6,6 @@ import { type PageName } from "@/types"
 import Welcome from "@/components/Welcome/Welcome.vue";
 import Chat from "@/components/Chat/Chat.vue";
 import SystemChat from "@/components/SystemChat/SystemChat.vue";
-import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 import Setting from "@/components/Modal/Setting.vue"
 import Collect from "@/components/Collect/Collect.vue"
 import Login from "@//components/Login/Login.vue"
@@ -113,44 +112,44 @@ onMounted(() => {
 
 <template>
   <a-config-provider :locale="arcoDesignLocal">
-    <!-- 欢迎页 -->
-    <!-- <Login v-if="!userStore.isLogin" />
-    <Welcome v-if="systemStore.isWelcomeShow && userStore.isLogin"/> -->
+    <!-- 登录页与欢迎页 -->
     <Login v-if="!userStore.isLogin" />
-    <Welcome v-if="systemStore.isWelcomeShow"/>
+    <Welcome v-if="systemStore.isWelcomeShow" />
+
     <div class="app fade-in-from" :class="{ 'fade-in-to': !systemStore.isWelcomeShow }">
       <!-- 侧边栏 -->
       <div class="app-sidebar drag-area">
-        <div :class="{ 'app-sidebar-avatar-macos': false }">
-          <!-- 用户信息编辑 -->
-          <UserAvatar :editable="true" :size="36" />
-        </div>
-        <div
-          v-for="c in sidebarConfig"
-          :key="c.name"
-          class="app-sidebar-item no-drag-area"
-          :class="{'app-sidebar-item-active': systemStore.isThisPage(c.name)}"
-          @click="changePage(c.name)"
-        >
-          <component :is="c.icon" class="app-sidebar-item-icon" />
-        </div>
+        <div class="siderbar-container">
+          <!-- 对话 -->
+          <div class="app-sidebar-item no-drag-area" @click="changePage('chat')">
+            <icon-message class="app-sidebar-item-icon" />
+            <span class="app-sidebar-item-text">对话</span>
+          </div>
 
-        <!-- 设置 -->
-        <div class="app-sidebar-item no-drag-area">
-          <Setting>
-            <template #default>
-              <icon-settings class="app-sidebar-item-icon" />
-            </template>
-          </Setting>
+          <!-- 收藏 -->
+          <div class="app-sidebar-item no-drag-area" @click="changePage('collect')">
+            <icon-star class="app-sidebar-item-icon" />
+            <span class="app-sidebar-item-text">收藏</span>
+          </div>
+          <!-- 设置 -->
+          <div class="app-sidebar-item no-drag-area">
+            <Setting>
+              <template #default>
+                <icon-settings class="app-sidebar-item-icon" />
+              </template>
+            </Setting>
+            <span class="app-sidebar-item-text">设置</span>
+          </div>
         </div>
-
       </div>
+
       <!-- 多页面 -->
       <div v-if="alivePages.includes('chat')" v-show="systemStore.isThisPage('chat')" class="app-body">
         <Chat />
       </div>
       <!-- 系统聊天页 -->
-      <div v-if="alivePages.includes('chat-assistant')" v-show="systemStore.isThisPage('chat-assistant')" class="app-body">
+      <div v-if="alivePages.includes('chat-assistant')" v-show="systemStore.isThisPage('chat-assistant')"
+        class="app-body">
         <SystemChat />
       </div>
       <!-- 收藏页 -->
@@ -167,52 +166,42 @@ onMounted(() => {
 
 <style lang="less">
 @import "@/assets/css/styles.less";
+
 .app {
   width: 100vw;
   height: 100vh;
   display: flex;
-  // 设置渐变背景
-  background-color:hsla(221,94%,51%,1);
-  background-image:
-  radial-gradient(at 12% 50%, hsla(10,21%,87%,0.87) 0px, transparent 50%),
-  radial-gradient(at 65% 9%, hsla(12,80%,86%,1) 0px, transparent 50%),
-  radial-gradient(at 86% 74%, hsla(12,28%,83%,1) 0px, transparent 50%);
-
-  color: var(--color-text-1);
-  font-size: var(--font-size-default);
+  background: linear-gradient(315deg, #856cff 0.000%, #856cff 10.000%, #8568ff calc(10.000% + 1px), #8568ff 20.000%, #846eff calc(20.000% + 1px), #846eff 30.000%, #847aff calc(30.000% + 1px), #847aff 40.000%, #8487ff calc(40.000% + 1px), #8487ff 50.000%, #838fff calc(50.000% + 1px), #838fff 60.000%, #8390ff calc(60.000% + 1px), #8390ff 70.000%, #8387ff calc(70.000% + 1px), #8387ff 80.000%, #827aff calc(80.000% + 1px), #827aff 90.000%, #826eff calc(90.000% + 1px) 100.000%);
 
   .app-sidebar {
     flex-shrink: 0;
-    width: 65px;
+    width: 70px;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-
-    .app-sidebar-avatar-macos {
-      margin: 30px 0 15px 0;
-    }
+    padding: 10px 6px;
 
     .app-sidebar-item {
-      padding: 13px 0;
-      width: 100%;
       display: flex;
+      flex-direction: column;
       align-items: center;
+      color: white;
       justify-content: center;
+      cursor: pointer;
+      padding: 12px 8px;
+    }
 
-      .app-sidebar-item-icon {
-        font-size: 26px;
-        stroke-width: 3;
-        color: var(--color-bg-1);
-        border-radius: 50%;
-        transition: all 100ms linear;
-      }
+    .app-sidebar-item-icon {
+      font-size: 30px;
+      stroke-width: 3;
+      margin-bottom: 4px;
+    }
 
-      &:active {
-        .app-sidebar-item-icon {
-          color: var(--color-text-2);
-        }
-      }
+    .app-sidebar-item-text {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
     }
 
     .app-sidebar-item-active {
@@ -220,8 +209,8 @@ onMounted(() => {
 
       .app-sidebar-item-icon {
         stroke-width: 4;
-        font-size: 30px;
-        font-weight: 900;
+        font-size: 20px;
+        color: orange;
         color: var(--color-bg-1) !important;
       }
 
@@ -230,7 +219,7 @@ onMounted(() => {
         content: "";
         height: 26px;
         width: 10px;
-        background-color: var(--color-bg-1) ;
+        background-color: var(--color-bg-1);
         // background-color: rgb(var(--primary-5));
         position: absolute;
         top: 13px;

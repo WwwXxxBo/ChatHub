@@ -27,33 +27,16 @@ const { isLeftClose } = toRefs(data);
     </transition>
     <div ref="chatAssistantRightRef" class="chat-assistant-right">
       <!-- 隐藏/显示左边栏按钮 -->
-      <a-tooltip
-        :content="
-          isLeftClose ? $t('chatWindow.openLeft') : $t('chatWindow.closeLeft')
-        "
-        position="right"
-        mini
-        :content-style="{ fontSize: '12px' }"
-      >
-        <div
-          class="chat-assistant-left-close-btn"
-          @click="isLeftClose = !isLeftClose"
-        >
-          <div
-            class="left-close-btn-icon"
-            :class="{ 'left-close-btn-icon-right': isLeftClose }"
-          ></div>
-          <div
-            class="left-close-btn-icon"
-            :class="{ 'left-close-btn-icon-right': isLeftClose }"
-          ></div>
+      <a-tooltip :content="isLeftClose ? $t('chatWindow.openLeft') : $t('chatWindow.closeLeft')
+        " position="right" mini :content-style="{ fontSize: '12px' }">
+        <div class="chat-assistant-left-close-btn" @click="isLeftClose = !isLeftClose">
+          <div class="left-close-btn-icon" :class="{ 'left-close-btn-icon-right': isLeftClose }"></div>
+          <div class="left-close-btn-icon" :class="{ 'left-close-btn-icon-right': isLeftClose }"></div>
         </div>
       </a-tooltip>
       <!-- 聊天窗口 -->
-      <ChatWindow 
-        v-if="chatAssistantStore.getCurrentChatAssistant.id"
-        :key="`chat-window-${chatAssistantStore.currentChatAssistantId}`"
-        class="chat-window"/>
+      <ChatWindow v-if="chatAssistantStore.getCurrentChatAssistant.id"
+        :key="`chat-window-${chatAssistantStore.currentChatAssistantId}`" class="chat-window" />
       <!-- 空聊天窗口 -->
       <EmptyChatWindow v-else />
     </div>
@@ -68,7 +51,7 @@ const { isLeftClose } = toRefs(data);
   flex-grow: 1;
   display: flex;
   overflow: hidden;
-  background-color: var(--color-bg-1);
+  background-color: white;
 
   .chat-assistant-left-transition-enter-active,
   .chat-assistant-left-transition-leave-active {

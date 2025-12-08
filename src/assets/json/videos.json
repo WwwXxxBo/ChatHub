@@ -1,0 +1,24 @@
+{
+    "cn": [
+        [
+            "项目宣传片",
+            "/videos/video1.mp4"
+        ],
+        [
+            "功能教学",
+            "/videos/video2.mkv"
+        ],
+        [
+            "操作演示",
+            "/videos/video3.mkv"
+        ],
+        [
+            "案例分享",
+            "/videos/video4.mkv"
+        ],
+        [
+            "常见问题",
+            "https://cdn.example.com/video/faq.mp4"
+        ]
+    ]
+}

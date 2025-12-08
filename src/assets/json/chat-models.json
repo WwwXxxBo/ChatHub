@@ -182,8 +182,8 @@
       "type": "text"
     },
     {
-      "name": "deepseek-coder",
-      "value": "deepseek-coder",
+      "name": "deepseek-reasoner",
+      "value": "deepseek-reasoner",
       "type": "text"
     }
   ],

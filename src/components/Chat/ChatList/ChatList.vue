@@ -51,25 +51,25 @@ const newChatAssistant = async () => {
   chatAssistantStore.currentChatAssistantId = id;
 
   // 获取当前聊天助手信息
-  let currentChatAssistant = {...copyObj(chatAssistantStore.getCurrentChatAssistant)}
+  let currentChatAssistant = { ...copyObj(chatAssistantStore.getCurrentChatAssistant) }
   const res = await createAssistant(
-    currentChatAssistant.id, 
-    sessionStorage.userId, 
-    currentChatAssistant.name, 
+    currentChatAssistant.id,
+    sessionStorage.userId,
+    currentChatAssistant.name,
     currentChatAssistant.type,
-    currentChatAssistant.instruction, 
-    currentChatAssistant.provider, 
-    currentChatAssistant.model, 
+    currentChatAssistant.instruction,
+    currentChatAssistant.provider,
+    currentChatAssistant.model,
     currentChatAssistant.maxTokens,
-    currentChatAssistant.inputMaxTokens, 
-    currentChatAssistant.contextSize, 
-    currentChatAssistant.speechModel, 
+    currentChatAssistant.inputMaxTokens,
+    currentChatAssistant.contextSize,
+    currentChatAssistant.speechModel,
     currentChatAssistant.speechVoice,
-    currentChatAssistant.speechSpeed, 
-    currentChatAssistant.createTime, 
+    currentChatAssistant.speechSpeed,
+    currentChatAssistant.createTime,
     currentChatAssistant.lastUpdateTime,
   )
-  if(res.status === 0) {
+  if (res.status === 0) {
     Message.success("对话助手创建成功");
   } else {
     Message.error("对话助手创建失败");
@@ -87,45 +87,28 @@ onMounted(async () => {
   <div class="assistant-list">
     <div class="assistant-header drag-area">
       <!-- 输入框 -->
-      <a-input-search
-        v-model="keyword"
-        :placeholder="$t('chatList.search')"
-        class="search-input no-drag-area"
-      />
-      <a-button type="primary" class="assistant-new-btn no-drag-area" @click="newChatAssistant()"> 
+      <a-input-search v-model="keyword" :placeholder="$t('chatList.search')" class="search-input no-drag-area" />
+      <a-button type="primary" class="assistant-new-btn no-drag-area" @click="newChatAssistant()">
         <icon-plus :size="16" />
       </a-button>
     </div>
     <!-- 滚动条 -->
-    <a-scrollbar
-      v-if="
-        chatAssistantStore.chatAssistantList.filter(
-          (a) =>
-            !keyword ||
-            a.chatMessageList.findIndex((m) => m.content.includes(keyword)) > -1
-        ).length > 0
-      "
-      outer-class="assistant-list-container arco-scrollbar-small"
-      style="height: calc(100vh - 60px); overflow-y: auto"
-    >
+    <a-scrollbar v-if="
+      chatAssistantStore.chatAssistantList.filter(
+        (a) =>
+          !keyword ||
+          a.chatMessageList.findIndex((m) => m.content.includes(keyword)) > -1
+      ).length > 0
+    " outer-class="assistant-list-container arco-scrollbar-small" style="height: calc(100vh - 60px); overflow-y: auto">
       <!-- 可拖拽区域 -->
-      <draggable
-        v-model="chatAssistantStore.chatAssistantList"
-        group="assistant-list"
-        item-key="id"
-        class="assistant-list-draggable"
-      >
+      <draggable v-model="chatAssistantStore.chatAssistantList" group="assistant-list" item-key="id"
+        class="assistant-list-draggable">
         <template #item="{ element }">
-          <ChatItem 
-            v-show="
-              !keyword ||
-              element.chatMessageList.findIndex((m) =>
-                m.content.includes(keyword)
-              ) > -1
-            "
-            :assistant="element"
-            class="assistant-item" 
-          />
+          <ChatItem v-show="!keyword ||
+            element.chatMessageList.findIndex((m) =>
+              m.content.includes(keyword)
+            ) > -1
+            " :assistant="element" class="assistant-item" />
         </template>
       </draggable>
     </a-scrollbar>
@@ -136,6 +119,39 @@ onMounted(async () => {
 </template>
 
 <style lang="less" scoped>
+/* 按钮样式 */
+.assistant-new-btn {
+  background: linear-gradient(135deg,
+      rgba(50, 50, 50, 0.7) 0%,
+      rgba(30, 30, 30, 0.8) 100%) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  border-radius: 8px;
+}
+
+/* 按钮悬停状态 */
+.assistant-new-btn:hover {
+  background: linear-gradient(135deg,
+      rgba(60, 60, 60, 0.8) 0%,
+      rgba(40, 40, 40, 0.9) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+/* 按钮激活状态 */
+.assistant-new-btn:active {
+  transform: translateY(0);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
 .assistant-list {
   display: flex;
   flex-direction: column;
@@ -166,6 +182,7 @@ onMounted(async () => {
       padding: 0;
     }
   }
+
   .assistant-list-container {
     .assistant-list-draggable {
       box-sizing: border-box;

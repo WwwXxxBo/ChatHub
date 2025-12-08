@@ -18,6 +18,7 @@ import ProviderAvatar from "@/components/Avatar/ProviderAvatar.vue";
 import UserAvatar from "@/components/Avatar/UserAvatar.vue";
 // 引入提示词列表
 import Prompt from "@/components/Modal/Prompt.vue";
+import Video from "@/components/Modal/Video.vue";
 // 引入 Chat Assistant、System、Notification、Setting 状态
 import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { useSystemStore } from "@/stores/system";
@@ -110,6 +111,7 @@ const data = reactive({
   speechSessionId: randomUUID(),
   // 提示词列表modal
   promptListModalVisible: false,
+  videoListModalVisible: false,
   // 文件上传列表modal
   fileListModalVisible: false,
   // 用户上传图片地址
@@ -129,6 +131,7 @@ const {
   page,
   speechStatus,
   promptListModalVisible,
+  videoListModalVisible,
   fileListModalVisible,
   userUploadImageUrl
 } = toRefs(data);
@@ -174,7 +177,7 @@ const selectImageRequest = (option: RequestOption) => {
   reader.readAsDataURL(fileItem.file);
   onSuccess();
   return {
-    abort: () => {},
+    abort: () => { },
   };
 };
 
@@ -286,8 +289,8 @@ const useBigModel = async () => {
 
   // 处理并清空文件列表
   const questionFileList: MessageFile[] = []
-  if(data.selectFileList.length > 0){
-    for(const f of data.selectFileList){
+  if (data.selectFileList.length > 0) {
+    for (const f of data.selectFileList) {
       const document = await getFileContent(f.file)
       questionFileList.push({
         id: randomUUID(),
@@ -374,27 +377,27 @@ const useBigModel = async () => {
       // 将新生成的内容存入数据库
       const lastMessage_1 = data.currentChatAssistant.chatMessageList[data.currentChatAssistant.chatMessageList.length - 2]
       const lastMessage_2 = data.currentChatAssistant.chatMessageList[data.currentChatAssistant.chatMessageList.length - 1]
-      const res_1 = await  createAssistantMessage(
-        lastMessage_1.id, 
-        data.currentChatAssistant.id, 
-        lastMessage_1.name || '', 
-        lastMessage_1.role, 
-        lastMessage_1.type, 
-        lastMessage_1.content, 
-        lastMessage_1.image || '', 
+      const res_1 = await createAssistantMessage(
+        lastMessage_1.id,
+        data.currentChatAssistant.id,
+        lastMessage_1.name || '',
+        lastMessage_1.role,
+        lastMessage_1.type,
+        lastMessage_1.content,
+        lastMessage_1.image || '',
         lastMessage_1.createTime
       )
-      const res_2 = await  createAssistantMessage(
-        lastMessage_2.id, 
-        data.currentChatAssistant.id, 
-        lastMessage_2.name || '', 
-        lastMessage_2.role, 
-        lastMessage_2.type, 
-        lastMessage_2.content, 
-        lastMessage_2.image || '', 
+      const res_2 = await createAssistantMessage(
+        lastMessage_2.id,
+        data.currentChatAssistant.id,
+        lastMessage_2.name || '',
+        lastMessage_2.role,
+        lastMessage_2.type,
+        lastMessage_2.content,
+        lastMessage_2.image || '',
         lastMessage_2.createTime
       )
-      if(res_1.status !== 0 || res_2.status !== 0) {
+      if (res_1.status !== 0 || res_2.status !== 0) {
         Message.error("聊天消息数据存入数据库失败！");
       }
     },
@@ -471,8 +474,8 @@ const calcToBottomShow = () => {
   // 滚动超过一定高度时，显示置底按钮
   data.isToBottomBtnShow =
     chatMessageListScrollbarRef.value.containerRef.scrollHeight -
-      chatMessageListScrollbarRef.value.containerRef.clientHeight -
-      chatMessageListScrollbarRef.value.containerRef.scrollTop >
+    chatMessageListScrollbarRef.value.containerRef.clientHeight -
+    chatMessageListScrollbarRef.value.containerRef.scrollTop >
     50;
 };
 
@@ -504,38 +507,38 @@ const stopAnswer = () => {
 const handleInputPaste = (event: ClipboardEvent) => {
   // 获取粘贴的内容
   const items = event.clipboardData?.items
-  if(!items){
+  if (!items) {
     return
   }
   // 支持图片上传
-  if(isSupportImageComputed.value){
+  if (isSupportImageComputed.value) {
     // 只获取第一张照片
     const item = items[0]
-    if(item && item.kind === 'file' && item.type.startsWith('image/')){
+    if (item && item.kind === 'file' && item.type.startsWith('image/')) {
       // 阻止默认粘贴行为
       event.preventDefault()
       // 获取图片数据
       const blob = item.getAsFile()
-      if(blob){
+      if (blob) {
         // 文件对象
         const fileId = randomUUID()
         const fileName = `${fileId}.png`
         const file = new File([blob], fileName, { type: "image/png" });
         const reader = new FileReader()
         reader.onload = (e: ProgressEvent<FileReader>) => {
-          if(e.target && e.target.result){
+          if (e.target && e.target.result) {
             // 获取 Base64 数据
             const imageUrl = e.target.result as string
             data.userUploadImageUrl = imageUrl;
-            if(!imageUrl){
+            if (!imageUrl) {
               return
             }
             const imageBase64 = imageUrl.split('base64,')[1]
-            if(!imageBase64){
+            if (!imageBase64) {
               return
             }
             // 生成随机文件名
-            const fileItem:FileItem = {
+            const fileItem: FileItem = {
               uid: fileId,
               file: file,
               name: fileName
@@ -562,106 +565,61 @@ onMounted(() => {
 <template>
   <div class="chat-window">
     <!-- 头部 -->
-    <ChatWindowHeader
-      ref="chatWindowHeaderRef"
-      :currentChatAssistant="currentChatAssistant"
-    />
+    <ChatWindowHeader ref="chatWindowHeaderRef" :currentChatAssistant="currentChatAssistant" />
     <!-- 消息列表滚动 -->
-    <a-scrollbar
-      ref="chatMessageListScrollbarRef"
-      outer-class="chat-message-list-container arco-scrollbar-small"
-      style="height: calc(100vh - 158px - 55px); overflow-y: auto"
-      @scroll="onChatMessageListScroll"
-    >
+    <a-scrollbar ref="chatMessageListScrollbarRef" outer-class="chat-message-list-container arco-scrollbar-small"
+      style="height: calc(100vh - 158px - 55px); overflow-y: auto" @scroll="onChatMessageListScroll">
       <!-- 推荐提示词窗口 -->
-      <ChatWindowRecommend
-        v-if="currentChatAssistant.chatMessageList.length === 0"
-        @selectRecommend="selectRecommend"
-      />
+      <ChatWindowRecommend v-if="currentChatAssistant.chatMessageList.length === 0"
+        @selectRecommend="selectRecommend" />
       <!-- 消息列表-->
-      <div
-        v-else
-        class="chat-message-list fade-in-from"
-        :class="{ 'fade-in-to': isLoad }"
-      >
+      <div v-else class="chat-message-list fade-in-from" :class="{ 'fade-in-to': isLoad }">
         <!-- 加载更多 -->
-        <a-button
-          v-if="
-            currentChatAssistant.chatMessageList.length -
-              page.number * page.size >
-            0
-          "
-          style="background-color: transparent"
-          type="text"
-          size="mini"
-          @click="chatMessageLoadMore(chatMessageListPageData[0].id)"
-          >{{ $t("common.loadMore") }}
+        <a-button v-if="
+          currentChatAssistant.chatMessageList.length -
+          page.number * page.size >
+          0
+        " style="background-color: transparent" type="text" size="mini"
+          @click="chatMessageLoadMore(chatMessageListPageData[0].id)">{{ $t("common.loadMore") }}
         </a-button>
 
         <!-- 消息体 -->
         <template v-for="(msg, index) in chatMessageListPageData" :key="msg.id">
           <!-- 输出消息时间 -->
-          <div
-            v-if="calcMessageTime(msg, index === 0)"
-            :key="`chat-message-time-${msg.id}-${systemStore.dayKey}`"
-            class="chat-message-time"
-          >
+          <div v-if="calcMessageTime(msg, index === 0)" :key="`chat-message-time-${msg.id}-${systemStore.dayKey}`"
+            class="chat-message-time">
             {{ calcMessageTime(msg, index === 0) }}
           </div>
           <!-- 右键点击菜单 -->
           <a-dropdown :align-point="true" trigger="contextMenu">
             <!-- 消息块 -->
-            <div
-              :id="`chat-message-${msg.id}`"
-              class="chat-message"
-              :class="{ 'chat-message-user': msg.role === 'user' }"
-            >
+            <div :id="`chat-message-${msg.id}`" class="chat-message"
+              :class="{ 'chat-message-user': msg.role === 'user' }">
               <!-- 多选框 -->
-              <a-checkbox
-                v-if="multipleChoiceFlag"
-                class="chat-message-checkbox"
-                :default-checked="multipleChoiceList.includes(msg.id)"
-                @change="multipleChoiceChange(msg.id)"
-              />
+              <a-checkbox v-if="multipleChoiceFlag" class="chat-message-checkbox"
+                :default-checked="multipleChoiceList.includes(msg.id)" @change="multipleChoiceChange(msg.id)" />
               <!-- 消息头像 -->
               <div class="chat-message-avatar">
                 <UserAvatar v-if="msg.role === 'user'" :size="30" />
-                <ProviderAvatar
-                  v-else-if="msg.role === 'assistant'"
-                  :provider="currentChatAssistant.provider"
-                  :size="30"
-                />
+                <ProviderAvatar v-else-if="msg.role === 'assistant'" :provider="currentChatAssistant.provider"
+                  :size="30" />
               </div>
               <!-- 消息内容 -->
               <div class="chat-message-content select-text">
                 <!-- 用户消息：文本内容 -->
                 <div v-if="msg.role === 'user'">{{ msg.content }}</div>
                 <!-- 大模型消息：Markdown 内容 -->
-                <div
-                  v-else-if="msg.role === 'assistant'"
-                  class="chat-message-md"
-                  v-html="
-                    renderMarkdown(
-                      msg.content,
-                      index === chatMessageListPageData.length - 1 &&
-                        systemStore.chatWindowLoading
-                    )
-                  "
-                ></div>
+                <div v-else-if="msg.role === 'assistant'" class="chat-message-md" v-html="renderMarkdown(
+                  msg.content,
+                  index === chatMessageListPageData.length - 1 &&
+                  systemStore.chatWindowLoading
+                )
+                  "></div>
                 <!-- 消息内容携带的图片 -->
-                <a-image
-                  v-if="msg.image"
-                  :src="`data:image/png;base64,${msg.image}`"
-                  class="chat-message-img"
-                  width="300"
-                  height="300"
-                  show-loader
-                  fit="cover"
-                >
+                <a-image v-if="msg.image" :src="`data:image/png;base64,${msg.image}`" class="chat-message-img"
+                  width="300" height="300" show-loader fit="cover">
                   <template #preview-actions>
-                    <a-image-preview-action
-                      :name="$t('common.download')"
-                    >
+                    <a-image-preview-action :name="$t('common.download')">
                       <icon-download />
                     </a-image-preview-action>
                   </template>
@@ -675,9 +633,7 @@ onMounted(() => {
             <!-- 右键菜单内容 -->
             <template #content>
               <!-- 复制 -->
-              <a-doption
-                @click="clipboardWriteText(getSelectedText(msg.content))"
-              >
+              <a-doption @click="clipboardWriteText(getSelectedText(msg.content))">
                 {{ $t("chatWindow.copy") }}
               </a-doption>
               <!-- 多选 -->
@@ -688,12 +644,8 @@ onMounted(() => {
           </a-dropdown>
           <!-- 清空上下文提示 -->
           <transition name="fadein">
-            <a-divider
-              v-if="currentChatAssistant.clearContextMessageId === msg.id"
-              class="chat-message-clear-context"
-              orientation="center"
-              @click="currentChatAssistant.clearContextMessageId = null"
-            >
+            <a-divider v-if="currentChatAssistant.clearContextMessageId === msg.id" class="chat-message-clear-context"
+              orientation="center" @click="currentChatAssistant.clearContextMessageId = null">
               {{ $t("chatWindow.clearContextTip") }}
             </a-divider>
           </transition>
@@ -701,10 +653,7 @@ onMounted(() => {
         <!-- 等待回答占位显示 -->
         <div v-if="waitAnswer" class="chat-message">
           <div class="chat-message-avatar">
-            <ProviderAvatar
-              :provider="currentChatAssistant.provider"
-              :size="30"
-            />
+            <ProviderAvatar :provider="currentChatAssistant.provider" :size="30" />
           </div>
           <div class="chat-message-content">
             <a-spin :size="15" />
@@ -716,105 +665,65 @@ onMounted(() => {
     <!-- 输入区 -->
     <div class="chat-input-container">
       <!-- 回到底部 -->
-      <div
-        v-if="isToBottomBtnShow"
-        class="chat-message-list-to-bottom"
-        @click="scrollToBottom(false)"
-      >
+      <div v-if="isToBottomBtnShow" class="chat-message-list-to-bottom" @click="scrollToBottom(false)">
         <icon-arrow-down class="chat-message-list-to-bottom-icon" />
       </div>
 
       <!-- 工具栏 -->
       <div class="chat-input-tools">
         <!-- 打开设置 -->
-        <a-tooltip
-          :content="$t('chatWindow.header.editChat')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
-          <a-button
-            size="mini"
-            shape="round"
-            @click="chatWindowHeaderRef.edit()"
-          >
+        <a-tooltip :content="$t('chatWindow.header.editChat')" position="top" mini
+          :content-style="{ fontSize: 'var(--font-size-xs)' }">
+          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.edit()">
             <icon-settings :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 清空上下文 -->
-        <a-tooltip
-          :content="$t('chatWindow.clearContext')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
+        <a-tooltip :content="$t('chatWindow.clearContext')" position="top" mini
+          :content-style="{ fontSize: 'var(--font-size-xs)' }">
           <a-button size="mini" shape="round" @click="clearContext()">
             <icon-eraser :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 清空记录 -->
-        <a-tooltip
-          :content="$t('chatWindow.header.clear')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
-          <a-button
-            size="mini"
-            shape="round"
-            @click="chatWindowHeaderRef.clearConfirm()"
-          >
+        <a-tooltip :content="$t('chatWindow.header.clear')" position="top" mini
+          :content-style="{ fontSize: 'var(--font-size-xs)' }">
+          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.clearConfirm()">
             <icon-delete :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 打开多选菜单 -->
-        <a-tooltip
-          :content="$t('chatWindow.multipleChoice')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
+        <a-tooltip :content="$t('chatWindow.multipleChoice')" position="top" mini
+          :content-style="{ fontSize: 'var(--font-size-xs)' }">
           <a-button size="mini" shape="round" @click="multipleChoiceOpen()">
             <icon-select-all :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 快捷指令 -->
-        <a-tooltip
-          :content="$t('chatWindow.fastPrompt')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
-          <a-button
-            size="mini"
-            shape="round"
-            @click="promptListModalVisible = true"
-          >
+        <a-tooltip :content="$t('chatWindow.fastPrompt')" position="top" mini
+          :content-style="{ fontSize: 'var(--font-size-xs)' }">
+          <a-button size="mini" shape="round" @click="promptListModalVisible = true">
             <icon-bulb :size="15" />
+          </a-button>
+        </a-tooltip>
+
+        <a-tooltip content="选择视频" position="top" mini :content-style="{ fontSize: 'var(--font-size-xs)' }">
+          <a-button size="mini" shape="round" @click="videoListModalVisible = true">
+            <icon-live-broadcast :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 选择图片 -->
         <div v-if="isSupportImageComputed" class="chat-input-select-image">
-          <a-upload
-            :file-list="selectImageList"
-            :limit="1"
-            :on-button-click="selectImageClick"
-            :custom-request="selectImageRequest"
-            accept="image/*"
-            :show-file-list="false"
-          >
+          <a-upload :file-list="selectImageList" :limit="1" :on-button-click="selectImageClick"
+            :custom-request="selectImageRequest" accept="image/*" :show-file-list="false">
             <template #upload-button>
-              <a-tooltip
-                :content="$t('chatWindow.selectImage')"
-                position="top"
-                mini
-                :content-style="{ fontSize: 'var(--font-size-xs)' }"
-              >
+              <a-tooltip :content="$t('chatWindow.selectImage')" position="top" mini
+                :content-style="{ fontSize: 'var(--font-size-xs)' }">
                 <a-button size="mini" shape="round">
                   <icon-image :size="15" />
                 </a-button>
@@ -844,49 +753,24 @@ onMounted(() => {
         <!-- 如果用户选择了图片 -->
         <transition name="fadein">
           <div v-if="selectImageList.length > 0" class="chat-input-image">
-            <a-image
-              width="80"
-              height="80"
-              preview
-              show-loader
-              :src="data.userUploadImageUrl"
-              fit="cover"
-            />
+            <a-image width="80" height="80" preview show-loader :src="data.userUploadImageUrl" fit="cover" />
             <!-- 删除图片按钮 -->
-            <a-button
-              class="chat-input-image-delete-btn"
-              shape="circle"
-              size="mini"
-              status="danger"
-              @click="selectImageList = []"
-            >
+            <a-button class="chat-input-image-delete-btn" shape="circle" size="mini" status="danger"
+              @click="selectImageList = []">
               <icon-delete />
             </a-button>
           </div>
         </transition>
         <!-- 文本域 -->
-        <a-textarea
-          ref="chatInputTextareaRef"
-          v-model="question"
-          class="chat-input-textarea"
-          :placeholder="$t('chatWindow.inputPlaceholder.chat')"
-          :auto-size="{
+        <a-textarea ref="chatInputTextareaRef" v-model="question" class="chat-input-textarea"
+          :placeholder="$t('chatWindow.inputPlaceholder.chat')" :auto-size="{
             minRows: 4,
             maxRows: 4,
-          }"
-          allow-clear
-          @keydown.enter="sendQuestion"
-          @paste="handleInputPaste"
-        />
+          }" allow-clear @keydown.enter="sendQuestion" @paste="handleInputPaste" />
 
         <!-- 发送按钮 -->
         <div class="chat-input-button">
-          <a-button
-            v-if="!systemStore.chatWindowLoading"
-            type="primary"
-            size="small"
-            @click="sendQuestion()"
-          >
+          <a-button v-if="!systemStore.chatWindowLoading" type="primary" size="small" @click="sendQuestion()">
             <a-space :size="5">
               <icon-send :size="15" />
               <span>{{ $t("chatWindow.send") }}</span>
@@ -894,11 +778,7 @@ onMounted(() => {
           </a-button>
 
           <!-- 停止回答按钮 -->
-          <a-button
-            v-if="systemStore.chatWindowLoading"
-            size="small"
-            @click="stopAnswer()"
-          >
+          <a-button v-if="systemStore.chatWindowLoading" size="small" @click="stopAnswer()">
             <a-space :size="5">
               <icon-record-stop :size="15" />
               <span>{{ $t("chatWindow.stop") }}</span>
@@ -908,31 +788,23 @@ onMounted(() => {
 
         <!-- 底部多选操作区域 -->
         <transition name="slide2top">
-          <ChatMultipleChoice
-            v-if="multipleChoiceFlag"
-            :current-assistant="currentChatAssistant"
-            :multiple-choice-list="multipleChoiceList"
-            @close="multipleChoiceClose()"
-          />
+          <ChatMultipleChoice v-if="multipleChoiceFlag" :current-assistant="currentChatAssistant"
+            :multiple-choice-list="multipleChoiceList" @close="multipleChoiceClose()" />
         </transition>
       </div>
     </div>
 
     <!-- 提示词列表模态框 -->
-    <Prompt
-      v-model:modal-visible="promptListModalVisible"
-      @select-prompt="selectPrompt"
-    />
+    <Prompt v-model:modal-visible="promptListModalVisible" @select-prompt="selectPrompt" />
+    <Video v-model:modal-visible="videoListModalVisible" />
     <!-- 上传文件模态框 -->
-    <ChatWindowFileList
-      v-model:modal-visible="fileListModalVisible"
-      v-model:select-file-list="selectFileList"
-    />
+    <ChatWindowFileList v-model:modal-visible="fileListModalVisible" v-model:select-file-list="selectFileList" />
   </div>
 </template>
 
 <style lang="less" scoped>
 @import "@/assets/css/chat-window.less";
+
 .chat-plugin-select {
   max-height: 40vh;
   overflow-y: auto;

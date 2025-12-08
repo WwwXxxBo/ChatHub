@@ -33,7 +33,7 @@ const calcMessageTime = (current?: ChatMessage) => {
     if (dayjs(current.createTime).format('YYYY-MM-DD') === dayjs().format('YYYY-MM-DD')) {
       return dayjs(current.createTime).format('HH:mm')
     } else {
-    // 如果与当日日期不同，则表示对话是过去发生的，显示具体日期
+      // 如果与当日日期不同，则表示对话是过去发生的，显示具体日期
       return dayjs(current.createTime).format('YYYY/MM/DD')
     }
   }
@@ -58,7 +58,7 @@ const deleteChat = async () => {
     chatAssistantStore.currentChatAssistantId = null
   }
   const res = await deleteAssistant(props.assistant.id);
-  if(res.status === 0) {
+  if (res.status === 0) {
     Message.success("对话助手删除成功");
   } else {
     Message.error("对话助手删除失败");
@@ -84,13 +84,9 @@ watch(
 </script>
 
 <template>
-  <div
-    class="assistant-item item-click"
-    :class="{
-      'item-active': chatAssistantStore.currentChatAssistantId === assistant.id,
-    }"
-    @click="assistantItemActive"
-  >
+  <div class="assistant-item item-click" :class="{
+    'item-active': chatAssistantStore.currentChatAssistantId === assistant.id,
+  }" @click="assistantItemActive">
     <div class="virtual-assistant-item-body">
       <div class="assistant-item-content">
         {{ assistant.name }}
@@ -100,16 +96,13 @@ watch(
           {{ assistant.chatMessageList.length }}
           {{ $t("assistantItem.messageCount") }}
         </div>
-        <div
-          :key="`assistant-item-time-${assistant.id}-${chatAssistantStore.dayKey}`"
-          class="assistant-item-time"
-        >
+        <div :key="`assistant-item-time-${assistant.id}-${chatAssistantStore.dayKey}`" class="assistant-item-time">
           {{ calcMessageTime(assistant.chatMessageList.at(-1)) }}
         </div>
       </div>
     </div>
     <!-- 删除按钮 -->
-    <icon-close-circle class="assistant-item-delete-btn" @click.stop="deleteChat()"/>
+    <icon-close-circle class="assistant-item-delete-btn" @click.stop="deleteChat()" />
   </div>
 </template>
 
@@ -118,8 +111,22 @@ watch(
   width: 100%;
   box-sizing: border-box;
   padding: 15px;
-  background-color: var(--color-fill-1);
-  border-radius: var(--border-radius-small);
+  // background-color: white;
+
+  background: linear-gradient(135deg,
+      rgba(1, 69, 242, 0.8) 0%,
+      rgba(1, 69, 242, 0.5) 100%);
+  /* 基于 #0145F2 的淡蓝色渐变背景 */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 4px 6px rgba(1, 69, 242, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  /* 内阴影增强质感 */
+
+
+  border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -143,6 +150,7 @@ watch(
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: #EDF1F5;
     }
 
     .assistant-item-footer {
@@ -154,13 +162,13 @@ watch(
       .assistant-item-message-count {
         flex-shrink: 0;
         font-size: var(--font-size-xs);
-        color: var(--color-text-3);
+        color: #EDF1F5;
       }
 
       .assistant-item-time {
         flex-shrink: 0;
         font-size: var(--font-size-xs);
-        color: var(--color-text-3);
+        color: #EDF1F5;
       }
     }
   }
@@ -206,7 +214,7 @@ watch(
 
   .assistant-item-delete-btn {
     font-size: var(--font-size-xl);
-    color: var(--color-text-3);
+    color: #EDF1F5;
     position: absolute;
     top: 5px;
     right: 5px;
@@ -214,7 +222,7 @@ watch(
     transition: all 100ms linear;
 
     &:hover {
-      color: var(--color-text-2);
+      transform: scale(1.1);
     }
   }
 

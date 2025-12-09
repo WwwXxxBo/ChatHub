@@ -39,7 +39,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/filechat/, '')
       },
       '/assistant': {
-        target: 'http://8.155.19.142:30027/olexp_server',
+        target: 'http://localhost:3001',
         changeOrigin: false,
         rewrite: (path) => path.replace(/^\/assistant/, '')
       }

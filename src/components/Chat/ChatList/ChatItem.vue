@@ -111,19 +111,7 @@ watch(
   width: 100%;
   box-sizing: border-box;
   padding: 15px;
-  // background-color: white;
-
-  background: linear-gradient(135deg,
-      rgba(1, 69, 242, 0.8) 0%,
-      rgba(1, 69, 242, 0.5) 100%);
-  /* 基于 #0145F2 的淡蓝色渐变背景 */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow:
-    0 4px 6px rgba(1, 69, 242, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  /* 内阴影增强质感 */
+  background-color: #856cff;
 
 
   border-radius: 8px;

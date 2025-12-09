@@ -119,39 +119,6 @@ onMounted(async () => {
 </template>
 
 <style lang="less" scoped>
-/* 按钮样式 */
-.assistant-new-btn {
-  background: linear-gradient(135deg,
-      rgba(50, 50, 50, 0.7) 0%,
-      rgba(30, 30, 30, 0.8) 100%) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  border-radius: 8px;
-}
-
-/* 按钮悬停状态 */
-.assistant-new-btn:hover {
-  background: linear-gradient(135deg,
-      rgba(60, 60, 60, 0.8) 0%,
-      rgba(40, 40, 40, 0.9) 100%) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
-  transform: translateY(-1px);
-  transition: all 0.2s ease;
-}
-
-/* 按钮激活状态 */
-.assistant-new-btn:active {
-  transform: translateY(0);
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-}
-
 .assistant-list {
   display: flex;
   flex-direction: column;
@@ -175,6 +142,7 @@ onMounted(async () => {
     .assistant-new-btn {
       flex-shrink: 0;
       display: flex;
+      background-color: #856cff;
       align-items: center;
       justify-content: center;
       height: 30px;

@@ -19,7 +19,7 @@ httpInstance.interceptors.response.use(
 
 export const AssistantHttpInstance = axios.create({
     baseURL: "/assistant",
-    timeout: 5000
+    timeout: 10000,
 })
 //  axios 响应式拦截器
 AssistantHttpInstance.interceptors.response.use(

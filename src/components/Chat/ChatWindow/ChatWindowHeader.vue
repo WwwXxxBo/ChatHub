@@ -91,9 +91,9 @@ const clearConfirm = () => {
     okText: t('common.ok'),
     cancelText: t('common.cancel'),
     onOk: async () => {
-      for(var chatMessage of data.currentAssistant.chatMessageList){
+      for (var chatMessage of data.currentAssistant.chatMessageList) {
         const res = await deleteAssistantMessage(chatMessage.id);
-        if(res.status !== 0){
+        if (res.status !== 0) {
           Message.error("聊天记录清空失败！");
         }
       }
@@ -124,10 +124,10 @@ const deleteConfirm = () => {
 // 删除聊天助手
 const assistantDelete = async () => {
   chatAssistantStore.chatAssistantList = chatAssistantStore.chatAssistantList.filter(
-      (a) => a.id != data.currentAssistant.id
-    )
+    (a) => a.id != data.currentAssistant.id
+  )
   const res = await deleteAssistant(data.currentAssistant.id);
-  if(res.status === 0) {
+  if (res.status === 0) {
     Message.success("系统对话助手删除成功");
   } else {
     Message.error("系统对话助手删除失败");
@@ -138,7 +138,7 @@ const assistantDelete = async () => {
 // 聊天助手更新
 const assistantUpdate = async (newAssistant: Assistant) => {
   const index = chatAssistantStore.chatAssistantList.findIndex((a) => a.id === newAssistant.id)
-  if(index < 0){
+  if (index < 0) {
     return
   }
   const res = await modifyAssistant(
@@ -158,7 +158,7 @@ const assistantUpdate = async (newAssistant: Assistant) => {
     newAssistant.createTime,
     newAssistant.lastUpdateTime
   );
-  if(res.status === 0) {
+  if (res.status === 0) {
     Message.success("对话助手修改成功");
   } else {
     Message.error("对话助手修改失败");
@@ -175,8 +175,8 @@ const exportChatMessageList = () => {
     return
   }
   const content = data.currentAssistant.chatMessageList
-  .map((r) => `[${formatDateTime(new Date(r.createTime))}] ${r.role} : \n${r.content}`)
-  .join('\n\n')
+    .map((r) => `[${formatDateTime(new Date(r.createTime))}] ${r.role} : \n${r.content}`)
+    .join('\n\n')
   exportTextFile(`chat-records-${nowTimestamp()}.md`, content)
 }
 
@@ -195,76 +195,43 @@ defineExpose({
     <!-- 模型介绍 -->
     <div class="assistant-desc">
       <a-space :size="10">
-        <a-tag color="arcoblue" class="no-drag-area" @click="edit()">{{
+        <a-tag color="#856cff" style="font-weight: 600;" class="no-drag-area" @click="edit()">{{
           $t(`bigModelProvider.${currentChatAssistant?.provider}`)
         }}</a-tag>
-        <a-tag color="arcoblue" class="no-drag-area" @click="edit()">{{ currentChatAssistant?.model }}</a-tag>
+        <a-tag color="#856cff" style="font-weight: 600;" class="no-drag-area" @click="edit()">{{
+          currentChatAssistant?.model }}</a-tag>
       </a-space>
     </div>
     <!-- 三个点 -->
-    <a-popover
-      v-if="true"
-      position="br"
-      trigger="click"
-      :content-style="{ padding: '5px' }"
-    >
-      <icon-more
-        :class="{ 'no-drag-area': false }"
-        style="font-size: var(--font-size-xxl); flex-shrink: 0"
-      />
+    <a-popover v-if="true" position="br" trigger="click" :content-style="{ padding: '5px' }">
+      <icon-more :class="{ 'no-drag-area': false }"
+        style="font-size: var(--font-size-xxl); flex-shrink: 0; color: #856cff;" />
       <template #content>
         <a-space direction="vertical" fill>
-          <a-button
-            type="text"
-            style="width: 100%; color: var(--color-text-1)"
-            size="small"
-            @click="edit"
-            >{{ $t("chatWindow.header.editChat") }}
+          <a-button type="text" style="width: 100%; color: #856cff; font-weight: 600;" size="small" @click="edit">{{
+            $t("chatWindow.header.editChat") }}
           </a-button>
-          <a-button
-            type="text"
-            style="width: 100%; color: var(--color-text-1)"
-            size="small"
-            @click="exportChatMessageList"
-            >{{ $t("chatWindow.header.export") }}</a-button
-          >
-          <a-button
-            type="text"
-            style="width: 100%"
-            status="danger"
-            size="small"
-            @click="clearConfirm"
-            >{{ $t("chatWindow.header.clear") }}</a-button
-          >
-          <a-button
-            type="text"
-            style="width: 100%"
-            status="danger"
-            size="small"
-            @click="deleteConfirm"
-            >{{ $t("chatWindow.header.deleteChat") }}
+          <a-button type="text" style="width: 100%; color: #856cff; font-weight: 600;" size="small"
+            @click="exportChatMessageList">{{ $t("chatWindow.header.export") }}</a-button>
+          <a-button type="text" style="width: 100%;font-weight: 600;" status="danger" size="small"
+            @click="clearConfirm">{{
+              $t("chatWindow.header.clear") }}</a-button>
+          <a-button type="text" style="width: 100%;font-weight: 600;" status="danger" size="small"
+            @click="deleteConfirm">{{
+              $t("chatWindow.header.deleteChat") }}
           </a-button>
         </a-space>
       </template>
     </a-popover>
 
     <!-- 编辑助手Modal -->
-    <a-modal
-      v-model:visible="editModalVisible"
-      :ok-text="$t('common.ok')"
-      :cancel-text="$t('common.cancel')"
-      unmount-on-close
-      title-align="start"
-      width="80vw"
-      :on-before-ok="handleEditModalBeforeOk"
-    >
+    <a-modal v-model:visible="editModalVisible" :ok-text="$t('common.ok')" :cancel-text="$t('common.cancel')"
+      unmount-on-close title-align="start" width="80vw" :on-before-ok="handleEditModalBeforeOk">
       <template #title>
         {{ $t("chatWindow.header.editChat") }}
       </template>
       <div style="height: 60vh; padding: 0 10px; overflow-y: auto">
-        <ChatWindowForm 
-          v-model:assistant="assistantForm"
-        />
+        <ChatWindowForm v-model:assistant="assistantForm" />
       </div>
     </a-modal>
   </div>
@@ -283,8 +250,9 @@ defineExpose({
 
   .assistant-name {
     flex-grow: 1;
+    color: #856cff;
+    font-weight: 600;
     font-size: var(--font-size-lg);
-    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

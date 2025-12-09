@@ -48,18 +48,11 @@ const validatePassword = (password: string) => {
 
 // 登录
 const toLogin = async () => {
-  if (!validatePhone(loginForm.value.phone)) {
-    Message.error("手机号码格式错误");
-  }
-  if (!validatePassword(loginForm.value.password)) {
-    Message.error("密码格式错误，密码由字母与数字组成");
-  }
-
-  const userData = await getUserData(
-    loginForm.value.phone,
-    loginForm.value.password
-  );
-  if (userData.status == 0) {
+  try {
+    const userData = await getUserData(
+      loginForm.value.phone,
+      loginForm.value.password
+    );
     // 关闭登录页
     userStore.isLogin = true;
     Message.success("登录成功");
@@ -232,6 +225,9 @@ const toLogin = async () => {
       settingStore.deepSeek.apiKey = commonSettingRes.data[0].deepSeekKey
       settingStore.baichuan.apiKey = commonSettingRes.data[0].baichuanKey
     }
+  } catch (error) {
+    // 显示给用户
+    Message.error(error);
   }
 };
 </script>

@@ -674,46 +674,54 @@ onMounted(() => {
         <!-- 打开设置 -->
         <a-tooltip :content="$t('chatWindow.header.editChat')" position="top" mini
           :content-style="{ fontSize: 'var(--font-size-xs)' }">
-          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.edit()">
-            <icon-settings :size="15" />
+          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.edit()" style="background-color: #856cff;">
+            <icon-settings :size="15" style="color: #fff;" />
+            <span class="btn-text">编辑对话</span>
           </a-button>
         </a-tooltip>
 
         <!-- 清空上下文 -->
         <a-tooltip :content="$t('chatWindow.clearContext')" position="top" mini
           :content-style="{ fontSize: 'var(--font-size-xs)' }">
-          <a-button size="mini" shape="round" @click="clearContext()">
-            <icon-eraser :size="15" />
+          <a-button size="mini" shape="round" @click="clearContext()" style="background-color: #856cff;">
+            <icon-eraser :size="15" style="color: #fff;" />
+            <span class="btn-text">清空上下文</span>
           </a-button>
         </a-tooltip>
 
         <!-- 清空记录 -->
         <a-tooltip :content="$t('chatWindow.header.clear')" position="top" mini
           :content-style="{ fontSize: 'var(--font-size-xs)' }">
-          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.clearConfirm()">
-            <icon-delete :size="15" />
+          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.clearConfirm()"
+            style="background-color: #856cff;">
+            <icon-delete :size="15" style="color: #fff;" />
+            <span class="btn-text">清空记录</span>
           </a-button>
         </a-tooltip>
 
         <!-- 打开多选菜单 -->
         <a-tooltip :content="$t('chatWindow.multipleChoice')" position="top" mini
           :content-style="{ fontSize: 'var(--font-size-xs)' }">
-          <a-button size="mini" shape="round" @click="multipleChoiceOpen()">
-            <icon-select-all :size="15" />
+          <a-button size="mini" shape="round" @click="multipleChoiceOpen()" style="background-color: #856cff;">
+            <icon-select-all :size="15" style="color: #fff;" />
+            <span class="btn-text">多选</span>
           </a-button>
         </a-tooltip>
 
         <!-- 快捷指令 -->
         <a-tooltip :content="$t('chatWindow.fastPrompt')" position="top" mini
           :content-style="{ fontSize: 'var(--font-size-xs)' }">
-          <a-button size="mini" shape="round" @click="promptListModalVisible = true">
-            <icon-bulb :size="15" />
+          <a-button size="mini" shape="round" @click="promptListModalVisible = true" style="background-color: #856cff;">
+            <icon-bulb :size="15" style="color: #fff;" />
+            <span class="btn-text">快捷提示词</span>
           </a-button>
         </a-tooltip>
 
+        <!-- 选择视频 -->
         <a-tooltip content="选择视频" position="top" mini :content-style="{ fontSize: 'var(--font-size-xs)' }">
-          <a-button size="mini" shape="round" @click="videoListModalVisible = true">
-            <icon-live-broadcast :size="15" />
+          <a-button size="mini" shape="round" @click="videoListModalVisible = true" style="background-color: #856cff;">
+            <icon-live-broadcast :size="15" style="color: #fff;" />
+            <span class="btn-text">选择视频</span>
           </a-button>
         </a-tooltip>
 
@@ -724,8 +732,9 @@ onMounted(() => {
             <template #upload-button>
               <a-tooltip :content="$t('chatWindow.selectImage')" position="top" mini
                 :content-style="{ fontSize: 'var(--font-size-xs)' }">
-                <a-button size="mini" shape="round">
-                  <icon-image :size="15" />
+                <a-button size="mini" shape="round" style="background-color: #856cff;">
+                  <icon-image :size="15" style="color: #fff;" />
+                  <span class="btn-text">选择图片</span>
                 </a-button>
               </a-tooltip>
             </template>
@@ -770,10 +779,11 @@ onMounted(() => {
 
         <!-- 发送按钮 -->
         <div class="chat-input-button">
-          <a-button v-if="!systemStore.chatWindowLoading" type="primary" size="small" @click="sendQuestion()">
+          <a-button v-if="!systemStore.chatWindowLoading" type="primary" size="small" @click="sendQuestion()"
+            style="background-color: #856cff;">
             <a-space :size="5">
               <icon-send :size="15" />
-              <span>{{ $t("chatWindow.send") }}</span>
+              <span style="font-weight: 600;">{{ $t("chatWindow.send") }}</span>
             </a-space>
           </a-button>
 
@@ -781,7 +791,7 @@ onMounted(() => {
           <a-button v-if="systemStore.chatWindowLoading" size="small" @click="stopAnswer()">
             <a-space :size="5">
               <icon-record-stop :size="15" />
-              <span>{{ $t("chatWindow.stop") }}</span>
+              <span style="font-weight: 600;">{{ $t("chatWindow.stop") }}</span>
             </a-space>
           </a-button>
         </div>
@@ -809,5 +819,11 @@ onMounted(() => {
   max-height: 40vh;
   overflow-y: auto;
   padding: 0 5px;
+}
+
+.btn-text {
+  color: #fff;
+  margin-left: 5px;
+  font-weight: 600;
 }
 </style>

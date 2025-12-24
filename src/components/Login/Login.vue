@@ -2,10 +2,6 @@
 import { ref } from "vue";
 import { Message } from '@arco-design/web-vue'
 import { useUserStore } from "@/stores/user";
-import { useChatAssistantStore } from "@/stores/chatAssistant";
-import { useAssistantStore } from "@/stores/assistant";
-import { useCollectionStore } from '@/stores/collection'
-import { useSettingStore } from "@/stores/setting";
 import { getUserData, resgisterUser } from "@/api/login";
 import axios from "axios";
 
@@ -32,26 +28,43 @@ const registerForm = ref({
 
 // 注册
 const toRegister = async () => {
-  const registerRes = await resgisterUser(
-    registerForm.value.name,
-    registerForm.value.email,
-    registerForm.value.phone,
-    registerForm.value.password,
-  );
-
-
-  if (registerRes.status) {
-    // 回填登录表单数据
-    loginForm.value.phone = registerForm.value.phone;
-    loginForm.value.password = registerForm.value.password;
-    // 清空表单数据
-    registerForm.value.name = "";
-    registerForm.value.email = "";
-    registerForm.value.phone = "";
-    registerForm.value.password = "";
-    registerForm.value.validatePassword = "";
-    // 切换到登录界面
-    activeKey.value = "login";
+  try {
+    const registerRes = await resgisterUser(
+      registerForm.value.name,
+      registerForm.value.email,
+      registerForm.value.phone,
+      registerForm.value.password,
+    );
+    if (registerRes.status) {
+      errorMessage.value = '';
+      successMessage.value = registerRes.message;
+      // 回填登录表单数据
+      loginForm.value.phone = registerForm.value.phone;
+      loginForm.value.password = registerForm.value.password;
+      // 清空表单数据
+      registerForm.value.name = "";
+      registerForm.value.email = "";
+      registerForm.value.phone = "";
+      registerForm.value.password = "";
+      registerForm.value.validatePassword = "";
+      // 切换到登录界面
+      activeKey.value = "login";
+    }
+  } catch (error) {
+    errorMessage.value = '登录失败，请稍后重试。';
+    if (axios.isAxiosError(error)) {
+      const response = error.response;
+      if (response && response.data) {
+        const responseData = response.data;
+        // 优先使用 errors 数组中的错误信息
+        if (Array.isArray(responseData.errors) && responseData.errors.length > 0) {
+          errorMessage.value = responseData.errors.join('；');
+        }
+        else if (typeof responseData.message === 'string') {
+          errorMessage.value = responseData.message;
+        }
+      }
+    }
   }
 }
 
@@ -64,25 +77,22 @@ const toLogin = async () => {
     );
     // 登录成功，关闭登录页
     userStore.isLogin = true;
-    Message.success('登录成功');
+    Message.success(loginRes.message);
   } catch (error) {
     errorMessage.value = '登录失败，请稍后重试。';
     if (axios.isAxiosError(error)) {
       const response = error.response;
-      // 检查是否有结构化的错误数据
       if (response && response.data) {
         const responseData = response.data;
-        // 优先使用 errors 数组中的第一条错误信息
+        // 优先使用 errors 数组中的错误信息
         if (Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-          errorMessage.value = responseData.errors[0]; // 或者拼接所有：responseData.errors.join('；')
+          errorMessage.value = responseData.errors.join('；');
         }
-        // 其次 fallback 到 message 字段
         else if (typeof responseData.message === 'string') {
           errorMessage.value = responseData.message;
         }
       }
     }
-    Message.error(errorMessage.value);
   }
 };
 </script>
@@ -132,6 +142,9 @@ const toLogin = async () => {
                 <div v-if="errorMessage" class="error-message">
                   {{ errorMessage }}
                 </div>
+                <div v-if="successMessage" class="error-message">
+                  {{ successMessage }}
+                </div>
               </a-space>
             </div>
           </a-tab-pane>
@@ -165,6 +178,13 @@ const toLogin = async () => {
                 </a-input-password>
                 <a-button @click="toRegister()" type="primary"
                   style="width: 100%; background-color: #856cff; font-weight: 600;">注册</a-button>
+                <!-- 错误信息显示区域 -->
+                <div v-if="errorMessage" class="error-message">
+                  {{ errorMessage }}
+                </div>
+                <div v-if="successMessage" class="success-message">
+                  {{ successMessage }}
+                </div>
               </a-space>
             </div>
           </a-tab-pane>
@@ -195,6 +215,13 @@ const toLogin = async () => {
 
     .error-message {
       color: red;
+      font-weight: 1000;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .success-message {
+      color: #856cff;
       font-weight: 1000;
       font-size: 14px;
       text-align: left;

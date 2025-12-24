@@ -1,26 +1,20 @@
 <script setup lang="ts">
-import { ref, reactive, toRefs } from "vue";
-// 引入接口
-import { type BigModelProvider, type ChatMessage, type SystemChatMessage } from "@/types";
-// 引入 UI 库中的提示组件
-import { Message } from "@arco-design/web-vue";
-// 引入 User、eChatAssistant 状态
+import { ref } from "vue";
+import { Message } from '@arco-design/web-vue'
 import { useUserStore } from "@/stores/user";
 import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { useAssistantStore } from "@/stores/assistant";
-// 引入 Collection 状态
 import { useCollectionStore } from '@/stores/collection'
 import { useSettingStore } from "@/stores/setting";
-import { getUserData } from "@/api/login";
-import { getCommonSetting, createCommonSetting } from "@/api/setting";
-import { getAssistantList, getAssistantMessageList, getNoteCollectionList, getChatCollectionList, getChatCollectionMessageList, getSystemAssistantList, getSystemAssistantMessageList } from "@/api/assistant"
-import { copyObj } from "@/utils/object-util";
+import { getUserData, resgisterUser } from "@/api/login";
+import axios from "axios";
 
 const userStore = useUserStore();
-const chatAssistantStore = useChatAssistantStore();
-const collectionStore = useCollectionStore();
-const assistantStore = useAssistantStore();
-const settingStore = useSettingStore();
+
+const errorMessage = ref('');
+const successMessage = ref('');
+
+const activeKey = ref('login');
 
 // 向后端发送的表单数据
 const loginForm = ref({
@@ -28,231 +22,153 @@ const loginForm = ref({
   password: "",
 });
 
-// 检查登录密码
-const validatePhone = (phone: string) => {
-  const reg = /^1[3|4|5|6|7|8|9][0-9]{9}$/;
-  if (!reg.test(phone)) {
-    return false;
-  }
-  return true;
-};
+const registerForm = ref({
+  name: "",
+  email: "",
+  phone: "",
+  password: "",
+  validatePassword: "",
+});
 
-// 检查登录密码
-const validatePassword = (password: string) => {
-  const reg = /^[a-z|A-Z|0-9]*$/;
-  if (!reg.test(password)) {
-    return false;
+// 注册
+const toRegister = async () => {
+  const registerRes = await resgisterUser(
+    registerForm.value.name,
+    registerForm.value.email,
+    registerForm.value.phone,
+    registerForm.value.password,
+  );
+
+
+  if (registerRes.status) {
+    // 回填登录表单数据
+    loginForm.value.phone = registerForm.value.phone;
+    loginForm.value.password = registerForm.value.password;
+    // 清空表单数据
+    registerForm.value.name = "";
+    registerForm.value.email = "";
+    registerForm.value.phone = "";
+    registerForm.value.password = "";
+    registerForm.value.validatePassword = "";
+    // 切换到登录界面
+    activeKey.value = "login";
   }
-  return true;
-};
+}
 
 // 登录
 const toLogin = async () => {
   try {
-    const userData = await getUserData(
+    const loginRes = await getUserData(
       loginForm.value.phone,
       loginForm.value.password
     );
-    // 关闭登录页
+    // 登录成功，关闭登录页
     userStore.isLogin = true;
-    Message.success("登录成功");
-
-    if (userData.data) {
-      // 保存用户的登录信息状态
-      userStore.nickname = userData.data.name;
-      // 存储用户登录状态
-      sessionStorage.userId = userData.data.id;
-      sessionStorage.name = userData.data.name;
-      sessionStorage.email = userData.data.email;
-      sessionStorage.phone = userData.data.phone;
-      sessionStorage.userType = userData.data.type;
-      sessionStorage.userName = userData.data.user_name;
-      sessionStorage.idcard = userData.data.idcard;
-      localStorage.setItem('loginflag', 'true');
-    }
-
-    // 初始化聊天助手和用户消息
-    const assistantListRes = await getAssistantList(sessionStorage.userId);
-    for (var assistant of assistantListRes.data) {
-      // 获取该助手的消息列表
-      const res = await getAssistantMessageList(assistant.assistantId);
-      const newChatAssistant = {
-        id: assistant.assistantId,
-        type: assistant.type,
-        name: assistant.name,
-        provider: assistant.provider,
-        model: assistant.model,
-        createTime: assistant.createTime,
-        lastUpdateTime: assistant.lastUpdateTime,
-        chatMessageList: new Array<ChatMessage>(),
-        instruction: assistant.instruction,
-        inputMaxTokens: assistant.inputMaxTokens,
-        maxTokens: assistant.maxTokens,
-        contextSize: assistant.contextSize,
-        speechModel: assistant.speechModel,
-        speechVoice: assistant.speechVoice,
-        speechSpeed: assistant.speechSpeed
-      }
-      for (var assistant_message of res.data) {
-        newChatAssistant.chatMessageList.push({
-          id: assistant_message.messageId,
-          type: assistant_message.type,
-          role: assistant_message.role,
-          content: assistant_message.content,
-          image: assistant_message.image,
-          createTime: assistant_message.createTime
-        })
-      }
-      data.newChatAssistantList.unshift(newChatAssistant);
-    }
-    chatAssistantStore.updateChatAssistantList(data.newChatAssistantList);
-
-    // 初始化系统聊天助手和用户信息
-    const systemAssistantListRes = await getSystemAssistantList(sessionStorage.userId);
-    for (var systemAssistant of systemAssistantListRes.data) {
-      // 获取该助手的消息列表
-      const res = await getSystemAssistantMessageList(systemAssistant.assistantId);
-      const newVirtualAssistant = {
-        id: systemAssistant.assistantId,
-        type: systemAssistant.type,
-        name: systemAssistant.name,
-        provider: systemAssistant.provider,
-        model: systemAssistant.model,
-        createTime: systemAssistant.createTime,
-        lastUpdateTime: systemAssistant.lastUpdateTime,
-        chatMessageList: new Array<SystemChatMessage>(),
-        instruction: systemAssistant.instruction,
-        inputMaxTokens: systemAssistant.inputMaxTokens,
-        maxTokens: systemAssistant.maxTokens,
-        contextSize: systemAssistant.contextSize,
-        speechModel: systemAssistant.speechModel,
-        speechVoice: systemAssistant.speechVoice,
-        speechSpeed: systemAssistant.speechSpeed
-      }
-      for (var system_assistant_message of res.data) {
-        newVirtualAssistant.chatMessageList.push({
-          id: system_assistant_message.messageId,
-          role: system_assistant_message.role,
-          name: system_assistant_message.name,
-          content: system_assistant_message.content,
-          createTime: system_assistant_message.createTime
-        })
-      }
-
-      data.newVirtualAssistantList.unshift(newVirtualAssistant);
-    }
-    assistantStore.updateVirtualAssistantList(data.newVirtualAssistantList);
-
-    // 初始化笔记收藏
-    const noteCollectionRes = await getNoteCollectionList(sessionStorage.userId);
-    for (var noteCollection of noteCollectionRes.data) {
-      collectionStore.collectionItemList.unshift({
-        id: noteCollection.noteCollectionId,
-        type: 'note',
-        note: {
-          title: noteCollection.title,
-          content: noteCollection.content
-        },
-        createTime: noteCollection.createTime
-      })
-    }
-
-    // 初始化聊天收藏列表
-    const chatCollectionRes = await getChatCollectionList(sessionStorage.userId);
-    for (var chatCollection of chatCollectionRes.data) {
-      const chatCollectionMessageRes = await getChatCollectionMessageList(chatCollection.chatCollectionId);
-      const newChatCollection = {
-        id: chatCollection.chatCollectionId,
-        type: 'chat',
-        chat: {
-          ...copyObj(chatAssistantStore.chatAssistantList.find((c) => c.id === chatCollection.assistantId)),
-          chatMessageList: []
-        },
-        createTime: chatCollection.createTime
-      }
-      for (var chatCollectionMessage of chatCollectionMessageRes.data) {
-        newChatCollection.chat.chatMessageList.push({
-          id: chatCollectionMessage.messageId,
-          type: chatCollectionMessage.type,
-          role: chatCollectionMessage.role,
-          name: chatCollectionMessage.name,
-          content: chatCollectionMessage.content,
-          image: chatCollectionMessage.image,
-          createTime: chatCollectionMessage.createTime
-        })
-      }
-      collectionStore.collectionItemList.unshift(newChatCollection);
-    }
-
-    // 获取用户通用设置
-    const commonSettingRes = await getCommonSetting(sessionStorage.userId);
-    if (commonSettingRes.data.length === 0) {
-      const res = await createCommonSetting(
-        sessionStorage.userId,
-        settingStore.openAI.key,
-        settingStore.zhipuAI.apiKey,
-        settingStore.ernie.apiKey,
-        settingStore.ernie.secretKey,
-        settingStore.spark.appId,
-        settingStore.spark.secret,
-        settingStore.spark.key,
-        settingStore.tongyi.apiKey,
-        settingStore.moonshotAI.apiKey,
-        settingStore.tiangong.appKey,
-        settingStore.tiangong.appSecret,
-        settingStore.stepFun.apiKey,
-        settingStore.deepSeek.apiKey,
-        settingStore.baichuan.apiKey
-      )
-      if (res.status === 0) {
-        Message.success("通用设置初始化成功");
-      } else {
-        Message.success("通用设置初始化失败");
-      }
-    } else {
-      settingStore.openAI.key = commonSettingRes.data[0].openAIKey
-      settingStore.zhipuAI.apiKey = commonSettingRes.data[0].zhipuAIKey
-      settingStore.ernie.apiKey = commonSettingRes.data[0].ernieAPIKey
-      settingStore.ernie.secretKey = commonSettingRes.data[0].ernieSecretKey
-      settingStore.spark.appId = commonSettingRes.data[0].sparkAppId
-      settingStore.spark.secret = commonSettingRes.data[0].sparkSecret
-      settingStore.spark.key = commonSettingRes.data[0].sparkKey
-      settingStore.tongyi.apiKey = commonSettingRes.data[0].tongyiKey
-      settingStore.moonshotAI.apiKey = commonSettingRes.data[0].moonshotAIKey
-      settingStore.tiangong.appKey = commonSettingRes.data[0].tiangongAppKey
-      settingStore.tiangong.appSecret = commonSettingRes.data[0].tiangongAppSecret
-      settingStore.stepFun.apiKey = commonSettingRes.data[0].stepFunKey
-      settingStore.deepSeek.apiKey = commonSettingRes.data[0].deepSeekKey
-      settingStore.baichuan.apiKey = commonSettingRes.data[0].baichuanKey
-    }
+    Message.success('登录成功');
   } catch (error) {
-    // 显示给用户
-    Message.error(error);
+    errorMessage.value = '登录失败，请稍后重试。';
+    if (axios.isAxiosError(error)) {
+      const response = error.response;
+      // 检查是否有结构化的错误数据
+      if (response && response.data) {
+        const responseData = response.data;
+        // 优先使用 errors 数组中的第一条错误信息
+        if (Array.isArray(responseData.errors) && responseData.errors.length > 0) {
+          errorMessage.value = responseData.errors[0]; // 或者拼接所有：responseData.errors.join('；')
+        }
+        // 其次 fallback 到 message 字段
+        else if (typeof responseData.message === 'string') {
+          errorMessage.value = responseData.message;
+        }
+      }
+    }
+    Message.error(errorMessage.value);
   }
 };
 </script>
 
 <template>
   <div class="login-page z-index-max">
-    <div class="login-layout">
-      <div class="login-left">
-        <a-space direction="vertical" size="large">
-          <div class="login-title">登录</div>
-          <!-- 手机号输入 -->
-          <el-input v-model="loginForm.phone" style="width: 240px" size="large" placeholder="Please Input" />
-          <a-input placeholder="请输入您的手机号" v-model="loginForm.phone">
-            <template #prefix>
-              <icon-phone />
-            </template>
-          </a-input>
-          <!-- 密码输入 -->
-          <a-input-password placeholder="请输入您的密码" v-model="loginForm.password">
-            <template #prefix>
-              <icon-stamp />
-            </template>
-          </a-input-password>
-          <a-button shape="round" @click="toLogin" long>登录</a-button>
-        </a-space>
+    <!-- 左侧紫色背景 -->
+    <div class="login-left">
+      <!-- 主标题 -->
+      <div class="login-left-title">
+        基于MD-CLIP的双通道教学视频对话平台
+      </div>
+      <!-- 版权信息 -->
+      <div class="login-left-copyright">
+        © 2025 王轩 版权所有
+      </div>
+    </div>
+
+    <!-- 右侧内容区 -->
+    <div class="login-right">
+      <div class="login-layout">
+        <!-- 选项卡 -->
+        <div class="radio-group-wrapper">
+          <a-radio-group v-model="activeKey" type="button">
+            <a-radio value="login" style="color: #856cff; font-weight: 600;">登录</a-radio>
+            <a-radio value="register" style="color: #856cff; font-weight: 600;">注册</a-radio>
+          </a-radio-group>
+        </div>
+        <!-- 登录/注册区 -->
+        <a-tabs :active-key="activeKey" class="custom-tabs">
+          <a-tab-pane key="login">
+            <div class="form-content">
+              <a-space direction="vertical" size="large" fill style="width: 100%">
+                <a-input placeholder="请输入您的用户名/手机号/邮箱" v-model="loginForm.phone">
+                  <template #prefix>
+                    <icon-email />
+                  </template>
+                </a-input>
+                <a-input-password placeholder="请输入您的密码" v-model="loginForm.password">
+                  <template #prefix>
+                    <icon-lock />
+                  </template>
+                </a-input-password>
+                <a-button block @click="toLogin" type="primary"
+                  style="width: 100%;background-color: #856cff;font-weight: 600;">登录</a-button>
+                <!-- 错误信息显示区域 -->
+                <div v-if="errorMessage" class="error-message">
+                  {{ errorMessage }}
+                </div>
+              </a-space>
+            </div>
+          </a-tab-pane>
+          <a-tab-pane key="register">
+            <div class="form-content">
+              <a-space direction="vertical" size="large" fill style="width: 100%">
+                <a-input placeholder="请输入您的用户名" v-model="registerForm.name">
+                  <template #prefix>
+                    <icon-user />
+                  </template>
+                </a-input>
+                <a-input placeholder="请输入您的手机号" v-model="registerForm.phone">
+                  <template #prefix>
+                    <icon-phone />
+                  </template>
+                </a-input>
+                <a-input placeholder="请输入您的邮箱" v-model="registerForm.email">
+                  <template #prefix>
+                    <icon-email />
+                  </template>
+                </a-input>
+                <a-input-password placeholder="请输入您的密码" v-model="registerForm.password">
+                  <template #prefix>
+                    <icon-lock />
+                  </template>
+                </a-input-password>
+                <a-input-password placeholder="请再次输入您的密码" v-model="registerForm.validatePassword">
+                  <template #prefix>
+                    <icon-lock />
+                  </template>
+                </a-input-password>
+                <a-button @click="toRegister()" type="primary"
+                  style="width: 100%; background-color: #856cff; font-weight: 600;">注册</a-button>
+              </a-space>
+            </div>
+          </a-tab-pane>
+        </a-tabs>
       </div>
     </div>
   </div>
@@ -260,35 +176,169 @@ const toLogin = async () => {
 
 <style scoped lang="less">
 .login-page {
+  position: absolute;
+  top: 0;
+  left: 0;
   height: 100%;
   width: 100%;
   display: flex;
-  position: absolute;
   align-items: center;
   justify-content: center;
-  background: #F3F3F3;
-  overflow: hidden;
+
+  .login-left,
+  .login-right {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .error-message {
+      color: red;
+      font-weight: 1000;
+      font-size: 14px;
+      text-align: left;
+    }
+  }
+
+  .login-left {
+    color: white;
+    position: relative;
+    padding: 0 40px;
+    text-align: center;
+    overflow: hidden;
+    background: linear-gradient(30deg,
+        #ff6da1 0%,
+        #ff6da1 10%,
+        #ff77a4 10%,
+        #ff77a4 20%,
+        #ff7ba7 20%,
+        #ff7ba7 30%,
+        #ff79aa 30%,
+        #ff79aa 40%,
+        #ff71ad 40%,
+        #ff71ad 50%,
+        #eb65af 50%,
+        #eb65af 60%,
+        #cd5ab2 60%,
+        #cd5ab2 70%,
+        #ad51b4 70%,
+        #ad51b4 80%,
+        #8c4fb6 80%,
+        #8c4fb6 90%,
+        #6b53b7 90%,
+        #6b53b7 100%);
+
+    /* 动画设置：扩展背景并移动 */
+    background-size: 200% 200%;
+    animation: gradientFlow 15s ease-in-out infinite alternate;
+  }
+
+  /* 渐变流动动画 */
+  @keyframes gradientFlow {
+    0% {
+      background-position: 0% 0%;
+    }
+
+    100% {
+      background-position: 100% 100%;
+    }
+  }
+
+  /* 光泽效果：对角线光带 */
+  .login-left::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent);
+    transform: rotate(30deg);
+    /* 与渐变角度一致，更协调 */
+    filter: blur(12px);
+    z-index: 1;
+    animation: shineGlow 4s infinite ease-in-out;
+  }
+
+  /* 光泽移动动画 */
+  @keyframes shineGlow {
+    0% {
+      transform: rotate(30deg) translateX(-30%);
+    }
+
+    100% {
+      transform: rotate(30deg) translateX(30%);
+    }
+  }
+
+  .login-left>* {
+    position: relative;
+    z-index: 2;
+  }
+
+  .login-left-title {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic; // ← 斜体
+    line-height: 1.6; // ← 增大行高，让文字更舒展
+    letter-spacing: 1px; // ← 可选：增加字母间距，提升可读性
+    max-width: 80%;
+    word-break: break-word;
+  }
+
+  .login-left-copyright {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: auto;
+    /* 确保在底部 */
+    padding-bottom: 20px;
+    /* 底部留白 */
+  }
+
+  .login-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+  }
 
   .login-layout {
+    width: 320px;
+    text-align: center;
+  }
+
+  .radio-group-wrapper {
     display: flex;
-    width: 60%;
-    max-width: 500px;
-    height: 80%;
-    max-height: 400px;
-    border-radius: 24px;
-    overflow: hidden;
-    background-color: #EDDDA2;
-    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .custom-tabs .arco-tabs-nav::before {
+    display: none !important;
+  }
+
+  .form-content {
+    display: flex;
     justify-content: center;
   }
 
-}
+  .form-content .arco-space {
+    width: 100%;
+  }
 
-
-.login-title {
-  font-weight: 1000;
-  font-size: 40px;
-  text-align: center;
-  margin-bottom: 10px;
+  .login-title {
+    font-weight: 1000;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
 }
 </style>

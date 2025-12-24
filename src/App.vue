@@ -122,7 +122,7 @@ onMounted(() => {
         <div class="siderbar-container">
           <!-- 对话 -->
           <div class="app-sidebar-item no-drag-area" @click="changePage('chat')">
-            <icon-message class="app-sidebar-item-icon" />
+            <icon-robot class="app-sidebar-item-icon" />
             <span class="app-sidebar-item-text">对话</span>
           </div>
 

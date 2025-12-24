@@ -2,7 +2,6 @@ import { AssistantHttpInstance } from "@/utils/http-util";
 
 // 接收后端传递的用户数据
 export const getUserData = async (phone: string, password: string) => {
-  try {
     const response = await AssistantHttpInstance({
       url: "/auth/sign_in",
       method: "POST",
@@ -15,12 +14,26 @@ export const getUserData = async (phone: string, password: string) => {
       },
       withCredentials: true,
     });
-    
-    // 注意：由于拦截器返回 res.data，这里 response 已经是处理后的数据
     return response;
-    
-  } catch (error) {
-    // 错误已经被拦截器处理过了，这里可以直接展示给用户
-    throw error;
-  }
 };
+
+// 注册新用户
+export const resgisterUser = (name: string,
+  email: string,
+  phone: string,
+  password: string) => {
+    return AssistantHttpInstance({
+      url: "/auth/sign_up",
+      method: "POST",
+      data: {
+        name: name,
+        email: email,
+        phone: phone,
+        password: password
+      },
+      headers: {
+        "content-type": "application/json",
+      },
+      withCredentials: true,
+    });
+}

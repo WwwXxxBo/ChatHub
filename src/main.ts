@@ -16,8 +16,8 @@ const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
 const app = createApp(App)
-app.use(ArcoVueIcon)
 app.use(ArcoVue);
+app.use(ArcoVueIcon)
 app.use(i18n)
 app.use(pinia)
 app.use(router)

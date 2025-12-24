@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { type ChatMessage, type SystemChatMessage } from "@/types";
 import { Message } from '@arco-design/web-vue'
 import { useUserStore } from "@/stores/user";
+import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { getUserData, resgisterUser } from "@/api/login";
+import { getAssistantList } from "@/api/assistant"
 import axios from "axios";
 
 const userStore = useUserStore();
+const chatAssistantStore = useChatAssistantStore();
 
 const errorMessage = ref('');
 const successMessage = ref('');
@@ -78,6 +82,29 @@ const toLogin = async () => {
     // 登录成功，关闭登录页
     userStore.isLogin = true;
     Message.success(loginRes.message);
+
+    // 获取聊天助手数据
+    const assistantListRes = await getAssistantList(1);
+    const newChatAssistantList = []
+    for (var assistant of assistantListRes.data.assistants) {
+      const newChatAssistant = {
+        id: assistant.assistantId,
+        type: assistant.type,
+        name: assistant.name,
+        provider: assistant.provider,
+        model: assistant.model,
+        createTime: assistant.createTime,
+        lastUpdateTime: assistant.lastUpdateTime,
+        chatMessageList: new Array<ChatMessage>(),
+        instruction: assistant.instruction,
+        inputMaxTokens: assistant.inputMaxTokens,
+        maxTokens: assistant.maxTokens,
+        contextSize: assistant.contextSize,
+      }
+      newChatAssistantList.unshift(newChatAssistant);
+    }
+    chatAssistantStore.updateChatAssistantList(newChatAssistantList);
+
   } catch (error) {
     errorMessage.value = '登录失败，请稍后重试。';
     if (axios.isAxiosError(error)) {

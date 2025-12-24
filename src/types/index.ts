@@ -107,7 +107,7 @@ export interface Assistant {
   lastUpdateTime: number;
   chatMessageList: ChatMessage[];
   clearContextMessageId?: string | null;
-  chatPluginIdList: string[];
+  chatPluginIdList?: string[];
 
   // 对话
   instruction: string;

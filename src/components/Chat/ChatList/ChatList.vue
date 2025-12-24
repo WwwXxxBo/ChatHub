@@ -54,7 +54,7 @@ const newChatAssistant = async () => {
   let currentChatAssistant = { ...copyObj(chatAssistantStore.getCurrentChatAssistant) }
   const res = await createAssistant(
     currentChatAssistant.id,
-    sessionStorage.userId,
+    1,
     currentChatAssistant.name,
     currentChatAssistant.type,
     currentChatAssistant.instruction,
@@ -63,13 +63,10 @@ const newChatAssistant = async () => {
     currentChatAssistant.maxTokens,
     currentChatAssistant.inputMaxTokens,
     currentChatAssistant.contextSize,
-    currentChatAssistant.speechModel,
-    currentChatAssistant.speechVoice,
-    currentChatAssistant.speechSpeed,
     currentChatAssistant.createTime,
     currentChatAssistant.lastUpdateTime,
   )
-  if (res.status === 0) {
+  if (res.status) {
     Message.success("对话助手创建成功");
   } else {
     Message.error("对话助手创建失败");

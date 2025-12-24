@@ -1,5 +1,24 @@
 import { AssistantHttpInstance } from "@/utils/http-util";
 
+// 获取聊天助手列表
+export const getAssistantList = (
+  userId: number
+) => {
+  return AssistantHttpInstance({
+    url: "/assistants",
+    method: "GET",
+    params: {
+      userId: userId
+    },
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
+};
+
+
+
 // 创建新的对话助手
 export const createAssistant = (
     assistantId: string, 
@@ -12,31 +31,25 @@ export const createAssistant = (
     maxTokens: number,
     inputMaxTokens: number, 
     contextSize: number, 
-    speechModel: string, 
-    speechVoice: string,
-    speechSpeed: number, 
     createTime: number, 
     lastUpdateTime: number,
   ) => {
     return AssistantHttpInstance({
-      url: "/assistant/",
+      url: "/assistants",
       method: "POST",
       data: JSON.stringify({
         assistantId: assistantId, 
         userId: userId, 
-        name: name, 
         type: type,
-        instruction: instruction, 
+        name: name, 
         provider: provider, 
         model: model, 
-        maxTokens: maxTokens,
-        inputMaxTokens: inputMaxTokens, 
-        contextSize: contextSize, 
-        speechModel: speechModel, 
-        speechVoice: speechVoice,
-        speechSpeed: speechSpeed, 
         createTime: createTime, 
-        lastUpdateTime: lastUpdateTime
+        lastUpdateTime: lastUpdateTime,
+        instruction: instruction, 
+        inputMaxTokens: inputMaxTokens, 
+        maxTokens: maxTokens,
+        contextSize: contextSize,
       }),
       withCredentials: true,
       headers: {
@@ -44,6 +57,13 @@ export const createAssistant = (
       }
     });
   };
+
+
+
+
+
+
+
 
 // 修改对话助手信息
 export const modifyAssistant = (
@@ -107,23 +127,6 @@ export const deleteAssistant = (
   });
 };
 
-// 获取聊天助手列表
-export const getAssistantList = (
-  userId: number
-) => {
-  return AssistantHttpInstance({
-    url: "/assistant/",
-    method: "GET",
-    params: {
-      userId: userId
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
 // 创建聊天消息
 export const createAssistantMessage = (
   messageId: string,
@@ -150,7 +153,7 @@ export const createAssistantMessage = (
     }),
     withCredentials: true,
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
+      "content-type": "application/json",
     }
   });
 };

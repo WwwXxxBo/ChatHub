@@ -23,7 +23,8 @@ import { startDarkThemeListener, setCustomTheme, setDefaultTheme, changeTheme } 
 const userStore = useUserStore();
 const systemStore = useSystemStore()
 const settingStore = useSettingStore();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
+
 const data = reactive({
   sidebarConfig: [
     {
@@ -123,13 +124,13 @@ onMounted(() => {
           <!-- 对话 -->
           <div class="app-sidebar-item no-drag-area" @click="changePage('chat')">
             <icon-robot class="app-sidebar-item-icon" />
-            <span class="app-sidebar-item-text">对话</span>
+            <span class="app-sidebar-item-text">{{ $t("index.chat") }}</span>
           </div>
 
           <!-- 收藏 -->
           <div class="app-sidebar-item no-drag-area" @click="changePage('collect')">
             <icon-star class="app-sidebar-item-icon" />
-            <span class="app-sidebar-item-text">收藏</span>
+            <span class="app-sidebar-item-text">{{ $t("index.note") }}</span>
           </div>
           <!-- 设置 -->
           <div class="app-sidebar-item no-drag-area">
@@ -138,7 +139,7 @@ onMounted(() => {
                 <icon-settings class="app-sidebar-item-icon" />
               </template>
             </Setting>
-            <span class="app-sidebar-item-text">设置</span>
+            <span class="app-sidebar-item-text">{{ $t("index.setting") }}</span>
           </div>
         </div>
       </div>

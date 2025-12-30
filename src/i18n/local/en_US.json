@@ -1,4 +1,9 @@
 {
+  "index": {
+    "chat": "Chat",
+    "note": "Note",
+    "setting": "Setting"
+  },
   "common": {
     "slogan": "The era of artificial intelligence has dawned.",
     "ok": "Confirm",
@@ -80,7 +85,7 @@
         }
       }
     },
-    "functionModel":{
+    "functionModel": {
       "name": "Function model",
       "moonshotAI": {
         "name": "Moonshot AI",
@@ -172,10 +177,10 @@
         "name": "Application version",
         "num": "1.0"
       },
-      "developer":{
+      "developer": {
         "name": "Team",
         "team": "BUPT MAIR",
-        "member":""
+        "member": ""
       },
       "devTools": {
         "name": "Developer tools",
@@ -501,7 +506,7 @@
     "stop": "Stop",
     "new": "New canvas"
   },
-  "recommend":{
+  "recommend": {
     "title": "ChatHub is a platform that integrates multiple large models",
     "description": "You can start a conversation with me on the following topics,",
     "click": "Change it"

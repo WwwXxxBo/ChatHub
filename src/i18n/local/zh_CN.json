@@ -1,4 +1,9 @@
 {
+  "index": {
+    "chat": "对话",
+    "note": "笔记",
+    "setting": "设置"
+  },
   "common": {
     "slogan": "人工智能时代已然到来",
     "ok": "确定",
@@ -80,7 +85,7 @@
         }
       }
     },
-    "functionModel":{
+    "functionModel": {
       "name": "系统操作模型",
       "moonshotAI": {
         "name": "月之暗面",
@@ -172,10 +177,10 @@
         "name": "应用版本",
         "num": "1.0"
       },
-      "developer":{
+      "developer": {
         "name": "开发团队",
         "team": "北京邮电大学 MAIR",
-        "member":""
+        "member": ""
       },
       "devTools": {
         "name": "开发者工具",
@@ -501,7 +506,7 @@
     "stop": "停止",
     "new": "新建画布"
   },
-  "recommend":{
+  "recommend": {
     "title": "ChatHub 集合多款大模型的对话平台",
     "description": "您可以从以下话题开始与我对话，",
     "click": "换一换"

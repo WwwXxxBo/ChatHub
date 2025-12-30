@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
-import { type ChatMessage, type SystemChatMessage } from "@/types";
+import { type ChatMessage } from "@/types";
 import { Message } from '@arco-design/web-vue'
 import { useUserStore } from "@/stores/user";
 import { useChatAssistantStore } from "@/stores/chatAssistant";

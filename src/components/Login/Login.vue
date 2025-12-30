@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { type ChatMessage, type SystemChatMessage } from "@/types";
 import { Message } from '@arco-design/web-vue'
 import { useUserStore } from "@/stores/user";
@@ -7,6 +7,7 @@ import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { getUserData, resgisterUser } from "@/api/login";
 import { getAssistantList } from "@/api/assistant"
 import axios from "axios";
+import type { FormInstance } from '@arco-design/web-vue';
 
 const userStore = useUserStore();
 const chatAssistantStore = useChatAssistantStore();
@@ -22,7 +23,11 @@ const loginForm = ref({
   password: "",
 });
 
-const registerForm = ref({
+// 注册表单实例
+const registerFormRef = ref<FormInstance>();
+
+// 注册表单数据
+const registerForm = reactive({
   name: "",
   email: "",
   phone: "",
@@ -30,32 +35,81 @@ const registerForm = ref({
   validatePassword: "",
 });
 
+// 注册表单验证规则
+const registerRules = {
+  name: [
+    { required: true, message: '请输入用户名', trigger: ['blur', 'change'] },
+    { minLength: 2, message: '用户名至少2个字符', trigger: ['blur', 'change'] },
+    { maxLength: 20, message: '用户名最多20个字符', trigger: ['blur', 'change'] },
+  ],
+  email: [
+    { required: true, message: '请输入邮箱', trigger: ['blur', 'change'] },
+    {
+      type: 'email',
+      message: '请输入有效的邮箱地址',
+      trigger: ['blur', 'change']
+    },
+  ],
+  phone: [
+    { required: true, message: '请输入手机号', trigger: ['blur', 'change'] },
+    {
+      match: /^1[3-9]\d{9}$/,
+      message: '请输入有效的11位手机号',
+      trigger: ['blur', 'change']
+    },
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: ['blur', 'change'] },
+    { minLength: 6, message: '密码长度至少为6位', trigger: ['blur', 'change'] },
+    { maxLength: 20, message: '密码长度最多为20位', trigger: ['blur', 'change'] },
+  ],
+  validatePassword: [
+    { required: true, message: '请再次输入密码', trigger: ['blur', 'change'] },
+    {
+      validator: (value: string, callback: (error?: string) => void) => {
+        if (value !== registerForm.password) {
+          callback('两次输入的密码不一致');
+        } else {
+          callback();
+        }
+      },
+      trigger: ['blur', 'change']
+    },
+  ],
+};
+
 // 注册
 const toRegister = async () => {
+  // 验证表单
+  const error = await registerFormRef.value?.validate();
+  if (error) {
+    return;
+  }
+
   try {
     const registerRes = await resgisterUser(
-      registerForm.value.name,
-      registerForm.value.email,
-      registerForm.value.phone,
-      registerForm.value.password,
+      registerForm.name,
+      registerForm.email,
+      registerForm.phone,
+      registerForm.password,
     );
     if (registerRes.status) {
       errorMessage.value = '';
       successMessage.value = registerRes.message;
       // 回填登录表单数据
-      loginForm.value.phone = registerForm.value.phone;
-      loginForm.value.password = registerForm.value.password;
+      loginForm.value.phone = registerForm.phone;
+      loginForm.value.password = registerForm.password;
       // 清空表单数据
-      registerForm.value.name = "";
-      registerForm.value.email = "";
-      registerForm.value.phone = "";
-      registerForm.value.password = "";
-      registerForm.value.validatePassword = "";
+      registerForm.name = "";
+      registerForm.email = "";
+      registerForm.phone = "";
+      registerForm.password = "";
+      registerForm.validatePassword = "";
       // 切换到登录界面
       activeKey.value = "login";
     }
   } catch (error) {
-    errorMessage.value = '登录失败，请稍后重试。';
+    errorMessage.value = '注册失败，请稍后重试';
     if (axios.isAxiosError(error)) {
       const response = error.response;
       if (response && response.data) {
@@ -106,7 +160,7 @@ const toLogin = async () => {
     chatAssistantStore.updateChatAssistantList(newChatAssistantList);
 
   } catch (error) {
-    errorMessage.value = '登录失败，请稍后重试。';
+    errorMessage.value = '登录失败，请稍后重试';
     if (axios.isAxiosError(error)) {
       const response = error.response;
       if (response && response.data) {
@@ -130,7 +184,7 @@ const toLogin = async () => {
     <div class="login-left">
       <!-- 主标题 -->
       <div class="login-left-title">
-        基于MD-CLIP的双通道教学视频对话平台
+        面向教学视频的片段检索与智能问答系统
       </div>
       <!-- 版权信息 -->
       <div class="login-left-copyright">
@@ -177,42 +231,62 @@ const toLogin = async () => {
           </a-tab-pane>
           <a-tab-pane key="register">
             <div class="form-content">
-              <a-space direction="vertical" size="large" fill style="width: 100%">
-                <a-input placeholder="请输入您的用户名" v-model="registerForm.name">
-                  <template #prefix>
-                    <icon-user />
-                  </template>
-                </a-input>
-                <a-input placeholder="请输入您的手机号" v-model="registerForm.phone">
-                  <template #prefix>
-                    <icon-phone />
-                  </template>
-                </a-input>
-                <a-input placeholder="请输入您的邮箱" v-model="registerForm.email">
-                  <template #prefix>
-                    <icon-email />
-                  </template>
-                </a-input>
-                <a-input-password placeholder="请输入您的密码" v-model="registerForm.password">
-                  <template #prefix>
-                    <icon-lock />
-                  </template>
-                </a-input-password>
-                <a-input-password placeholder="请再次输入您的密码" v-model="registerForm.validatePassword">
-                  <template #prefix>
-                    <icon-lock />
-                  </template>
-                </a-input-password>
-                <a-button @click="toRegister()" type="primary"
-                  style="width: 100%; background-color: #856cff; font-weight: 600;">注册</a-button>
-                <!-- 错误信息显示区域 -->
-                <div v-if="errorMessage" class="error-message">
-                  {{ errorMessage }}
-                </div>
-                <div v-if="successMessage" class="success-message">
-                  {{ successMessage }}
-                </div>
-              </a-space>
+              <a-form ref="registerFormRef" :model="registerForm" :rules="registerRules" layout="vertical"
+                auto-label-width @submit="toRegister">
+                <a-form-item field="name" label="用户名" hide-label>
+                  <a-input placeholder="请输入您的用户名" v-model="registerForm.name" allow-clear>
+                    <template #prefix>
+                      <icon-user />
+                    </template>
+                  </a-input>
+                </a-form-item>
+
+                <a-form-item field="phone" label="手机号" hide-label>
+                  <a-input placeholder="请输入您的手机号" v-model="registerForm.phone" allow-clear>
+                    <template #prefix>
+                      <icon-phone />
+                    </template>
+                  </a-input>
+                </a-form-item>
+
+                <a-form-item field="email" label="邮箱" hide-label>
+                  <a-input placeholder="请输入您的邮箱" v-model="registerForm.email" allow-clear>
+                    <template #prefix>
+                      <icon-email />
+                    </template>
+                  </a-input>
+                </a-form-item>
+
+                <a-form-item field="password" label="密码" hide-label>
+                  <a-input-password placeholder="请输入您的密码（至少6位）" v-model="registerForm.password" allow-clear>
+                    <template #prefix>
+                      <icon-lock />
+                    </template>
+                  </a-input-password>
+                </a-form-item>
+
+                <a-form-item field="validatePassword" label="确认密码" hide-label>
+                  <a-input-password placeholder="请再次输入您的密码" v-model="registerForm.validatePassword" allow-clear>
+                    <template #prefix>
+                      <icon-lock />
+                    </template>
+                  </a-input-password>
+                </a-form-item>
+
+                <a-form-item>
+                  <a-button html-type="submit" type="primary" long style="background-color: #856cff; font-weight: 600;">
+                    注册
+                  </a-button>
+                </a-form-item>
+              </a-form>
+
+              <!-- 全局错误信息显示区域 -->
+              <div v-if="errorMessage" class="global-error-message">
+                {{ errorMessage }}
+              </div>
+              <div v-if="successMessage" class="global-success-message">
+                {{ successMessage }}
+              </div>
             </div>
           </a-tab-pane>
         </a-tabs>
@@ -245,6 +319,7 @@ const toLogin = async () => {
       font-weight: 1000;
       font-size: 14px;
       text-align: left;
+      margin-top: 8px;
     }
 
     .success-message {
@@ -252,6 +327,31 @@ const toLogin = async () => {
       font-weight: 1000;
       font-size: 14px;
       text-align: left;
+      margin-top: 8px;
+    }
+
+    .global-error-message {
+      color: red;
+      font-weight: 600;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 12px;
+      padding: 8px;
+      background-color: rgba(255, 0, 0, 0.05);
+      border-radius: 4px;
+      border-left: 3px solid red;
+    }
+
+    .global-success-message {
+      color: #856cff;
+      font-weight: 600;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 12px;
+      padding: 8px;
+      background-color: rgba(133, 108, 255, 0.05);
+      border-radius: 4px;
+      border-left: 3px solid #856cff;
     }
   }
 
@@ -393,6 +493,25 @@ const toLogin = async () => {
     font-size: 24px;
     text-align: center;
     margin-bottom: 20px;
+  }
+
+  /* 表单样式调整 */
+  :deep(.arco-form-item) {
+    margin-bottom: 12px;
+  }
+
+  :deep(.arco-form-item:last-child) {
+    margin-bottom: 0;
+  }
+
+  :deep(.arco-form-item-label-col) {
+    padding-bottom: 0;
+  }
+
+  :deep(.arco-form-item-message) {
+    font-size: 12px;
+    margin-top: 4px;
+    text-align: left;
   }
 }
 </style>

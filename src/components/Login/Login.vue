@@ -188,7 +188,7 @@ const toLogin = async () => {
       </div>
       <!-- 版权信息 -->
       <div class="login-left-copyright">
-        © 2025 王轩 版权所有
+        © 2026 王轩 版权所有
       </div>
     </div>
 

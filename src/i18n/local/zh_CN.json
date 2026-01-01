@@ -36,7 +36,7 @@
   "setting": {
     "name": "设置",
     "app": {
-      "name": "应用",
+      "name": "偏好",
       "appearance": {
         "name": "外观",
         "theme": {
@@ -93,7 +93,7 @@
       }
     },
     "bigModel": {
-      "name": "聊天大模型",
+      "name": "API管理",
       "openAI": {
         "name": "OpenAI",
         "baseUrl": "服务地址",
@@ -507,7 +507,7 @@
     "new": "新建画布"
   },
   "recommend": {
-    "title": "ChatHub 集合多款大模型的对话平台",
+    "title": "面向教学视频的片段检索与智能问答系统",
     "description": "您可以从以下话题开始与我对话，",
     "click": "换一换"
   }

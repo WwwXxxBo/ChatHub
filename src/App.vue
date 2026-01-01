@@ -194,13 +194,13 @@ onMounted(() => {
     }
 
     .app-sidebar-item-icon {
-      font-size: 30px;
+      font-size: var(--font-size-xxxl);
       stroke-width: 3;
       margin-bottom: 4px;
     }
 
     .app-sidebar-item-text {
-      font-size: 13px;
+      font-size: var(--font-size-sm);
       font-weight: 600;
       white-space: nowrap;
     }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch } from "vue";
+import { watch, ref } from "vue";
 // 引入 System 状态
 import { useSystemStore } from "@/stores/system";
 // 引入 Setting 状态
@@ -15,7 +15,7 @@ import { copyObj } from "@/utils/object-util";
 import { modifyCommonSetting } from "@/api/setting"
 
 const { t } = useI18n();
-
+const activeKey = ref('app');
 const systemStore = useSystemStore();
 const settingStore = useSettingStore();
 
@@ -45,7 +45,6 @@ const saveCommonSetting = async () => {
     settingStore.deepSeek.apiKey,
     settingStore.baichuan.apiKey
   )
-  console.log(res);
   if (res.status === 0) {
     Message.success("通用设置保存成功");
   } else {
@@ -78,35 +77,44 @@ watch(
     <a-modal v-model:visible="systemStore.settingModal.visible" :footer="false" unmount-on-close title-align="start"
       width="60vw">
       <!-- 标题 -->
-      <template #title> {{ $t("setting.name") }} </template>
+      <template #title><span style="color: #856cff; font-weight: 600;">{{ $t("setting.name") }} </span></template>
       <!-- 页面主内容 -->
       <div class="setting-page">
-        <a-tabs position="left">
-          <a-tab-pane key="app" :title="$t('setting.app.name')">
+        <!-- 切换TAB -->
+        <div class="radio-group-wrapper">
+          <a-radio-group v-model="activeKey" type="button">
+            <a-radio value="app" style="color: #856cff; font-weight: 600;">{{ $t("setting.app.name") }}</a-radio>
+            <a-radio value="bigModel" style="color: #856cff; font-weight: 600;">{{ $t("setting.bigModel.name")
+            }}</a-radio>
+            <a-radio value="about" style="color: #856cff; font-weight: 600;">{{ $t("setting.about.name")
+            }}</a-radio>
+          </a-radio-group>
+        </div>
+        <a-tabs :active-key="activeKey" class="custom-tabs">
+          <a-tab-pane key="app">
             <a-space direction="vertical" :size="25" fill class="setting-tab-content">
               <!-- 设置主题 -->
               <a-space direction="vertical" :size="10">
                 <div>{{ $t("setting.app.appearance.theme.name") }}</div>
                 <a-radio-group v-model="settingStore.app.themeModel" type="button" size="small">
-                  <a-radio :value="0">
+                  <a-radio :value="0" style="color: #856cff; font-weight: 600;">
                     <IconSync />
                     {{ $t("setting.app.appearance.theme.auto") }}
                   </a-radio>
-                  <a-radio :value="1">
+                  <a-radio :value="1" style="color: #856cff; font-weight: 600;">
                     <IconSun />
                     {{ $t("setting.app.appearance.theme.light") }}
                   </a-radio>
-                  <a-radio :value="2">
+                  <a-radio :value="2" style="color: #856cff; font-weight: 600;">
                     <IconMoonFill />
                     {{ $t("setting.app.appearance.theme.dark") }}
                   </a-radio>
-                  <a-radio :value="3">
+                  <a-radio :value="3" style="color: #856cff; font-weight: 600;">
                     <IconPalette />
                     {{ $t("setting.app.appearance.theme.custom") }}
                   </a-radio>
                 </a-radio-group>
               </a-space>
-
               <!-- 色彩选择 -->
               <a-space v-if="settingStore.app.themeModel === 3" direction="vertical" :size="10">
                 <div>
@@ -126,7 +134,8 @@ watch(
                 <div>{{ $t("setting.app.appearance.fontSize") }}</div>
                 <a-space :size="10">
                   <div>{{ $t("setting.app.appearance.min") }}</div>
-                  <a-slider v-model="settingStore.app.fontSize" :min="1" :max="5" show-ticks style="width: 300px" />
+                  <a-slider v-model="settingStore.app.fontSize" :min="1" :max="5" show-ticks style="width: 300px;"
+                    class="purple-slider" />
                   <div>{{ $t('setting.app.appearance.max') }}</div>
                 </a-space>
               </a-space>
@@ -139,11 +148,15 @@ watch(
                   <a-option value="en_US">English</a-option>
                 </a-select>
               </a-space>
+              <div style="display: flex; justify-content: flex-end;">
+                <a-button type="primary" @click="saveCommonSetting()"
+                  style="background-color: #856cff; font-weight: 600;">保存修改</a-button>
+              </div>
             </a-space>
           </a-tab-pane>
 
           <!-- 大模型 -->
-          <a-tab-pane key="bigModel" :title="$t('setting.bigModel.name')">
+          <a-tab-pane key="bigModel">
             <a-tabs position="left">
 
               <!-- 月之暗面 -->
@@ -403,7 +416,7 @@ watch(
           </a-tab-pane>
 
           <!-- 关于 -->
-          <a-tab-pane key="about" :title="$t('setting.about.name')">
+          <a-tab-pane key="about">
             <a-space direction="vertical" :size="25" fill class="setting-tab-content">
               <!-- 系统版本 -->
               <a-space direction="vertical" :size="10">
@@ -425,29 +438,31 @@ watch(
 
 <style lang="less" scoped>
 .setting-page {
-  height: 60vh;
+  height: 50vh;
   overflow-y: auto;
   font-size: var(--font-size-default);
 
-  :deep(.arco-tabs) {
-    height: 100%;
+  .radio-group-wrapper {
+    display: flex;
+    justify-content: center;
+  }
 
-    .arco-tabs-tab-title {
-      font-size: var(--font-size-default);
-    }
+  /* 清除所有 Tabs 的分割线 */
+  :deep(.arco-tabs-nav::before) {
+    display: none !important;
+    height: 0px;
+  }
 
-    .arco-tabs-content-list {
-      height: 100%;
+  /* 清除垂直 Tabs 的分割线 */
+  :deep(.arco-tabs-nav-vertical::before) {
+    display: none !important;
+    height: 0px;
+  }
 
-      .arco-tabs-pane {
-        height: 100%;
-
-        .setting-tab-content {
-          height: 100%;
-          overflow-y: auto;
-        }
-      }
-    }
+  /* 如果还需要清除 tab 之间的分割线 */
+  :deep(.arco-tabs-nav-tab) {
+    border-bottom: none !important;
+    height: 0px;
   }
 
   .custom-theme-list {
@@ -469,6 +484,29 @@ watch(
         flex-shrink: 0;
       }
     }
+  }
+
+  /* 修改 slider 的轨道和滑块颜色为紫色 */
+  .purple-slider :deep(.arco-slider-bar) {
+    background-color: #856cff !important;
+  }
+
+  .purple-slider :deep(.arco-slider-button) {
+    border-color: #856cff !important;
+    background-color: #856cff !important;
+  }
+
+  .purple-slider :deep(.arco-slider-dot-active) {
+    border-color: #856cff !important;
+  }
+
+  /* 如果需要修改 tooltip 颜色 */
+  .purple-slider :deep(.arco-tooltip-content) {
+    background-color: #856cff !important;
+  }
+
+  .purple-slider :deep(.arco-tooltip-arrow) {
+    background-color: #856cff !important;
   }
 }
 </style>

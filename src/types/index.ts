@@ -5,7 +5,7 @@ export type AssistantType = "chat";
 // 消息类型
 export type ChatMsgType = "text" | "img";
 // 页面类型
-export type PageName = "chat" | "chat-assistant" | "collect";
+export type PageName = "chat" | "chat-assistant" | "collect" | "video";
 // 收藏类型
 export type CollectionItemType = 'chat' | 'image' | 'note';
 // 插件类型

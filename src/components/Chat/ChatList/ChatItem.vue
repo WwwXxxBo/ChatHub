@@ -58,7 +58,7 @@ const deleteChat = async () => {
     chatAssistantStore.currentChatAssistantId = null
   }
   const res = await deleteAssistant(props.assistant.id);
-  if (res.status === 0) {
+  if (res.status) {
     Message.success("对话助手删除成功");
   } else {
     Message.error("对话助手删除失败");

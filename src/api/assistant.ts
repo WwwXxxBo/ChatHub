@@ -17,8 +17,6 @@ export const getAssistantList = (
   });
 };
 
-
-
 // 创建新的对话助手
 export const createAssistant = (
     assistantId: string, 
@@ -58,6 +56,19 @@ export const createAssistant = (
     });
   };
 
+// 删除聊天助手信息
+export const deleteAssistant = (
+  assistantId: string
+) => {
+  return AssistantHttpInstance({
+    url: `/assistants/${assistantId}`,
+    method: "DELETE",
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
+};
 
 
 
@@ -110,22 +121,6 @@ export const modifyAssistant = (
   });
 };
 
-// 删除聊天助手信息
-export const deleteAssistant = (
-  assistantId: string
-) => {
-  return AssistantHttpInstance({
-    url: "/assistant/",
-    method: "DELETE",
-    params: {
-      assistantId: assistantId
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
 
 // 创建聊天消息
 export const createAssistantMessage = (

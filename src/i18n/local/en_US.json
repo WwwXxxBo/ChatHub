@@ -1,6 +1,7 @@
 {
   "index": {
     "chat": "Chat",
+    "video": "Video",
     "note": "Note",
     "setting": "Setting"
   },

@@ -126,7 +126,10 @@ onMounted(() => {
             <icon-robot class="app-sidebar-item-icon" />
             <span class="app-sidebar-item-text">{{ $t("index.chat") }}</span>
           </div>
-
+          <div class="app-sidebar-item no-drag-area" @click="changePage('video')">
+            <icon-live-broadcast class="app-sidebar-item-icon" />
+            <span class="app-sidebar-item-text">{{ $t("index.video") }}</span>
+          </div>
           <!-- 收藏 -->
           <div class="app-sidebar-item no-drag-area" @click="changePage('collect')">
             <icon-star class="app-sidebar-item-icon" />

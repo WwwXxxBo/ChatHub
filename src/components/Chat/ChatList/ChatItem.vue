@@ -112,13 +112,24 @@ watch(
   box-sizing: border-box;
   padding: 15px;
   background-color: #856cff;
-
-
   border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 10px;
   position: relative;
+
+  &.item-active {
+    background-color: #856cff34 !important;
+    /* 红色背景 */
+
+    /* 如果希望在选中时也改变其他元素的颜色 */
+    .assistant-item-content,
+    .assistant-item-message-count,
+    .assistant-item-time {
+      color: var(--color-neutral-7) !important;
+      /* 文字变为白色，提高对比度 */
+    }
+  }
 
   .assistant-item-avatar {
     flex-shrink: 0;

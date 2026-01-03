@@ -5,21 +5,14 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
-// 初始值为 Prompt 列表的前 4 项
-const promptList = ref([
-  ["", ""],
-  ["", ""],
-  ["", ""],
-  ["", ""],
-]);
+// 修改：只存储一条提示词
+const prompt = ref(["", ""]);
 
 const changeRecommendation = () => {
   let length = recommends.cn.length;
-  for (const p of promptList.value) {
-    let index = Math.floor(Math.random() * length);
-    p[0] = recommends.cn[index][0];
-    p[1] = recommends.cn[index][1];
-  }
+  let index = Math.floor(Math.random() * length);
+  prompt.value[0] = recommends.cn[index][0];
+  prompt.value[1] = recommends.cn[index][1];
 };
 
 const emits = defineEmits(["selectRecommend"]);
@@ -28,37 +21,27 @@ const selectRecommend = (recommend: string) => {
 };
 
 onMounted(() => {
-  // 初始化推荐列表
+  // 修改：只初始化一条推荐
   let length = recommends.cn.length;
-  for (const p of promptList.value) {
-    let index = Math.floor(Math.random() * length);
-    p[0] = recommends.cn[index][0];
-    p[1] = recommends.cn[index][1];
-  }
+  let index = Math.floor(Math.random() * length);
+  prompt.value[0] = recommends.cn[index][0];
+  prompt.value[1] = recommends.cn[index][1];
 });
 </script>
 
 <template>
   <div class="chat-window-welcome-select">
     <span class="title">{{ $t("recommend.title") }}</span>
-    <span class="description"
-      >{{ $t("recommend.description") }}
-      <span class="changeRecommendation" @click="changeRecommendation"
-        >{{ $t("recommend.click") }}<icon-refresh
-      /></span>
+    <span class="description">{{ $t("recommend.description") }}
+      <span class="changeRecommendation" @click="changeRecommendation">{{ $t("recommend.click")
+      }}<icon-refresh /></span>
     </span>
     <a-space direction="horizontal" fill>
-      <a-card
-        v-for="(prompt, index) in promptList"
-        :key="prompt.id"
-        class="card"
-        @click="selectRecommend(prompt[1])"
-        :bordered="false"
-        hoverable
-      >
-        <icon-star-fill class="card-icon" />
-        <br />
-        <span class="card-title">{{ prompt[0] }}</span>
+      <a-card class="card" @click="selectRecommend(prompt[1])" :bordered="false" hoverable>
+        <div class="icon-title-row">
+          <icon-star-fill class="card-icon" />
+          <span class="card-title">{{ prompt[0] }}</span>
+        </div>
         <a-divider orientation="left"></a-divider>
         <span class="card-content">{{ prompt[1] }}</span>
       </a-card>
@@ -75,40 +58,71 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 20px;
+
   .title {
     font-size: var(--font-size-xxxl);
     font-weight: 900;
   }
+
   .description {
     font-size: var(--font-size-lg);
     font-weight: 500;
   }
-  .changeRecommendation {
-    color: rgb(var(--arcoblue-6));
+
+  .icon-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* 控制图标和标题之间的间距 */
   }
+
+  .card-icon {
+    flex-shrink: 0;
+    /* 防止图标被压缩 */
+  }
+
+  .card-title {
+    white-space: nowrap;
+    /* 防止标题换行 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* 如果标题太长，显示省略号 */
+  }
+
+  .changeRecommendation {
+    color: #856cff;
+  }
+
   .card {
-    width: 180px;
-    height: 230px;
+    width: 60vw;
     border-radius: 20px;
+    cursor: pointer;
+
     .card-icon {
-      color: rgb(var(--arcoblue-6));
-      font-size: 100;
-      margin-bottom: 10px;
+      color: #856cff;
+      font-size: 20px;
     }
+
     .card-title {
-      color: rgb(var(--arcoblue-6));
-      font-size: var(--font-size-xl);
+      color: #856cff;
+      font-size: 20px;
       font-weight: 600;
-      margin-bottom: 25px;
+      display: block;
     }
+
     .card-content {
       font-size: var(--font-size-lg);
       font-weight: 500;
+      color: var(--color-neutral-7);
+      display: block;
+      text-align: justify;
+      padding: 0 15px;
     }
   }
+
   .card:hover {
     transform: translateY(-4px);
-    background-color: rgb(var(--arcoblue-1));
+    background-color: #856cff13;
   }
 }
 </style>

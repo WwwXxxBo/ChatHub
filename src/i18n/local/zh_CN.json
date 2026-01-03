@@ -35,8 +35,9 @@
   },
   "setting": {
     "name": "设置",
+    "user": "信息管理",
     "app": {
-      "name": "偏好",
+      "name": "偏好管理",
       "appearance": {
         "name": "外观",
         "theme": {
@@ -83,7 +84,8 @@
           "clear": "清理缓存",
           "clearSuccess": "缓存清理完成"
         }
-      }
+      },
+      "button": "保存修改"
     },
     "functionModel": {
       "name": "系统操作模型",
@@ -93,7 +95,7 @@
       }
     },
     "bigModel": {
-      "name": "API管理",
+      "name": "API Key管理",
       "openAI": {
         "name": "OpenAI",
         "baseUrl": "服务地址",
@@ -134,6 +136,10 @@
       },
       "moonshotAI": {
         "name": "月之暗面",
+        "apiKey": "API Key"
+      },
+      "doubao": {
+        "name": "豆包",
         "apiKey": "API Key"
       },
       "stepFun": {
@@ -509,6 +515,7 @@
   "recommend": {
     "title": "面向教学视频的片段检索与智能问答系统",
     "description": "您可以从以下话题开始与我对话，",
-    "click": "换一换"
+    "click": "换一换",
+    "detail": "基于EDU-RAG实现教学视频片段检索与问答"
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, ref } from "vue";
+import { watch, ref, reactive } from "vue";
 // 引入 System 状态
 import { useSystemStore } from "@/stores/system";
 // 引入 Setting 状态
@@ -13,12 +13,24 @@ import { openInBrowser } from "@/utils/window-util";
 import { defaultCustomThemeMap, setCustomFontSize, setCustomTheme } from "@/utils/theme-util";
 import { copyObj } from "@/utils/object-util";
 import { modifyCommonSetting } from "@/api/setting"
+import type { FormInstance } from '@arco-design/web-vue';
 
 const { t } = useI18n();
-const activeKey = ref('app');
+const activeKey = ref('user');
 const systemStore = useSystemStore();
 const settingStore = useSettingStore();
 
+
+// 注册表单实例
+const registerFormRef = ref<FormInstance>();
+// 注册表单数据
+const registerForm = reactive({
+  name: "",
+  email: "",
+  phone: "",
+  password: "",
+  validatePassword: "",
+});
 // 字体大小修改实时生效
 watch(
   () => settingStore.app.fontSize,
@@ -65,6 +77,51 @@ watch(
   }
 )
 
+// 注册表单验证规则
+const registerRules = {
+  name: [
+    { required: true, message: '请输入用户名', trigger: ['blur', 'change'] },
+    { minLength: 2, message: '用户名至少2个字符', trigger: ['blur', 'change'] },
+    { maxLength: 20, message: '用户名最多20个字符', trigger: ['blur', 'change'] },
+  ],
+  email: [
+    { required: true, message: '请输入邮箱', trigger: ['blur', 'change'] },
+    {
+      type: 'email',
+      message: '请输入有效的邮箱地址',
+      trigger: ['blur', 'change']
+    },
+  ],
+  phone: [
+    { required: true, message: '请输入手机号', trigger: ['blur', 'change'] },
+    {
+      match: /^1[3-9]\d{9}$/,
+      message: '请输入有效的11位手机号',
+      trigger: ['blur', 'change']
+    },
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: ['blur', 'change'] },
+    { minLength: 6, message: '密码长度至少为6位', trigger: ['blur', 'change'] },
+    { maxLength: 20, message: '密码长度最多为20位', trigger: ['blur', 'change'] },
+  ],
+  validatePassword: [
+    { required: true, message: '请再次输入密码', trigger: ['blur', 'change'] },
+    {
+      validator: (value: string, callback: (error?: string) => void) => {
+        if (value !== registerForm.password) {
+          callback('两次输入的密码不一致');
+        } else {
+          callback();
+        }
+      },
+      trigger: ['blur', 'change']
+    },
+  ],
+};
+
+const toRegister = async () => { }
+
 </script>
 
 <template>
@@ -75,7 +132,7 @@ watch(
 
     <!-- 设置模态框 -->
     <a-modal v-model:visible="systemStore.settingModal.visible" :footer="false" unmount-on-close title-align="start"
-      width="60vw">
+      width="45vw">
       <!-- 标题 -->
       <template #title><span style="color: #856cff; font-weight: 600;">{{ $t("setting.name") }} </span></template>
       <!-- 页面主内容 -->
@@ -83,6 +140,7 @@ watch(
         <!-- 切换TAB -->
         <div class="radio-group-wrapper">
           <a-radio-group v-model="activeKey" type="button">
+            <a-radio value="user" style="color: #856cff; font-weight: 600;">{{ $t("setting.user") }}</a-radio>
             <a-radio value="app" style="color: #856cff; font-weight: 600;">{{ $t("setting.app.name") }}</a-radio>
             <a-radio value="bigModel" style="color: #856cff; font-weight: 600;">{{ $t("setting.bigModel.name")
             }}</a-radio>
@@ -91,6 +149,61 @@ watch(
           </a-radio-group>
         </div>
         <a-tabs :active-key="activeKey" class="custom-tabs">
+          <a-tab-pane key="user">
+            <a-space direction="vertical" :size="25" fill class="setting-tab-content">
+              <div class="form-content">
+                <a-form ref="registerFormRef" :model="registerForm" :rules="registerRules" layout="vertical"
+                  auto-label-width @submit="toRegister" style="width: 400px;">
+                  <!-- 用户名 -->
+                  <a-form-item field="name" label="用户名" hide-label>
+                    <a-input placeholder="请输入新的用户名" v-model="registerForm.name" allow-clear>
+                      <template #prefix>
+                        <icon-user />
+                      </template>
+                    </a-input>
+                  </a-form-item>
+                  <!-- 手机号 -->
+                  <a-form-item field="phone" label="手机号" hide-label>
+                    <a-input placeholder="请输入新的手机号" v-model="registerForm.phone" allow-clear>
+                      <template #prefix>
+                        <icon-phone />
+                      </template>
+                    </a-input>
+                  </a-form-item>
+                  <!-- 邮箱 -->
+                  <a-form-item field="email" label="邮箱" hide-label>
+                    <a-input placeholder="请输入新的邮箱" v-model="registerForm.email" allow-clear>
+                      <template #prefix>
+                        <icon-email />
+                      </template>
+                    </a-input>
+                  </a-form-item>
+                  <!-- 密码 -->
+                  <a-form-item field="password" label="密码" hide-label>
+                    <a-input-password placeholder="请输入新的密码（至少6位）" v-model="registerForm.password" allow-clear>
+                      <template #prefix>
+                        <icon-lock />
+                      </template>
+                    </a-input-password>
+                  </a-form-item>
+                  <!-- 确认密码 -->
+                  <a-form-item field="validatePassword" label="确认密码" hide-label>
+                    <a-input-password placeholder="请再次输入新的密码" v-model="registerForm.validatePassword" allow-clear>
+                      <template #prefix>
+                        <icon-lock />
+                      </template>
+                    </a-input-password>
+                  </a-form-item>
+                  <a-form-item>
+                    <a-button html-type="submit" type="primary" long
+                      style="background-color: #856cff; font-weight: 600;">
+                      提交修改
+                    </a-button>
+                  </a-form-item>
+                </a-form>
+              </div>
+            </a-space>
+          </a-tab-pane>
           <a-tab-pane key="app">
             <a-space direction="vertical" :size="25" fill class="setting-tab-content">
               <!-- 设置主题 -->
@@ -128,7 +241,6 @@ watch(
                   </div>
                 </div>
               </a-space>
-
               <!-- 设置字体 -->
               <a-space direction="vertical" :size="10" fill>
                 <div>{{ $t("setting.app.appearance.fontSize") }}</div>
@@ -139,7 +251,6 @@ watch(
                   <div>{{ $t('setting.app.appearance.max') }}</div>
                 </a-space>
               </a-space>
-
               <!-- 设置语言 -->
               <a-space direction="vertical" :size="10" fill>
                 <div>{{ $t('setting.app.appearance.local') }}</div>
@@ -150,15 +261,56 @@ watch(
               </a-space>
               <div style="display: flex; justify-content: flex-end;">
                 <a-button type="primary" @click="saveCommonSetting()"
-                  style="background-color: #856cff; font-weight: 600;">保存修改</a-button>
+                  style="background-color: #856cff; font-weight: 600; width: 100%;">{{
+                    $t('setting.app.button')
+                  }}</a-button>
               </div>
             </a-space>
           </a-tab-pane>
-
-          <!-- 大模型 -->
+          <!-- API Key 管理 -->
           <a-tab-pane key="bigModel">
             <a-tabs position="left">
-
+              <!-- 深度求索 -->
+              <a-tab-pane key="deepSeek" :title="$t('setting.bigModel.deepSeek.name')">
+                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
+                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("common.officialWebsite") }}</div>
+                      <a-link style="color:#856cff"
+                        @click="openInBrowser('https://platform.deepseek.com')">https://platform.deepseek.com</a-link>
+                    </a-space>
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("setting.bigModel.deepSeek.apiKey") }}</div>
+                      <a-input-password v-model="settingStore.deepSeek.apiKey" size="small" :placeholder="$t('common.pleaseEnter') +
+                        ' ' +
+                        $t('setting.bigModel.deepSeek.apiKey')
+                        " />
+                    </a-space>
+                  </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()"
+                    style="background-color: #856cff; font-weight: 600; width: 100%;">保存修改</a-button>
+                </a-space>
+              </a-tab-pane>
+              <!-- 通义千问 -->
+              <a-tab-pane key="tongyi" :title="$t('setting.bigModel.tongyi.name')">
+                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
+                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("common.officialWebsite") }}</div>
+                      <a-link @click="openInBrowser('https://tongyi.aliyun.com')">https://tongyi.aliyun.com</a-link>
+                    </a-space>
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("setting.bigModel.tongyi.apiKey") }}</div>
+                      <a-input-password v-model="settingStore.tongyi.apiKey" size="small" :placeholder="$t('common.pleaseEnter') +
+                        ' ' +
+                        $t('setting.bigModel.tongyi.apiKey')
+                        " />
+                    </a-space>
+                  </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()"
+                    style="background-color: #856cff; font-weight: 600; width: 100%;">保存修改</a-button>
+                </a-space>
+              </a-tab-pane>
               <!-- 月之暗面 -->
               <a-tab-pane key="moonshotAI" :title="$t('setting.bigModel.moonshotAI.name')">
                 <a-space direction="vertical" :size="25" fill class="setting-tab-content">
@@ -178,7 +330,25 @@ watch(
                   <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
-
+              <!-- 豆包 -->
+              <a-tab-pane key="doubao" :title="$t('setting.bigModel.doubao.name')">
+                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
+                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("common.officialWebsite") }}</div>
+                      <a-link @click="openInBrowser('https://www.moonshot.cn')">https://www.moonshot.cn</a-link>
+                    </a-space>
+                    <a-space direction="vertical" :size="10" fill>
+                      <div>{{ $t("setting.bigModel.doubao.apiKey") }}</div>
+                      <a-input-password v-model="settingStore.doubao.apiKey" size="small" :placeholder="$t('common.pleaseEnter') +
+                        ' ' +
+                        $t('setting.bigModel.doubao.apiKey')
+                        " />
+                    </a-space>
+                  </a-space>
+                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
+                </a-space>
+              </a-tab-pane>
               <!-- 智谱清言 -->
               <a-tab-pane key="zhipuAI" :title="$t('setting.bigModel.zhipuAI.name')">
                 <a-space direction="vertical" :size="25" fill class="setting-tab-content">
@@ -192,220 +362,6 @@ watch(
                       <a-input-password v-model="settingStore.zhipuAI.apiKey" size="small" :placeholder="$t('common.pleaseEnter') +
                         ' ' +
                         $t('setting.bigModel.zhipuAI.apiKey')
-                        " />
-                    </a-space>
-                  </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- 讯飞星火 -->
-              <a-tab-pane key="spark" :title="$t('setting.bigModel.spark.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("common.officialWebsite") }}</div>
-                    <a-link @click="openInBrowser('https://xinghuo.xfyun.cn')">https://xinghuo.xfyun.cn</a-link>
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.spark.appId") }}</div>
-                    <a-input v-model="settingStore.spark.appId" size="small" :placeholder="$t('common.pleaseEnter') +
-                      ' ' +
-                      $t('setting.bigModel.spark.appId')
-                      " />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.spark.secret") }}</div>
-                    <a-input-password v-model="settingStore.spark.secret" size="small" :placeholder="$t('common.pleaseEnter') +
-                      ' ' +
-                      $t('setting.bigModel.spark.secret')
-                      " />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.spark.key") }}</div>
-                    <a-input-password v-model="settingStore.spark.key" size="small" :placeholder="$t('common.pleaseEnter') +
-                      ' ' +
-                      $t('setting.bigModel.spark.key')
-                      " />
-                  </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- 通义千问 -->
-              <a-tab-pane key="tongyi" :title="$t('setting.bigModel.tongyi.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("common.officialWebsite") }}</div>
-                      <a-link @click="openInBrowser('https://tongyi.aliyun.com')">https://tongyi.aliyun.com</a-link>
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.tongyi.apiKey") }}</div>
-                      <a-input-password v-model="settingStore.tongyi.apiKey" size="small" :placeholder="$t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.tongyi.apiKey')
-                        " />
-                    </a-space>
-                  </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- 文心一言 -->
-              <a-tab-pane key="ernie" :title="$t('setting.bigModel.ernie.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("common.officialWebsite") }}</div>
-                    <a-link @click="openInBrowser('https://yiyan.baidu.com')">https://yiyan.baidu.com</a-link>
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.ernie.apiKey") }}</div>
-                    <a-input-password v-model="settingStore.ernie.apiKey" size="small" :placeholder="$t('common.pleaseEnter') +
-                      ' ' +
-                      $t('setting.bigModel.ernie.apiKey')
-                      " />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.ernie.secretKey") }}</div>
-                    <a-input-password v-model="settingStore.ernie.secretKey" size="small" :placeholder="$t('common.pleaseEnter') +
-                      ' ' +
-                      $t('setting.bigModel.ernie.secretKey')
-                      " />
-                  </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- 百川智能 -->
-              <a-tab-pane key="baichuan" :title="$t('setting.bigModel.baichuan.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("common.officialWebsite") }}</div>
-                      <a-link
-                        @click="openInBrowser('https://platform.baichuan-ai.com/')">https://platform.baichuan-ai.com/</a-link>
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.baichuan.apiKey") }}</div>
-                      <a-input-password v-model="settingStore.baichuan.apiKey" size="small" :placeholder="$t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.baichuan.apiKey')
-                        " />
-                    </a-space>
-                  </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- 天工开物 -->
-              <a-tab-pane key="tiangong" :title="$t('setting.bigModel.tiangong.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("common.officialWebsite") }}</div>
-                      <a-link @click="
-                        openInBrowser('https://model-platform.tiangong.cn')
-                        ">https://model-platform.tiangong.cn</a-link>
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.tiangong.appKey") }}</div>
-                      <a-input-password v-model="settingStore.tiangong.appKey" size="small" :placeholder="$t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.tiangong.appKey')
-                        " />
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.tiangong.appSecret") }}</div>
-                      <a-input-password v-model="settingStore.tiangong.appSecret" size="small" :placeholder="$t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.tiangong.appSecret')
-                        " />
-                    </a-space>
-                  </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- 阶跃星辰 -->
-              <a-tab-pane key="stepFun" :title="$t('setting.bigModel.stepFun.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("common.officialWebsite") }}</div>
-                      <a-link
-                        @click="openInBrowser('https://platform.stepfun.com')">https://platform.stepfun.com</a-link>
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.stepFun.apiKey") }}</div>
-                      <a-input-password v-model="settingStore.stepFun.apiKey" size="small" :placeholder="$t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.stepFun.apiKey')
-                        " />
-                    </a-space>
-                  </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- 深度求索 -->
-              <a-tab-pane key="deepSeek" :title="$t('setting.bigModel.deepSeek.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("common.officialWebsite") }}</div>
-                      <a-link
-                        @click="openInBrowser('https://platform.deepseek.com')">https://platform.deepseek.com</a-link>
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.deepSeek.apiKey") }}</div>
-                      <a-input-password v-model="settingStore.deepSeek.apiKey" size="small" :placeholder="$t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.deepSeek.apiKey')
-                        " />
-                    </a-space>
-                  </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- OpenAI -->
-              <a-tab-pane key="openAI" :title="$t('setting.bigModel.openAI.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("common.officialWebsite") }}</div>
-                    <a-link @click="openInBrowser('https://openai.com')">https://openai.com</a-link>
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.openAI.baseUrl") }}</div>
-                    <a-input v-model="settingStore.openAI.baseUrl" size="small" :placeholder="$t('common.pleaseEnter') +
-                      ' ' +
-                      $t('setting.bigModel.openAI.baseUrl')
-                      " />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t("setting.bigModel.openAI.key") }}</div>
-                    <a-input-password v-model="settingStore.openAI.key" size="small" :placeholder="$t('common.pleaseEnter') +
-                      ' ' +
-                      $t('setting.bigModel.openAI.key')
-                      " />
-                  </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
-                </a-space>
-              </a-tab-pane>
-
-              <!-- Ollama -->
-              <a-tab-pane key="ollama" :title="$t('setting.bigModel.ollama.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("common.officialWebsite") }}</div>
-                      <a-link @click="openInBrowser('https://ollama.com')">https://ollama.com</a-link>
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t("setting.bigModel.ollama.baseUrl") }}</div>
-                      <a-input v-model="settingStore.ollama.baseUrl" size="small" :placeholder="$t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.bigModel.ollama.baseUrl')
                         " />
                     </a-space>
                   </a-space>
@@ -438,13 +394,24 @@ watch(
 
 <style lang="less" scoped>
 .setting-page {
-  height: 50vh;
+  height: 56vh;
   overflow-y: auto;
   font-size: var(--font-size-default);
 
   .radio-group-wrapper {
     display: flex;
     justify-content: center;
+  }
+
+  .form-content {
+    display: flex;
+    justify-content: center;
+  }
+
+  .arco-tabs-tab-active,
+  .arco-tabs-tab-active:hover {
+    color: #856cff !important;
+    font-weight: 500;
   }
 
   /* 清除所有 Tabs 的分割线 */
@@ -508,5 +475,6 @@ watch(
   .purple-slider :deep(.arco-tooltip-arrow) {
     background-color: #856cff !important;
   }
+
 }
 </style>

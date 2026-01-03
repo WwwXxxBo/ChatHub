@@ -50,6 +50,9 @@ export const useSettingStore = defineStore({
     moonshotAI: {
       apiKey: "",
     },
+    doubao: {
+      apiKey: "",
+    },
     tiangong: {
       appKey: "",
       appSecret: "",

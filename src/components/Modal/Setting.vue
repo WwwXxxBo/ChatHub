@@ -327,7 +327,8 @@ const toRegister = async () => { }
                         " />
                     </a-space>
                   </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
+                  <a-button type="primary" @click="saveCommonSetting()"
+                    style="background-color: #856cff; font-weight: 600; width: 100%;">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
               <!-- 豆包 -->
@@ -346,7 +347,8 @@ const toRegister = async () => { }
                         " />
                     </a-space>
                   </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
+                  <a-button type="primary" @click="saveCommonSetting()"
+                    style="background-color: #856cff; font-weight: 600; width: 100%;">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
               <!-- 智谱清言 -->
@@ -365,7 +367,8 @@ const toRegister = async () => { }
                         " />
                     </a-space>
                   </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()">保存修改</a-button>
+                  <a-button type="primary" @click="saveCommonSetting()"
+                    style="background-color: #856cff; font-weight: 600; width: 100%;">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
             </a-tabs>

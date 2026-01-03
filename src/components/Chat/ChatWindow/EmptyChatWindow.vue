@@ -3,7 +3,7 @@
 <template>
   <div class="chat-window drag-area">
     <span class="title">{{ $t("recommend.title") }}</span>
-    <span class="description">基于EDU-RAG实现教学视频片段检索与问答</span>
+    <span class="description">{{ $t("recommend.detail") }}</span>
     <!-- 大模型头像 -->
     <a-space size="large" direction="vertical" align="center">
       <a-space size="large">

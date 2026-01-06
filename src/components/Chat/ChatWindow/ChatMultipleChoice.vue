@@ -53,7 +53,7 @@ const getSelectMessageList = () => {
   const chatMessageList = [] as ChatMessage[]
   props.multipleChoiceList.forEach((id) => {
     const chatMessage = data.currentChatAssistant.chatMessageList.find((msg) => msg.id === id)
-    if(chatMessage){
+    if (chatMessage) {
       chatMessageList.push(chatMessage)
     }
   })
@@ -63,12 +63,12 @@ const getSelectMessageList = () => {
 
 // 收藏选中聊天信息
 const multipleChoiceCollect = async () => {
-  if(props.multipleChoiceList.length === 0){
+  if (props.multipleChoiceList.length === 0) {
     return
   }
   // 获取选中的聊天信息
   const selectChatMessageList = getSelectMessageList()
-  if(selectChatMessageList.length === 0){
+  if (selectChatMessageList.length === 0) {
     return
   }
   // 创建一个收藏对象
@@ -76,13 +76,13 @@ const multipleChoiceCollect = async () => {
     id: randomUUID(),
     type: 'chat',
     chat: {
-        ...copyObj(chatAssistantStore.getCurrentChatAssistant),
-        chatMessageList: selectChatMessageList
+      ...copyObj(chatAssistantStore.getCurrentChatAssistant),
+      chatMessageList: selectChatMessageList
     },
     createTime: nowTimestamp()
   }
 
-  for(var message of selectChatMessageList) {
+  for (var message of selectChatMessageList) {
     const chatCollectionMessageRes = await createChatCollectionMessage(
       message.id,
       collectionItem.id,
@@ -102,11 +102,11 @@ const multipleChoiceCollect = async () => {
 
 // 下载选中的消息
 const multipleChoiceDownload = () => {
-  if(props.multipleChoiceList.length === 0){
+  if (props.multipleChoiceList.length === 0) {
     return
   }
   const selectChatMessageList = getSelectMessageList()
-  if(selectChatMessageList.length === 0){
+  if (selectChatMessageList.length === 0) {
     return
   }
   const content = selectChatMessageList.map((r) => r.role + ': \n' + r.content).join('\n\n')
@@ -116,7 +116,7 @@ const multipleChoiceDownload = () => {
 
 // 分享选中的消息
 const multipleChoiceShare = () => {
-  if(props.multipleChoiceList.length === 0){
+  if (props.multipleChoiceList.length === 0) {
     return
   }
   data.shareModalVisible = true
@@ -126,25 +126,25 @@ const multipleChoiceShare = () => {
 const shareModalBeforeOk = async () => {
   await new Promise<void>((resolve, reject) => {
     const el = document.getElementById('share-chat-message-list')
-    if(el){
+    if (el) {
       html2canvas(el, {
         scale: 2, //缩放比例
         allowTaint: true, // 是否允许跨域图像污染画布
         useCORS: true // 是否尝试使用CORS从服务器加载图像
       })
-      .then((canvas) => {
-        // 将图像下载到本地
-        const a = document.createElement('a') // 生成一个a元素
-        a.download = `share-${nowTimestamp()}` // 设置图片名称没有设置则为默认
-        a.href = canvas.toDataURL('image/png') // 将生成的URL设置为a.href属性
-        a.dispatchEvent(new MouseEvent('click')) // 触发a的单击事件
-        emits('close')
-        resolve()
-      })
-      .catch((error) => {
-        Message.error(error)
-        reject()
-      })
+        .then((canvas) => {
+          // 将图像下载到本地
+          const a = document.createElement('a') // 生成一个a元素
+          a.download = `share-${nowTimestamp()}` // 设置图片名称没有设置则为默认
+          a.href = canvas.toDataURL('image/png') // 将生成的URL设置为a.href属性
+          a.dispatchEvent(new MouseEvent('click')) // 触发a的单击事件
+          emits('close')
+          resolve()
+        })
+        .catch((error) => {
+          Message.error(error)
+          reject()
+        })
     }
   })
   return true
@@ -152,7 +152,7 @@ const shareModalBeforeOk = async () => {
 
 // 删除选中消息
 const multipleChoiceDelete = () => {
-  if(props.multipleChoiceList.length === 0){
+  if (props.multipleChoiceList.length === 0) {
     return
   }
   Modal.confirm({
@@ -164,14 +164,14 @@ const multipleChoiceDelete = () => {
       props.multipleChoiceList.forEach(async (id) => {
         // 找到选中消息的序号
         const index = data.currentChatAssistant.chatMessageList.findIndex((msg) => msg.id === id)
-        if(index >= 0){
+        if (index >= 0) {
           // 如果清除上下文的 ID 值指向的消息被删除，清除上下文的 ID 值设置为上一条消息的 ID
-          if(index > 0 && id === data.currentChatAssistant.clearContextMessageId){
+          if (index > 0 && id === data.currentChatAssistant.clearContextMessageId) {
             data.currentChatAssistant.clearContextMessageId = data.currentChatAssistant.chatMessageList[index - 1].id
           }
           // 删除数据库中选中的消息
           const res = await deleteAssistantMessage(data.currentChatAssistant.chatMessageList[index].id);
-          if(res.status === 0){
+          if (res.status === 0) {
             Message.success("消息删除成功!");
           } else {
             Message.success("消息删除失败!");
@@ -205,56 +205,32 @@ const multipleChoiceDelete = () => {
       <icon-close class="multiple-choice-console-icon" />
     </a-button>
     <!-- 分享预览模态框 -->
-    <a-modal 
-      v-model:visible="shareModalVisible"
-      :ok-text="$t('chatWindow.shareDownload')"
-      :cancel-text="$t('common.cancel')"
-      unmount-on-close
-      title-align="start"
-      width="80vw"
+    <a-modal v-model:visible="shareModalVisible" :ok-text="$t('chatWindow.shareDownload')"
+      :cancel-text="$t('common.cancel')" unmount-on-close title-align="start" width="80vw"
       :on-before-ok="shareModalBeforeOk"
-    >
+      :ok-button-props="{ style: { backgroundColor: '#856cff', borderColor: '#856cff' } }">
       <template #title> {{ $t('chatWindow.sharePreview') }} </template>
-      <div
-        class="chat-message-list-container"
-        style="height: 60vh; padding: 0 10px; overflow-y: auto"
-      >
+      <div class="chat-message-list-container" style="height: 60vh; padding: 0 10px; overflow-y: auto">
         <div id="share-chat-message-list" class="chat-message-list">
           <div v-for="msg in getSelectMessageList()" :key="msg.id" class="chat-message">
             <!-- 消息头像 -->
             <div class="chat-message-avatar">
               <UserAvatar v-if="msg.role === 'user'" :size="30" />
-              <ProviderAvatar 
-                v-else-if="msg.role === 'assistant'"
-                :provider="currentChatAssistant.provider"
-                :size="30"
-              />
+              <ProviderAvatar v-else-if="msg.role === 'assistant'" :provider="currentChatAssistant.provider"
+                :size="30" />
             </div>
             <!-- 消息内容 -->
             <div class="chat-message-content select-text">
               <!-- 用户消息 -->
               <div v-if="msg.role === 'user'">{{ msg.content }}</div>
-              <div
-                v-else-if="msg.role === 'assistant'"
-                class="chat-message-md"
-                v-html="renderMarkdown(msg.content, false)"
-              >
+              <div v-else-if="msg.role === 'assistant'" class="chat-message-md"
+                v-html="renderMarkdown(msg.content, false)">
               </div>
-              <a-image
-                v-if="msg.image"
-                width="300"
-                height="300"
-                :src="`file://${msg.image}`"
-                show-loader
-                fit="cover"
-              >
+              <a-image v-if="msg.image" width="300" height="300" :src="`file://${msg.image}`" show-loader fit="cover">
                 <!-- 预览 -->
                 <template #preview-actions>
-                  <a-image-preview-action
-                    :name="$t('common.download')"
-                    @click="downloadFile(`file://${msg.image}`, `img-${msg.id}.png`)"
-
-                  >
+                  <a-image-preview-action :name="$t('common.download')"
+                    @click="downloadFile(`file://${msg.image}`, `img-${msg.id}.png`)">
                     <icon-download />
                   </a-image-preview-action>
                 </template>

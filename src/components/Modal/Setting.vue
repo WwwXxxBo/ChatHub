@@ -40,28 +40,28 @@ watch(
 )
 
 const saveCommonSetting = async () => {
-  const res = await modifyCommonSetting(
-    sessionStorage.userId,
-    settingStore.openAI.key,
-    settingStore.zhipuAI.apiKey,
-    settingStore.ernie.apiKey,
-    settingStore.ernie.secretKey,
-    settingStore.spark.appId,
-    settingStore.spark.secret,
-    settingStore.spark.key,
-    settingStore.tongyi.apiKey,
-    settingStore.moonshotAI.apiKey,
-    settingStore.tiangong.appKey,
-    settingStore.tiangong.appSecret,
-    settingStore.stepFun.apiKey,
-    settingStore.deepSeek.apiKey,
-    settingStore.baichuan.apiKey
-  )
-  if (res.status === 0) {
-    Message.success("通用设置保存成功");
-  } else {
-    Message.error("通用设置保存失败");
-  }
+  // const res = await modifyCommonSetting(
+  //   sessionStorage.userId,
+  //   settingStore.openAI.key,
+  //   settingStore.zhipuAI.apiKey,
+  //   settingStore.ernie.apiKey,
+  //   settingStore.ernie.secretKey,
+  //   settingStore.spark.appId,
+  //   settingStore.spark.secret,
+  //   settingStore.spark.key,
+  //   settingStore.tongyi.apiKey,
+  //   settingStore.moonshotAI.apiKey,
+  //   settingStore.tiangong.appKey,
+  //   settingStore.tiangong.appSecret,
+  //   settingStore.stepFun.apiKey,
+  //   settingStore.deepSeek.apiKey,
+  //   settingStore.baichuan.apiKey
+  // )
+  // if (res.status === 0) {
+  //   Message.success("通用设置保存成功");
+  // } else {
+  //   Message.error("通用设置保存失败");
+  // }
 }
 
 // 自定义样式实时生效

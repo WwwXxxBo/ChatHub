@@ -141,28 +141,28 @@ const assistantUpdate = async (newAssistant: Assistant) => {
   if (index < 0) {
     return
   }
-  const res = await modifyAssistant(
-    newAssistant.id,
-    sessionStorage.userId,
-    newAssistant.name,
-    newAssistant.type,
-    newAssistant.instruction,
-    newAssistant.provider,
-    newAssistant.model,
-    newAssistant.maxTokens,
-    newAssistant.inputMaxTokens,
-    newAssistant.contextSize,
-    newAssistant.speechModel,
-    newAssistant.speechVoice,
-    newAssistant.speechSpeed,
-    newAssistant.createTime,
-    newAssistant.lastUpdateTime
-  );
-  if (res.status === 0) {
-    Message.success("对话助手修改成功");
-  } else {
-    Message.error("对话助手修改失败");
-  }
+  // const res = await modifyAssistant(
+  //   newAssistant.id,
+  //   sessionStorage.userId,
+  //   newAssistant.name,
+  //   newAssistant.type,
+  //   newAssistant.instruction,
+  //   newAssistant.provider,
+  //   newAssistant.model,
+  //   newAssistant.maxTokens,
+  //   newAssistant.inputMaxTokens,
+  //   newAssistant.contextSize,
+  //   newAssistant.speechModel,
+  //   newAssistant.speechVoice,
+  //   newAssistant.speechSpeed,
+  //   newAssistant.createTime,
+  //   newAssistant.lastUpdateTime
+  // );
+  // if (res.status === 0) {
+  //   Message.success("对话助手修改成功");
+  // } else {
+  //   Message.error("对话助手修改失败");
+  // }
   copyFields(
     newAssistant,
     chatAssistantStore.chatAssistantList[index]
@@ -225,8 +225,10 @@ defineExpose({
     </a-popover>
 
     <!-- 编辑助手Modal -->
-    <a-modal v-model:visible="editModalVisible" :ok-text="$t('common.ok')" :cancel-text="$t('common.cancel')"
-      unmount-on-close title-align="start" width="80vw" :on-before-ok="handleEditModalBeforeOk">
+    <a-modal v-model:visible="editModalVisible"
+      :ok-button-props="{ style: { backgroundColor: '#856cff', borderColor: '#856cff' } }" :ok-text="$t('common.ok')"
+      :cancel-text="$t('common.cancel')" unmount-on-close title-align="start" width="80vw"
+      :on-before-ok="handleEditModalBeforeOk">
       <template #title>
         {{ $t("chatWindow.header.editChat") }}
       </template>

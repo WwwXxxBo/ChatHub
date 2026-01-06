@@ -264,6 +264,12 @@ const useBigModel = async () => {
       content: t(`chatWindow.configMiss.${data.currentChatAssistant.provider}`),
       okText: t("common.goSetting"),
       cancelText: t("common.cancel"),
+      okButtonProps: {
+        style: {
+          backgroundColor: '#856cff', // 紫色
+          borderColor: '#856cff'
+        }
+      },
       onOk: () => {
         systemStore.openSettingModal("bigModel");
       },

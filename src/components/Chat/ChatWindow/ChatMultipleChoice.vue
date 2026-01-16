@@ -82,20 +82,20 @@ const multipleChoiceCollect = async () => {
     createTime: nowTimestamp()
   }
 
-  for (var message of selectChatMessageList) {
-    const chatCollectionMessageRes = await createChatCollectionMessage(
-      message.id,
-      collectionItem.id,
-      message.name,
-      message.role,
-      message.type,
-      message.content,
-      message.image,
-      message.createTime
-    );
-  }
+  // for (var message of selectChatMessageList) {
+  //   const chatCollectionMessageRes = await createChatCollectionMessage(
+  //     message.id,
+  //     collectionItem.id,
+  //     message.name,
+  //     message.role,
+  //     message.type,
+  //     message.content,
+  //     message.image,
+  //     message.createTime
+  //   );
+  // }
   collectionStore.collectionItemList.unshift(collectionItem)
-  const res = await createChatCollection(collectionItem.id, chatAssistantStore.getCurrentChatAssistant.id, sessionStorage.userId, collectionItem.type, collectionItem.createTime);
+  // const res = await createChatCollection(collectionItem.id, chatAssistantStore.getCurrentChatAssistant.id, sessionStorage.userId, collectionItem.type, collectionItem.createTime);
   emits('close')
   Message.success(t('chatWindow.collectSuccess'))
 }

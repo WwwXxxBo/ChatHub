@@ -37,13 +37,13 @@ const { keyword, collectionItemType, currentCollectionItemId } = toRefs(data)
 
 // 当前选中的收藏
 const currentCollectionItem = computed(() => {
-  return collectionStore.collectionItemList.find((c) => c.id ===data.currentCollectionItemId)
+  return collectionStore.collectionItemList.find((c) => c.id === data.currentCollectionItemId)
 })
 
 // 新建笔记
 const newNote = async () => {
   const id = randomUUID()
-  const collectionItem: CollectionItem ={
+  const collectionItem: CollectionItem = {
     id: id,
     type: 'note',
     note: {
@@ -53,7 +53,7 @@ const newNote = async () => {
     createTime: nowTimestamp()
   }
   const res = await createNoteCollection(collectionItem.id, sessionStorage.userId, collectionItem.type, collectionItem.note.title, collectionItem.note.content, collectionItem.createTime)
-  if(res.status == 0){
+  if (res.status == 0) {
     Message.success("笔记收藏创建成功!");
   } else {
     Message.success("笔记收藏创建失败!");
@@ -65,7 +65,7 @@ const newNote = async () => {
 // 滚动条条件过滤
 const collectionItemListFilter = computed(() => {
   let filterResult = collectionStore.collectionItemList
-  if(data.collectionItemType !== 'all'){
+  if (data.collectionItemType !== 'all') {
     filterResult = collectionStore.collectionItemList.filter(
       (item) => item.type === data.collectionItemType
     )
@@ -89,7 +89,7 @@ const modifyCollection = async () => {
     currentCollectionItem.value.note.content,
     currentCollectionItem.value.createTime
   )
-  if(res.status == 0){
+  if (res.status == 0) {
     Message.success("笔记收藏保存成功!");
   } else {
     Message.success("笔记收藏保存失败!");
@@ -104,25 +104,25 @@ const deleteConfirm = (id: string) => {
     content: t('common.deleteConfirmContent'),
     okText: t('common.ok'),
     cancelText: t('common.cancel'),
-    onOk:  async () => {
+    onOk: async () => {
       const index = collectionStore.collectionItemList.findIndex((c) => c.id === id)
       const collectionItem = collectionStore.collectionItemList.find((c) => c.id === id) as any
-      if(collectionItem.type == 'chat'){
+      if (collectionItem.type == 'chat') {
         const res = await deleteChatCollection(id);
-        if(res.status == 0){
+        if (res.status == 0) {
           Message.success("聊天消息收藏删除成功!");
         } else {
           Message.success("聊天消息收藏删除失败!");
         }
       } else {
         const res = await deleteNoteCollection(id);
-        if(res.status == 0){
+        if (res.status == 0) {
           Message.success("笔记收藏删除成功!");
         } else {
           Message.success("笔记收藏删除失败!");
-        }       
+        }
       }
-      if(index >= 0){
+      if (index >= 0) {
         collectionStore.collectionItemList.splice(index, 1)
       }
     }
@@ -132,7 +132,7 @@ const deleteConfirm = (id: string) => {
 // 导出聊天列表
 const exportChatMessageList = (id: string) => {
   const collection = collectionStore.collectionItemList.find((c) => c.id === id)
-  if(!collection){
+  if (!collection) {
     return
   }
   const content = collection.chat?.chatMessageList.map((r) => `[${formatDateTime(new Date(r.createTime))}] ${r.role} : \n${r.content}`).join('\n\n')
@@ -153,11 +153,7 @@ const exportChatMessageList = (id: string) => {
             <a-option value="note">{{ $t("collectionSet.type.note") }}</a-option>
           </a-select>
         </div>
-        <a-input-search
-          v-model="keyword"
-          :placeholder="$t('collectionSet.search')"
-          class="search-input no-drag-area"
-        />
+        <a-input-search v-model="keyword" :placeholder="$t('collectionSet.search')" class="search-input no-drag-area" />
       </div>
       <!-- 新建笔记 -->
       <a-button type="primary" class="new-note-btn" @click="newNote()">
@@ -167,44 +163,29 @@ const exportChatMessageList = (id: string) => {
         </a-space>
       </a-button>
       <!-- 滚动条 -->
-      <a-scrollbar 
-        outer-class="collection-set-list-container arco-scrollbar-small"
-        style="height: calc(100vh - 60px - 45px); overflow-y: auto"
-      >
+      <a-scrollbar outer-class="collection-set-list-container arco-scrollbar-small"
+        style="height: calc(100vh - 60px - 45px); overflow-y: auto">
         <div class="collection-set-list">
-          <div 
-            v-for="c in collectionItemListFilter"
-            :key="c.id"
-            class="collection item-click"
-            :class="{ 'item-active': c.id === currentCollectionItemId }"
-            @click="currentCollectionItemId = c.id"
-          >
+          <div v-for="c in collectionItemListFilter" :key="c.id" class="collection item-click"
+            :class="{ 'item-active': c.id === currentCollectionItemId }" @click="currentCollectionItemId = c.id">
             <!-- 收藏消息体 -->
             <div class="collection-body">
               <!-- 对话类型 -->
               <template v-if="c.type === 'chat'">
-                <ProviderAvatar
-                  :size="35"
-                  :provider="c.chat?.provider"
-                  class="collection-avatar"
-                />
+                <ProviderAvatar :size="35" :provider="c.chat?.provider" class="collection-avatar" />
                 <div class="collection-content">
                   {{
                     c.chat?.chatMessageList[0].content
-                    ? c.chat?.chatMessageList[0].content
-                    : c.chat?.chatMessageList[0].image
-                    ? $t('assistantItem.content.image')
-                    : ''
+                      ? c.chat?.chatMessageList[0].content
+                      : c.chat?.chatMessageList[0].image
+                        ? $t('assistantItem.content.image')
+                        : ''
                   }}
                 </div>
               </template>
               <!-- 图片类型 -->
               <template v-else-if="c.type === 'image'">
-                <ProviderAvatar
-                  :size="35"
-                  :provider="c.image?.provider"
-                  class="collection-avatar"
-                />
+                <ProviderAvatar :size="35" :provider="c.image?.provider" class="collection-avatar" />
                 <div class="collection-content">
                   {{ c.image?.prompt }}
                 </div>
@@ -222,36 +203,20 @@ const exportChatMessageList = (id: string) => {
             <!-- 收藏消息体尾部 -->
             <div class="collection-footer">
               <div class="collection-time">{{ formatDateTime(new Date(c.createTime)) }}</div>
-                <a-popover
-                  position="br"
-                  trigger="click"
-                  :content-style="{ padding: '5px' }"
-                  @click.stop
-                >
-                  <icon-more class="collection-more-btn" />
-                  <template #content>
-                    <a-space direction="vertical" fill>
-                      <a-button
-                        type="text"
-                        style="width: 100%"
-                        status="danger"
-                        size="small"
-                        @click="deleteConfirm(c.id)"
-                      >
-                        {{ $t('common.delete') }}
-                      </a-button>
-                      <a-button
-                        v-if="c.type === 'chat'"
-                        type="text"
-                        style="width: 100%; color: var(--color-text-1)"
-                        size="small"
-                        @click="exportChatMessageList(c.id)"
-                      >
-                        {{ $t('common.export') }}
-                      </a-button>
-                    </a-space>
-                  </template>
-                </a-popover>
+              <a-popover position="br" trigger="click" :content-style="{ padding: '5px' }" @click.stop>
+                <icon-more class="collection-more-btn" />
+                <template #content>
+                  <a-space direction="vertical" fill>
+                    <a-button type="text" style="width: 100%" status="danger" size="small" @click="deleteConfirm(c.id)">
+                      {{ $t('common.delete') }}
+                    </a-button>
+                    <a-button v-if="c.type === 'chat'" type="text" style="width: 100%; color: var(--color-text-1)"
+                      size="small" @click="exportChatMessageList(c.id)">
+                      {{ $t('common.export') }}
+                    </a-button>
+                  </a-space>
+                </template>
+              </a-popover>
             </div>
           </div>
           <div v-if="collectionItemListFilter.length === 0" class="collection-set-list-empty">
@@ -265,16 +230,9 @@ const exportChatMessageList = (id: string) => {
       <template v-if="currentCollectionItem">
         <div class="collection-set-header drag-area">
           <!-- 笔记标题 -->
-          <a-input
-            v-if="currentCollectionItem.type === 'note'"
-            v-model="currentCollectionItem.note!.title"
-            class="note-title-input no-drag-area"
-          />
-          <a-button
-            v-if="currentCollectionItem.type === 'note'"
-            type="primary"
-            @click="modifyCollection()"
-          >
+          <a-input v-if="currentCollectionItem.type === 'note'" v-model="currentCollectionItem.note!.title"
+            class="note-title-input no-drag-area" />
+          <a-button v-if="currentCollectionItem.type === 'note'" type="primary" @click="modifyCollection()">
             保存修改
           </a-button>
 
@@ -293,7 +251,7 @@ const exportChatMessageList = (id: string) => {
                 <!-- 对话模型 -->
                 <template v-if="currentCollectionItem.type === 'chat'">
                   <a-tag>
-                   {{ $t(`bigModelProvider.${currentCollectionItem.chat?.provider}`) }} 
+                    {{ $t(`bigModelProvider.${currentCollectionItem.chat?.provider}`) }}
                   </a-tag>
                   <a-tag>
                     {{ currentCollectionItem.chat?.model }}
@@ -314,24 +272,15 @@ const exportChatMessageList = (id: string) => {
         </div>
         <!-- 收藏 对话信息展示 -->
         <template v-if="currentCollectionItem.type === 'chat'">
-          <a-scrollbar
-            outer-class="chat-message-list-container arco-scrollbar-small"
-            style="height: calc(100vh - 55px); overflow-y: auto"
-          >
+          <a-scrollbar outer-class="chat-message-list-container arco-scrollbar-small"
+            style="height: calc(100vh - 55px); overflow-y: auto">
             <div class="chat-message-list">
-              <div 
-                v-for="msg in currentCollectionItem.chat?.chatMessageList"
-                :key="msg.id"
-                class="chat-message"
-              >
+              <div v-for="msg in currentCollectionItem.chat?.chatMessageList" :key="msg.id" class="chat-message">
                 <!-- 消息头像 -->
                 <div class="chat-message-avatar">
                   <UserAvatar v-if="msg.role === 'user'" :size="30" />
-                  <ProviderAvatar
-                    v-else-if="msg.role === 'assistant'"
-                    :provider="currentCollectionItem.chat?.provider"
-                    :size="30"
-                  />
+                  <ProviderAvatar v-else-if="msg.role === 'assistant'" :provider="currentCollectionItem.chat?.provider"
+                    :size="30" />
                 </div>
                 <!-- 消息内容 -->
                 <div class="chat-message-content select-text">
@@ -340,59 +289,45 @@ const exportChatMessageList = (id: string) => {
                     {{ msg.content }}
                   </div>
                   <!-- 大模型消息 -->
-                  <div
-                    v-else-if="msg.role === 'assistant'"
-                    class="chat-message-md"
-                    v-html="renderMarkdown(msg.content, false)"
-                  >
+                  <div v-else-if="msg.role === 'assistant'" class="chat-message-md"
+                    v-html="renderMarkdown(msg.content, false)">
                   </div>
                   <!-- 图片展示 -->
-                  <a-image
-                    v-if="msg.image"
-                    width="300"
-                    height="300"
-                    :src="`file://${msg.image}`"
-                    show-loader
-                    fit="cover"
-                  >
+                  <a-image v-if="msg.image" width="300" height="300" :src="`file://${msg.image}`" show-loader
+                    fit="cover">
                     <template #preview-actions>
-                      <a-image-preview-action
-                        :name="$t('common.download')"
-                        @click="downloadFile(`file://${msg.image}`, `img-${msg.id}.png`)"
-                      >
+                      <a-image-preview-action :name="$t('common.download')"
+                        @click="downloadFile(`file://${msg.image}`, `img-${msg.id}.png`)">
                         <icon-download />
                       </a-image-preview-action>
                     </template>
                   </a-image>
-                  <div
-                    v-if="msg.fileList && msg.fileList.length > 0"
-                    class="chat-message-file-list"
-                  >
+                  <div v-if="msg.fileList && msg.fileList.length > 0" class="chat-message-file-list">
                     <!-- <ChatMessageFile v-for="f in msg.fileList" :key="f.id" :message-file="f" /> -->
                   </div>
                 </div>
               </div>
             </div>
+            <a-divider orientation="center">笔记区</a-divider>
+            <div style="margin-left: 10px; margin-right: 10px; height: 200px;">
+              <a-textarea placeholder="请输入您的笔记" allow-clear :auto-size="{
+                minRows: 2,
+                maxRows: 5
+              }" />
+            </div>
+
           </a-scrollbar>
         </template>
         <!-- 图片收藏 -->
         <template v-else-if="currentCollectionItem.type === 'image'">
           <div class="collection-set-image-detail">
-            <a-image
-              width="500"
-              height="500"
-              :src="`file://${currentCollectionItem.image?.imageList[0]}`"
-              show-loader
-              fit="cover"
-            >
+            <a-image width="500" height="500" :src="`file://${currentCollectionItem.image?.imageList[0]}`" show-loader
+              fit="cover">
               <template #preview-actions>
-                <a-image-preview-action
-                  :name="$t('common.download')"
-                  @click="downloadFile(
-                    `file://${currentCollectionItem?.image?.imageList[0]}`,
-                    `img-${currentCollectionItem?.image?.imageList[0]}`
-                  )"
-                >
+                <a-image-preview-action :name="$t('common.download')" @click="downloadFile(
+                  `file://${currentCollectionItem?.image?.imageList[0]}`,
+                  `img-${currentCollectionItem?.image?.imageList[0]}`
+                )">
                   <icon-download />
                 </a-image-preview-action>
               </template>
@@ -403,11 +338,8 @@ const exportChatMessageList = (id: string) => {
           </div>
         </template>
         <!-- 编辑笔记 -->
-        <NoteEditor 
-          v-else-if="currentCollectionItem.type === 'note'"
-          v-model:content="currentCollectionItem.note!.content"
-          class="note-editor"
-        />
+        <NoteEditor v-else-if="currentCollectionItem.type === 'note'"
+          v-model:content="currentCollectionItem.note!.content" class="note-editor" />
       </template>
       <!-- 空笔记 -->
       <div v-else class="collection-window-empty drag-area">
@@ -431,7 +363,7 @@ const exportChatMessageList = (id: string) => {
   border-radius: 10px;
   // 增加背景颜色
   background-color: var(--color-bg-1);
-  
+
   width: 100%;
   flex-grow: 1;
   display: flex;

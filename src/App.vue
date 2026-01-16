@@ -6,6 +6,7 @@ import { type PageName } from "@/types"
 import Welcome from "@/components/Welcome/Welcome.vue";
 import Chat from "@/components/Chat/Chat.vue";
 import SystemChat from "@/components/SystemChat/SystemChat.vue";
+import Video from "./components/Video/Video.vue";
 import Setting from "@/components/Modal/Setting.vue"
 import Collect from "@/components/Collect/Collect.vue"
 import Login from "@//components/Login/Login.vue"
@@ -151,10 +152,9 @@ onMounted(() => {
       <div v-if="alivePages.includes('chat')" v-show="systemStore.isThisPage('chat')" class="app-body">
         <Chat />
       </div>
-      <!-- 系统聊天页 -->
-      <div v-if="alivePages.includes('chat-assistant')" v-show="systemStore.isThisPage('chat-assistant')"
-        class="app-body">
-        <SystemChat />
+      <!-- 视频页 -->
+      <div v-if="alivePages.includes('video')" v-show="systemStore.isThisPage('video')" class="app-body">
+        <Video />
       </div>
       <!-- 收藏页 -->
       <div v-if="alivePages.includes('collect')" v-show="systemStore.isThisPage('collect')" class="app-body">

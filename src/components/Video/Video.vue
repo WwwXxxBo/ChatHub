@@ -12,9 +12,9 @@ import {
     Spin,
     Modal
 } from '@arco-design/web-vue'
-// 导入视频播放弹窗组件
-import VideoPlayer from '../Modal/VideoPlayer.vue'
-import CheckDifficulty from '../Modal/CheckDifficulty.vue'
+import VideoUpload from '../Modal/VideoUpload.vue' // 视频上传弹窗组件
+import VideoPlayer from '../Modal/VideoPlayer.vue' // 视频播放弹窗组件
+import CheckDifficulty from '../Modal/CheckDifficulty.vue' // 难点查看弹窗组件
 
 // 视频类型定义
 interface VideoItem {
@@ -25,7 +25,8 @@ interface VideoItem {
     duration: string
     views?: number
     url?: string // 视频播放地址字段
-    difficulty?: string
+    difficulty?: string,
+    category?: string // 新增分类字段
 }
 
 // 筛选选项
@@ -46,6 +47,7 @@ const loading = ref(false)
 
 const showPlayer = ref(false) // 播放弹窗显示状态
 const showDifficultyModal = ref(false)  // 难点弹窗显示状态
+const showUploadModal = ref(false) // 上传弹窗显示状态
 const currentVideo = ref<VideoItem | null>(null)
 
 // 模拟数据
@@ -229,6 +231,30 @@ const handleDifficultyClose = () => {  // 新增函数
     currentVideo.value = null
 }
 
+// 打开上传弹窗
+const openUploadModal = () => {
+    showUploadModal.value = true
+}
+
+// 处理上传成功
+const handleUploadSuccess = (videoData: any) => {
+    // 添加上传到视频列表
+    const newVideo: VideoItem = {
+        id: videoData.id,
+        title: videoData.title,
+        tags: videoData.tags || [],
+        cover: videoData.cover || '/images/covers/default.png',
+        duration: videoData.duration,
+        url: videoData.url,
+        difficulty: videoData.difficulty,
+        category: videoData.category,
+        views: 0
+    }
+
+    videoList.value.unshift(newVideo)
+    Message.success('视频已添加到列表！')
+}
+
 // 页面加载时初始化数据
 onMounted(() => {
     videoList.value = [...mockVideos]
@@ -262,7 +288,7 @@ onMounted(() => {
                         </Button>
                     </Col>
                     <Col :span="4">
-                        <Button type="primary" size="large" @click="handleReset" class="reset-btn">
+                        <Button type="primary" size="large" @click="openUploadModal" class="reset-btn">
                             <template #icon>
                                 <icon-upload />
                             </template>
@@ -352,6 +378,7 @@ onMounted(() => {
         <!-- 难点分析弹窗 -->
         <CheckDifficulty v-model:visible="showDifficultyModal" :video-data="currentVideo"
             @close="handleDifficultyClose" />
+        <VideoUpload v-model:visible="showUploadModal" @upload-success="handleUploadSuccess" />
     </div>
 </template>
 

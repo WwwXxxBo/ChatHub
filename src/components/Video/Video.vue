@@ -19,15 +19,16 @@ interface VideoItem {
     tags: string[]
     cover: string
     duration: string
-    views: number
+    views?: number
 }
 
 // 筛选选项
 const filterOptions = [
     { label: '全部', value: 'all' },
-    { label: '热门', value: 'hot' },
-    { label: '最新', value: 'new' },
-    { label: '推荐', value: 'recommended' }
+    { label: '计算机科学', value: 'computer_science' },
+    { label: '数学', value: 'math' },
+    { label: '化学', value: 'chemistry' },
+    { label: '艺术设计学', value: 'art_and_design' },
 ]
 
 // 响应式数据
@@ -41,98 +42,96 @@ const loading = ref(false)
 const mockVideos: VideoItem[] = [
     {
         id: 1,
-        title: 'Vue 3.0 从入门到实战教程',
-        tags: ['Vue', '前端', '教程'],
-        cover: 'https://picsum.photos/300/200?random=1',
-        duration: '45:20',
-        views: 1234
+        title: 'Linear Regression with multiple variables',
+        tags: ['Gradient Descent', 'Feature Scaling', 'Cost Function'],
+        cover: '/images/covers/video_1.png',
+        duration: '8:50'
     },
     {
         id: 2,
-        title: 'TypeScript 高级类型使用技巧',
-        tags: ['TypeScript', '编程'],
-        cover: 'https://picsum.photos/300/200?random=2',
-        duration: '32:15',
-        views: 876
+        title: 'Dimentionality Reduction',
+        tags: ['Dimensionality Reduction', 'Data Compression', 'Redundant Features'],
+        cover: '/images/covers/video_2.png',
+        duration: '10:09'
     },
     {
         id: 3,
-        title: 'React Hooks 完全指南',
-        tags: ['React', 'Hooks', '前端'],
-        cover: 'https://picsum.photos/300/200?random=3',
-        duration: '58:42',
+        title: 'Advice for applying machine leaning',
+        tags: ['Regularization', 'Cross-validation Set', 'Model Selection'],
+        cover: '/images/covers/video_3.png',
+        duration: '11:16',
         views: 2345
     },
     {
         id: 4,
-        title: 'Node.js 后端开发实战',
-        tags: ['Node.js', '后端', '服务器'],
-        cover: 'https://picsum.photos/300/200?random=4',
-        duration: '1:15:30',
+        title: 'Anomaly detection: Anomaly detection using the multivariate Gussian distribution',
+        tags: ['Multivariate Gaussian Distribution', 'Anomaly Detection Algorithm', 'Covariance Matrix'],
+        cover: '/images/covers/video_4.png',
+        duration: '14:02',
         views: 1567
     },
     {
         id: 5,
-        title: 'CSS Grid 布局详解',
-        tags: ['CSS', '布局', '前端'],
-        cover: 'https://picsum.photos/300/200?random=5',
-        duration: '28:10',
+        title: 'Anomaly detection: Algorithm',
+        tags: ['Gaussian Distribution', 'Anomaly Detection Algorithm', 'Features', 'Density Estimation', 'Epsilon'],
+        cover: '/images/covers/video_5.png',
+        duration: '12:02',
         views: 987
     },
     {
         id: 6,
-        title: 'Webpack 5 配置指南',
-        tags: ['Webpack', '构建工具'],
-        cover: 'https://picsum.photos/300/200?random=6',
-        duration: '47:25',
+        title: 'Anomaly detection: Gaussian distribution',
+        tags: ['Gaussian distribution', 'Mean', 'Variance', 'Standard deviation', 'Parameter estimation'],
+        cover: '/images/covers/video_6.png',
+        duration: '10:27',
         views: 765
     },
     {
         id: 7,
-        title: 'Docker 容器化部署',
-        tags: ['Docker', 'DevOps', '部署'],
-        cover: 'https://picsum.photos/300/200?random=7',
-        duration: '52:18',
+        title: 'Anomaly detection: Problem motivation',
+        tags: ['Anomaly Detection', 'Unsupervised Learning', 'Probability Model', 'Features', 'Epsilon'],
+        cover: '/images/covers/video_7.png',
+        duration: '7:37',
         views: 1890
     },
     {
         id: 8,
-        title: 'JavaScript 设计模式',
-        tags: ['JavaScript', '设计模式', '编程'],
-        cover: 'https://picsum.photos/300/200?random=8',
-        duration: '1:22:45',
+        title: 'Dimensionality reduction: Advice for apply PCA',
+        tags: ['Principal Component Analysis', 'Supervised Learning', 'Dimensionality Reduction', 'Overfitting', 'Training Set'],
+        cover: '/images/covers/video_8.png',
+        duration: '12:48',
         views: 1432
     },
     {
         id: 9,
-        title: '微前端架构实践',
-        tags: ['微前端', '架构', '前端'],
-        cover: 'https://picsum.photos/300/200?random=9',
-        duration: '39:55',
+        title: 'Dimensionality reduction: Reconstruction from compressed representation',
+        tags: ['Principal Component Analysis', 'Compression Algorithm', 'Reconstruction', 'Reduced Representation', 'Projection Error'],
+        cover: '/images/covers/video_9.png',
+        duration: '3:53',
         views: 1098
     },
     {
         id: 10,
-        title: 'Next.js 服务端渲染',
-        tags: ['Next.js', 'React', 'SSR'],
-        cover: 'https://picsum.photos/300/200?random=10',
-        duration: '44:30',
+        title: 'Dimensionality reduction: Choosing the number of principal components',
+        tags: ['Principal Component Analysis', 'Number of Principal Components', 'Average Squared Projection Error', 'Total Variation', 'Variance Retained'],
+        cover: '/images/covers/video_10.png',
+        duration: '10:30',
         views: 876
     },
     {
         id: 11,
-        title: 'GraphQL 入门与实践',
-        tags: ['GraphQL', 'API', '后端'],
-        cover: 'https://picsum.photos/300/200?random=11',
-        duration: '36:45',
+        title: 'Dimensionality reduction: Principal component analysis algorithm',
+        tags: ['Principal Component Analysis', 'Covariance Matrix', 'Eigenvectors', 'Singular Value Decomposition', 'Dimensionality Reduction'],
+        cover: '/images/covers/video_11.png',
+        duration: '15:13',
         views: 654
     },
     {
         id: 12,
-        title: '小程序开发全解析',
-        tags: ['小程序', '微信', '移动端'],
-        cover: 'https://picsum.photos/300/200?random=12',
-        duration: '41:20',
+        title: 'Dimensionality reduction: Principal component analysis problem formulation',
+        tags: ['Principal Component Analysis', 'Dimensionality Reduction', 'Projection Error', 'Linear Regression', 'Feature Scaling'],
+        cover: '/images/covers/video_12.png',
+        duration: '9:05',
         views: 1321
     }
 ]
@@ -185,19 +184,19 @@ onMounted(() => {
         <div class="search-section">
             <div class="search-controls">
                 <Row :gutter="16" align="center" class="search-row">
-                    <Col :span="8" :xs="24" :sm="12" :md="8" :lg="8">
-                        <Input v-model="searchText" placeholder="输入视频名称或标签搜索..." allow-clear size="large"
-                            class="search-input" @press-enter="handleSearch">
+                    <Col :span="5">
+                        <Input v-model="searchText" placeholder="输入教学视频名称" allow-clear size="large" class="search-input"
+                            @press-enter="handleSearch">
                             <template #prefix>
                                 <icon-search />
                             </template>
                         </Input>
                     </Col>
-                    <Col :span="6" :xs="24" :sm="12" :md="6" :lg="6">
+                    <Col :span="4">
                         <Select v-model="selectedFilter" :options="filterOptions" size="large" placeholder="筛选视频"
                             class="filter-select" />
                     </Col>
-                    <Col :span="5" :xs="12" :sm="6" :md="5" :lg="4">
+                    <Col :span="4">
                         <Button type="primary" size="large" :loading="loading" @click="handleSearch" class="search-btn">
                             <template #icon>
                                 <icon-search />
@@ -205,9 +204,12 @@ onMounted(() => {
                             搜索
                         </Button>
                     </Col>
-                    <Col :span="5" :xs="12" :sm="6" :md="5" :lg="4">
-                        <Button size="large" @click="handleReset" class="reset-btn">
-                            重置
+                    <Col :span="4">
+                        <Button type="primary" size="large" @click="handleReset" class="reset-btn">
+                            <template #icon>
+                                <icon-upload />
+                            </template>
+                            上传
                         </Button>
                     </Col>
                 </Row>
@@ -217,7 +219,6 @@ onMounted(() => {
         <!-- 视频列表区域 -->
         <div class="video-list-section">
             <Spin v-if="loading" class="loading-spin" tip="加载中..." />
-
             <div v-else>
                 <!-- 搜索结果统计 -->
                 <div class="result-info">
@@ -238,10 +239,6 @@ onMounted(() => {
                                     <img :src="video.cover" :alt="video.title" class="cover-image" />
                                     <div class="video-duration">
                                         {{ video.duration }}
-                                    </div>
-                                    <div class="video-views">
-                                        <icon-eye />
-                                        {{ video.views.toLocaleString() }}
                                     </div>
                                 </div>
 
@@ -270,7 +267,7 @@ onMounted(() => {
                                             <template #icon>
                                                 <icon-star />
                                             </template>
-                                            收藏
+                                            查看难点
                                         </Button>
                                     </div>
                                 </div>
@@ -302,7 +299,7 @@ onMounted(() => {
     margin: 10px 10px 10px 0px;
     border-radius: 10px;
     background: var(--color-bg-1);
-    overflow: hidden;
+    overflow-x: hidden;
     box-sizing: border-box;
 }
 
@@ -349,6 +346,7 @@ onMounted(() => {
 
 .video-list-section {
     width: 100%;
+    height: 100%;
     position: relative;
 
     .loading-spin {
@@ -362,17 +360,17 @@ onMounted(() => {
 .result-info {
     margin-bottom: 20px;
     padding: 12px 16px;
-    background-color: var(--color-fill-2);
+    background-color: #856cff;
     border-radius: 8px;
     font-size: 14px;
 
     .result-count {
         font-weight: 500;
-        color: var(--color-text-1);
+        color: var(--color-bg-1);
     }
 
     .filter-info {
-        color: var(--color-text-3);
+        color: var(--color-bg-1);
         margin-left: 8px;
     }
 }
@@ -429,7 +427,7 @@ onMounted(() => {
         position: absolute;
         bottom: 8px;
         right: 8px;
-        background: rgba(0, 0, 0, 0.75);
+        background: #856cff;
         color: white;
         padding: 2px 6px;
         border-radius: 4px;
@@ -482,6 +480,10 @@ onMounted(() => {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        display: inline-block;
+        vertical-align: middle;
+        box-sizing: border-box;
+        background: #d4ccfd8e;
     }
 }
 

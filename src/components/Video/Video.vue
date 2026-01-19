@@ -9,8 +9,11 @@ import {
     Col,
     Tag,
     Message,
-    Spin
+    Spin,
+    Modal
 } from '@arco-design/web-vue'
+// 导入视频播放弹窗组件
+import VideoPlayer from '../Modal/VideoPlayer.vue'
 
 // 视频类型定义
 interface VideoItem {
@@ -20,6 +23,7 @@ interface VideoItem {
     cover: string
     duration: string
     views?: number
+    url?: string // 视频播放地址字段
 }
 
 // 筛选选项
@@ -37,7 +41,10 @@ const selectedFilter = ref('all')
 const videoList = ref<VideoItem[]>([])
 const loading = ref(false)
 
-// 模拟数据 - 这里保持您的模拟数据不变
+// 播放弹窗相关
+const showPlayer = ref(false)
+const currentVideo = ref<VideoItem | null>(null)
+
 // 模拟数据
 const mockVideos: VideoItem[] = [
     {
@@ -45,14 +52,16 @@ const mockVideos: VideoItem[] = [
         title: 'Linear Regression with multiple variables',
         tags: ['Gradient Descent', 'Feature Scaling', 'Cost Function'],
         cover: '/images/covers/video_1.png',
-        duration: '8:50'
+        duration: '8:50',
+        url: '/videos/video1.mp4'
     },
     {
         id: 2,
         title: 'Dimentionality Reduction',
         tags: ['Dimensionality Reduction', 'Data Compression', 'Redundant Features'],
         cover: '/images/covers/video_2.png',
-        duration: '10:09'
+        duration: '10:09',
+        url: '/videos/video1.mp4'
     },
     {
         id: 3,
@@ -60,7 +69,7 @@ const mockVideos: VideoItem[] = [
         tags: ['Regularization', 'Cross-validation Set', 'Model Selection'],
         cover: '/images/covers/video_3.png',
         duration: '11:16',
-        views: 2345
+        url: '/videos/video1.mp4'
     },
     {
         id: 4,
@@ -68,7 +77,7 @@ const mockVideos: VideoItem[] = [
         tags: ['Multivariate Gaussian Distribution', 'Anomaly Detection Algorithm', 'Covariance Matrix'],
         cover: '/images/covers/video_4.png',
         duration: '14:02',
-        views: 1567
+        url: '/videos/video1.mp4'
     },
     {
         id: 5,
@@ -76,7 +85,7 @@ const mockVideos: VideoItem[] = [
         tags: ['Gaussian Distribution', 'Anomaly Detection Algorithm', 'Features', 'Density Estimation', 'Epsilon'],
         cover: '/images/covers/video_5.png',
         duration: '12:02',
-        views: 987
+        url: '/videos/video1.mp4'
     },
     {
         id: 6,
@@ -92,7 +101,7 @@ const mockVideos: VideoItem[] = [
         tags: ['Anomaly Detection', 'Unsupervised Learning', 'Probability Model', 'Features', 'Epsilon'],
         cover: '/images/covers/video_7.png',
         duration: '7:37',
-        views: 1890
+        url: '/videos/video1.mp4'
     },
     {
         id: 8,
@@ -100,7 +109,7 @@ const mockVideos: VideoItem[] = [
         tags: ['Principal Component Analysis', 'Supervised Learning', 'Dimensionality Reduction', 'Overfitting', 'Training Set'],
         cover: '/images/covers/video_8.png',
         duration: '12:48',
-        views: 1432
+        url: '/videos/video1.mp4'
     },
     {
         id: 9,
@@ -108,7 +117,7 @@ const mockVideos: VideoItem[] = [
         tags: ['Principal Component Analysis', 'Compression Algorithm', 'Reconstruction', 'Reduced Representation', 'Projection Error'],
         cover: '/images/covers/video_9.png',
         duration: '3:53',
-        views: 1098
+        url: '/videos/video1.mp4'
     },
     {
         id: 10,
@@ -116,7 +125,7 @@ const mockVideos: VideoItem[] = [
         tags: ['Principal Component Analysis', 'Number of Principal Components', 'Average Squared Projection Error', 'Total Variation', 'Variance Retained'],
         cover: '/images/covers/video_10.png',
         duration: '10:30',
-        views: 876
+        url: '/videos/video1.mp4'
     },
     {
         id: 11,
@@ -124,7 +133,7 @@ const mockVideos: VideoItem[] = [
         tags: ['Principal Component Analysis', 'Covariance Matrix', 'Eigenvectors', 'Singular Value Decomposition', 'Dimensionality Reduction'],
         cover: '/images/covers/video_11.png',
         duration: '15:13',
-        views: 654
+        url: '/videos/video1.mp4'
     },
     {
         id: 12,
@@ -132,7 +141,7 @@ const mockVideos: VideoItem[] = [
         tags: ['Principal Component Analysis', 'Dimensionality Reduction', 'Projection Error', 'Linear Regression', 'Feature Scaling'],
         cover: '/images/covers/video_12.png',
         duration: '9:05',
-        views: 1321
+        url: '/videos/video1.mp4'
     }
 ]
 
@@ -170,6 +179,26 @@ const handleReset = () => {
     selectedFilter.value = 'all'
     videoList.value = [...mockVideos]
     Message.info('已重置搜索条件')
+}
+
+// 播放视频
+const playVideo = (video: VideoItem) => {
+    currentVideo.value = video
+    showPlayer.value = true
+
+    // 记录播放历史（可选）
+    if (video.views !== undefined) {
+        video.views++
+    }
+
+    // 可以在这里添加播放统计逻辑
+    console.log(`播放视频：${video.title}`)
+}
+
+// 关闭播放器
+const handlePlayerClose = () => {
+    showPlayer.value = false
+    currentVideo.value = null
 }
 
 // 页面加载时初始化数据
@@ -248,16 +277,16 @@ onMounted(() => {
                                         {{ video.title }}
                                     </h3>
 
-                                    <!-- 标签区域 -->
+                                    <!-- 标签区域
                                     <div class="video-tags">
                                         <Tag v-for="tag in video.tags" :key="tag" size="small" class="tag-item">
                                             {{ tag }}
                                         </Tag>
-                                    </div>
+                                    </div> -->
 
                                     <!-- 操作按钮 -->
                                     <div class="video-actions">
-                                        <Button type="text" size="small">
+                                        <Button type="text" size="small" @click="playVideo(video)">
                                             <template #icon>
                                                 <icon-play-circle />
                                             </template>
@@ -289,6 +318,9 @@ onMounted(() => {
                 </div>
             </div>
         </div>
+
+        <!-- 视频播放弹窗 -->
+        <VideoPlayer v-model:visible="showPlayer" :video-data="currentVideo" @close="handlePlayerClose" />
     </div>
 </template>
 
@@ -568,6 +600,53 @@ onMounted(() => {
 
     .video-col {
         padding: 0 4px !important;
+    }
+}
+
+.video-cover {
+    cursor: pointer;
+    position: relative;
+
+    .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+
+        .play-icon {
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+    }
+
+    &:hover {
+        .play-overlay {
+            opacity: 1;
+        }
+
+        .cover-image {
+            transform: scale(1.05);
+        }
+    }
+}
+
+.video-actions {
+    .arco-btn {
+        &:first-child {
+            color: var(--color-primary-6);
+
+            &:hover {
+                color: var(--color-primary-5);
+                background-color: var(--color-primary-light-1);
+            }
+        }
     }
 }
 </style>

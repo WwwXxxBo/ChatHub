@@ -70,12 +70,6 @@ export const deleteAssistant = (
   });
 };
 
-
-
-
-
-
-
 // 修改对话助手信息
 export const modifyAssistant = (
   assistantId: string, 
@@ -121,7 +115,6 @@ export const modifyAssistant = (
   });
 };
 
-
 // 创建聊天消息
 export const createAssistantMessage = (
   messageId: string,
@@ -134,7 +127,7 @@ export const createAssistantMessage = (
   createTime: number
 ) => {
   return AssistantHttpInstance({
-    url: "/assistant_message/",
+    url: "/messages/",
     method: "POST",
     data: JSON.stringify({
       messageId: messageId,
@@ -158,7 +151,7 @@ export const getAssistantMessageList = (
   assistantId: string,
 ) => {
   return AssistantHttpInstance({
-    url: "/assistant_message/",
+    url: "/messages/",
     method: "GET",
     params: {
       assistantId: assistantId

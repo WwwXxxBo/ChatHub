@@ -403,7 +403,7 @@ const useBigModel = async () => {
         lastMessage_2.image || '',
         lastMessage_2.createTime
       )
-      if (res_1.status !== 0 || res_2.status !== 0) {
+      if (!res_1.status || !res_2.status) {
         Message.error("聊天消息数据存入数据库失败！");
       }
     },

@@ -5,7 +5,7 @@ import { Message } from '@arco-design/web-vue'
 import { useUserStore } from "@/stores/user";
 import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { getUserData, resgisterUser } from "@/api/login";
-import { getAssistantList } from "@/api/assistant"
+import { getAssistantList, getAssistantMessageList } from "@/api/assistant"
 import axios from "axios";
 import type { FormInstance } from '@arco-design/web-vue';
 
@@ -141,6 +141,8 @@ const toLogin = async () => {
     const assistantListRes = await getAssistantList(1);
     const newChatAssistantList = []
     for (var assistant of assistantListRes.data.assistants) {
+      // 获取该助手的消息列表
+      const res = await getAssistantMessageList(assistant.assistantId);
       const newChatAssistant = {
         id: assistant.assistantId,
         type: assistant.type,
@@ -155,10 +157,19 @@ const toLogin = async () => {
         maxTokens: assistant.maxTokens,
         contextSize: assistant.contextSize,
       }
+      for (var assistant_message of res.data.messages) {
+        newChatAssistant.chatMessageList.push({
+          id: assistant_message.messageId,
+          type: assistant_message.type,
+          role: assistant_message.role,
+          content: assistant_message.content,
+          image: assistant_message.image,
+          createTime: assistant_message.createTime
+        })
+      }
       newChatAssistantList.unshift(newChatAssistant);
     }
     chatAssistantStore.updateChatAssistantList(newChatAssistantList);
-
   } catch (error) {
     errorMessage.value = '登录失败，请稍后重试';
     if (axios.isAxiosError(error)) {

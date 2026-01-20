@@ -168,11 +168,8 @@ export const deleteAssistantMessage = (
   messageId: string,
 ) => {
   return AssistantHttpInstance({
-    url: "/assistant_message/",
+    url: `/messages/${messageId}`,
     method: "DELETE",
-    params: {
-      messageId: messageId
-    },
     withCredentials: true,
     headers: {
       "Content-Type": "application/json; charset=utf-8"

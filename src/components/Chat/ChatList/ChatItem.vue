@@ -29,12 +29,13 @@ const props = defineProps({
 // 计算显示的消息时间
 const calcMessageTime = (current?: ChatMessage) => {
   if (current) {
+    const timestamp = parseInt(current?.createTime, 10);
     // 如果与当日日期相同，则表示对话是今日发生的，只显示小时和分钟
-    if (dayjs(current.createTime).format('YYYY-MM-DD') === dayjs().format('YYYY-MM-DD')) {
-      return dayjs(current.createTime).format('HH:mm')
+    if (dayjs(timestamp).format('YYYY-MM-DD') === dayjs().format('YYYY-MM-DD')) {
+      return dayjs(timestamp).format('HH:mm')
     } else {
       // 如果与当日日期不同，则表示对话是过去发生的，显示具体日期
-      return dayjs(current.createTime).format('YYYY/MM/DD')
+      return dayjs(timestamp).format('YYYY/MM/DD')
     }
   }
   return null

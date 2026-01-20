@@ -83,7 +83,7 @@ export interface BaseMessage {
 export interface ChatMessage extends BaseMessage {
   id: string;
   type: ChatMsgType;
-  createTime: number;
+  createTime: string;
 }
 
 // 系统对话

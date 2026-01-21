@@ -82,14 +82,11 @@ export const modifyAssistant = (
   maxTokens: number,
   inputMaxTokens: number, 
   contextSize: number, 
-  speechModel: string, 
-  speechVoice: string,
-  speechSpeed: number, 
   createTime: number, 
   lastUpdateTime: number,
 ) => {
   return AssistantHttpInstance({
-    url: "/assistant/",
+    url: `/assistants/${assistantId}`,
     method: "PUT",
     data: JSON.stringify({
       assistantId: assistantId, 
@@ -102,9 +99,6 @@ export const modifyAssistant = (
       maxTokens: maxTokens,
       inputMaxTokens: inputMaxTokens, 
       contextSize: contextSize, 
-      speechModel: speechModel, 
-      speechVoice: speechVoice,
-      speechSpeed: speechSpeed, 
       createTime: createTime, 
       lastUpdateTime: lastUpdateTime
     }),

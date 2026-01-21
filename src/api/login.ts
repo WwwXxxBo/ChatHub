@@ -3,7 +3,7 @@ import { AssistantHttpInstance } from "@/utils/http-util";
 // 接收后端传递的用户数据
 export const getUserData = async (phone: string, password: string) => {
     const response = await AssistantHttpInstance({
-      url: "/auth/sign_in",
+      url: "/users/login",
       method: "POST",
       data: {
         login: phone,
@@ -23,7 +23,7 @@ export const resgisterUser = (name: string,
   phone: string,
   password: string) => {
     return AssistantHttpInstance({
-      url: "/auth/sign_up",
+      url: "/users/register",
       method: "POST",
       data: {
         name: name,

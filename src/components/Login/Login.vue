@@ -137,8 +137,17 @@ const toLogin = async () => {
     userStore.isLogin = true;
     Message.success(loginRes.message);
 
+    // 存储用户信息
+    if (loginRes.data.user) {
+      // 存储用户登录状态
+      sessionStorage.userId = loginRes.data.user.id;
+      sessionStorage.name = loginRes.data.user.name;
+      sessionStorage.email = loginRes.data.user.email;
+      sessionStorage.phone = loginRes.data.user.phone;
+
+    }
     // 获取聊天助手数据
-    const assistantListRes = await getAssistantList(1);
+    const assistantListRes = await getAssistantList(loginRes.data.user.id);
     const newChatAssistantList = []
     for (var assistant of assistantListRes.data.assistants) {
       // 获取该助手的消息列表

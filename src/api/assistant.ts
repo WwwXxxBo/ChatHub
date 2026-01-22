@@ -174,7 +174,7 @@ export const deleteAssistantMessage = (
 
 
 /* ----------------------笔记相关接口---------------------- */
-// 创建聊天笔记
+// 创建笔记
 export const createNote = (
   noteId: string,
   userId: number,
@@ -210,8 +210,8 @@ export const createNote = (
   });
 };
 
-// 获取聊天笔记列表
-export const getChatCollectionList = (
+// 获取笔记列表
+export const getNoteList = (
   userId: number,
 ) => {
   return AssistantHttpInstance({
@@ -227,8 +227,8 @@ export const getChatCollectionList = (
   });
 };
 
-// 创建聊天消息收藏
-export const createChatCollectionMessage = (
+// 创建笔记消息
+export const createNoteMessage = (
   messageId: string,
   noteId: string,
   role: string,
@@ -258,7 +258,7 @@ export const createChatCollectionMessage = (
 };
 
 // 获取聊天消息收藏列表
-export const getChatCollectionMessageList = (
+export const getNoteMessageList = (
   noteId: string
 ) => {
   return AssistantHttpInstance({
@@ -274,25 +274,8 @@ export const getChatCollectionMessageList = (
   });
 };
 
-// 获取笔记列表
-export const getNoteCollectionList = (
-  userId: number
-) => {
-  return AssistantHttpInstance({
-    url: "/notes/",
-    method: "GET",
-    params: {
-      userId: userId
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
 // 删除笔记
-export const deleteChatCollection = (
+export const deleteNote = (
   noteId: string
 ) => {
   return AssistantHttpInstance({
@@ -305,211 +288,22 @@ export const deleteChatCollection = (
   });
 };
 
-
-// 创建笔记收藏
-export const createNoteCollection = (
-  noteCollectionId: string,
-  userId: number,
-  type: string,
-  title: string,
-  content: string,
-  createTime: number
-) => {
-  return AssistantHttpInstance({
-    url: "/note_collection/",
-    method: "POST",
-    params: {
-      noteCollectionId: noteCollectionId,
-      userId: userId,
-      type: type,
-      title: title,
-      content: content,
-      createTime: createTime
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
-// 创建笔记收藏
-export const deleteNoteCollection = (
-  noteCollectionId: string
-) => {
-  return AssistantHttpInstance({
-    url: "/note_collection/",
-    method: "DELETE",
-    params: {
-      noteCollectionId: noteCollectionId
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
-
-// 修改笔记收藏
-export const modifyNoteCollection = (
-  noteCollectionId: string,
-  userId: number,
-  type: string,
-  title: string,
-  content: string,
-  createTime: number
-) => {
-  return AssistantHttpInstance({
-    url: "/note_collection/",
-    method: "PUT",
-    params: {
-      noteCollectionId: noteCollectionId,
-      userId: userId,
-      type: type,
-      title: title,
-      content: content,
-      createTime: createTime
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
-// 创建新的对话助手
-export const createSystemAssistant = (
-  assistantId: string, 
-  userId: number, 
-  name: string, 
-  type: string,
-  instruction: string, 
-  provider: string, 
-  model: string, 
-  maxTokens: number,
-  inputMaxTokens: number, 
-  contextSize: number, 
-  speechModel: string, 
-  speechVoice: string,
-  speechSpeed: number, 
-  createTime: number, 
-  lastUpdateTime: number,
-) => {
-  return AssistantHttpInstance({
-    url: "/system_assistant/",
-    method: "POST",
-    data: JSON.stringify({
-      assistantId: assistantId, 
-      userId: userId, 
-      name: name, 
-      type: type,
-      instruction: instruction, 
-      provider: provider, 
-      model: model, 
-      maxTokens: maxTokens,
-      inputMaxTokens: inputMaxTokens, 
-      contextSize: contextSize, 
-      speechModel: speechModel, 
-      speechVoice: speechVoice,
-      speechSpeed: speechSpeed, 
-      createTime: createTime, 
-      lastUpdateTime: lastUpdateTime
-    }),
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
-// 删除系统聊天助手信息
-export const deleteSystemAssistant = (
-  assistantId: string
-) => {
-  return AssistantHttpInstance({
-    url: "/system_assistant/",
-    method: "DELETE",
-    params: {
-      assistantId: assistantId
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
-// 删除系统聊天助手信息
-export const getSystemAssistantList = (
-  userId: string
-) => {
-  return AssistantHttpInstance({
-    url: "/system_assistant/",
-    method: "GET",
-    params: {
-      userId: userId
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
-// 创建系统聊天消息
-export const createSystemAssistantMessage = (
-  messageId: string,
-  assistantId: string,
+// 修改笔记
+export const updateNote = (
+  noteId: string,
   name: string,
-  role: string,
+  title: string,
   content: string,
-  createTime: number
+  comment: string,
 ) => {
   return AssistantHttpInstance({
-    url: "/system_assistant_message/",
-    method: "POST",
-    params: {
-      messageId: messageId,
-      assistantId: assistantId,
+    url: `/notes/${noteId}`,
+    method: "PUT",
+    data: {
       name: name,
-      role: role,
+      title: title,
       content: content,
-      createTime: createTime
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
-// 创建系统聊天消息
-export const deleteSystemAssistantMessage = (
-  messageId: string
-) => {
-  return AssistantHttpInstance({
-    url: "/system_assistant_message/",
-    method: "DELETE",
-    params: {
-      messageId: messageId
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
-// 获取系统聊天消息
-export const getSystemAssistantMessageList = (
-  assistantId: string
-) => {
-  return AssistantHttpInstance({
-    url: "/system_assistant_message/",
-    method: "GET",
-    params: {
-      assistantId: assistantId
+      comment: comment,
     },
     withCredentials: true,
     headers: {

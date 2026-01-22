@@ -21,7 +21,7 @@ import { nowTimestamp, formatDateTime } from "@/utils/date-util";
 // 引入国际化组件
 import { useI18n } from "vue-i18n";
 // 引入 Assistant API
-import { deleteChatCollection, createNoteCollection, deleteNoteCollection, modifyNoteCollection } from "@/api/assistant";
+import { deleteNote, createNote, updateNote } from "@/api/assistant";
 
 const { t } = useI18n();
 
@@ -37,6 +37,7 @@ const { keyword, collectionItemType, currentCollectionItemId } = toRefs(data)
 
 // 当前选中的收藏
 const currentCollectionItem = computed(() => {
+  console.log(collectionStore.collectionItemList.find((c) => c.id === data.currentCollectionItemId))
   return collectionStore.collectionItemList.find((c) => c.id === data.currentCollectionItemId)
 })
 
@@ -52,8 +53,8 @@ const newNote = async () => {
     },
     createTime: nowTimestamp()
   }
-  const res = await createNoteCollection(collectionItem.id, Number(sessionStorage.userId), collectionItem.type, collectionItem.note.title, collectionItem.note.content, collectionItem.createTime)
-  if (res.status == 0) {
+  const res = await createNote(collectionItem.id, Number(sessionStorage.userId), '', collectionItem.type, '', collectionItem.note.title, collectionItem.note.content, '', collectionItem.createTime, collectionItem.createTime)
+  if (res.status) {
     Message.success("笔记收藏创建成功!");
   } else {
     Message.success("笔记收藏创建失败!");
@@ -80,19 +81,19 @@ const collectionItemListFilter = computed(() => {
 })
 
 // 修改
-const modifyCollection = async () => {
-  const res = await modifyNoteCollection(
+const modifyNote = async (type: string) => {
+  console.log('当前：', currentCollectionItem.value)
+  const res = await updateNote(
     currentCollectionItem.value.id,
-    sessionStorage.userId,
-    currentCollectionItem.value.type,
-    currentCollectionItem.value.note.title,
-    currentCollectionItem.value.note.content,
-    currentCollectionItem.value.createTime
+    type === 'chat' ? currentCollectionItem.value.name : '',
+    type === 'chat' ? '' : currentCollectionItem.value.note.title,
+    type === 'chat' ? '' : currentCollectionItem.value.note.content,
+    type === 'chat' ? currentCollectionItem.value.comment : ''
   )
-  if (res.status == 0) {
-    Message.success("笔记收藏保存成功!");
+  if (res.status) {
+    Message.success("笔记修改成功!");
   } else {
-    Message.success("笔记收藏保存失败!");
+    Message.error("笔记修改失败!");
   }
 }
 
@@ -108,18 +109,18 @@ const deleteConfirm = (id: string) => {
       const index = collectionStore.collectionItemList.findIndex((c) => c.id === id)
       const collectionItem = collectionStore.collectionItemList.find((c) => c.id === id) as any
       if (collectionItem.type == 'chat') {
-        const res = await deleteChatCollection(id);
-        if (res.status == 0) {
+        const res = await deleteNote(id);
+        if (res.status) {
           Message.success("聊天消息收藏删除成功!");
         } else {
-          Message.success("聊天消息收藏删除失败!");
+          Message.error("聊天消息收藏删除失败!");
         }
       } else {
-        const res = await deleteNoteCollection(id);
-        if (res.status == 0) {
+        const res = await deleteNote(id);
+        if (res.status) {
           Message.success("笔记收藏删除成功!");
         } else {
-          Message.success("笔记收藏删除失败!");
+          Message.error("笔记收藏删除失败!");
         }
       }
       if (index >= 0) {
@@ -149,7 +150,6 @@ const exportChatMessageList = (id: string) => {
           <a-select v-model="collectionItemType" :fallback-option="false">
             <a-option value="all">{{ $t("collectionSet.type.all") }}</a-option>
             <a-option value="chat">{{ $t("collectionSet.type.chat") }}</a-option>
-            <a-option value="image">{{ $t("collectionSet.type.image") }}</a-option>
             <a-option value="note">{{ $t("collectionSet.type.note") }}</a-option>
           </a-select>
         </div>
@@ -232,8 +232,8 @@ const exportChatMessageList = (id: string) => {
           <!-- 笔记标题 -->
           <a-input v-if="currentCollectionItem.type === 'note'" v-model="currentCollectionItem.note!.title"
             class="note-title-input no-drag-area" />
-          <a-button v-if="currentCollectionItem.type === 'note'" type="primary" @click="modifyCollection()">
-            保存修改
+          <a-button v-if="currentCollectionItem.type === 'note'" type="primary" @click="modifyNote('note')">
+            保存笔记
           </a-button>
 
           <!-- 显示模型名称和供应商 -->
@@ -293,8 +293,8 @@ const exportChatMessageList = (id: string) => {
                     v-html="renderMarkdown(msg.content, false)">
                   </div>
                   <!-- 图片展示 -->
-                  <a-image v-if="msg.image" width="300" height="300" :src="`file://${msg.image}`" show-loader
-                    fit="cover">
+                  <a-image v-if="msg.image" width="300" height="300" :src="`data:image/png;base64,${msg.image}`"
+                    show-loader fit="cover">
                     <template #preview-actions>
                       <a-image-preview-action :name="$t('common.download')"
                         @click="downloadFile(`file://${msg.image}`, `img-${msg.id}.png`)">
@@ -302,19 +302,16 @@ const exportChatMessageList = (id: string) => {
                       </a-image-preview-action>
                     </template>
                   </a-image>
-                  <div v-if="msg.fileList && msg.fileList.length > 0" class="chat-message-file-list">
-                    <!-- <ChatMessageFile v-for="f in msg.fileList" :key="f.id" :message-file="f" /> -->
-                  </div>
                 </div>
               </div>
             </div>
             <a-divider orientation="center">笔记区</a-divider>
             <div style="margin-left: 10px; margin-right: 10px; height: 200px;">
-              <a-textarea placeholder="请输入您的笔记" allow-clear :auto-size="{
+              <a-textarea placeholder="请输入您的笔记" v-model="currentCollectionItem.comment" allow-clear :auto-size="{
                 minRows: 2,
                 maxRows: 5
               }" />
-              <a-button type="primary" @click="modifyCollection()" style="margin-top: 5px; width: 100%">
+              <a-button type="primary" @click="modifyNote('chat')" style="margin-top: 5px; width: 100%">
                 保存笔记
               </a-button>
             </div>

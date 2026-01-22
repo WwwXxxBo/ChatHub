@@ -25,7 +25,7 @@ import { useI18n } from 'vue-i18n'
 // 引入绘图库
 import html2canvas from 'html2canvas'
 // 引入 Assistant Message API
-import { deleteAssistantMessage, createNote, createChatCollectionMessage } from "@/api/assistant"
+import { deleteAssistantMessage, createNote, createNoteMessage } from "@/api/assistant"
 
 const { t } = useI18n()
 // 引入状态
@@ -82,7 +82,7 @@ const multipleChoiceCollect = async () => {
     createTime: nowTimestamp()
   }
   for (var message of selectChatMessageList) {
-    const chatCollectionMessageRes = await createChatCollectionMessage(
+    const chatCollectionMessageRes = await createNoteMessage(
       message.id,
       collectionItem.id,
       message.role,

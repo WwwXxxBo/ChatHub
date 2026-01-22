@@ -1,5 +1,6 @@
 import { AssistantHttpInstance } from "@/utils/http-util";
 
+/* ----------------------助手相关接口---------------------- */
 // 获取聊天助手列表
 export const getAssistantList = (
   userId: number
@@ -109,6 +110,8 @@ export const modifyAssistant = (
   });
 };
 
+
+/* ----------------------消息相关接口---------------------- */
 // 创建聊天消息
 export const createAssistantMessage = (
   messageId: string,
@@ -170,7 +173,6 @@ export const deleteAssistantMessage = (
     }
   });
 };
-
 
 
 /* ----------------------笔记相关接口---------------------- */

@@ -171,22 +171,81 @@ export const deleteAssistantMessage = (
   });
 };
 
-// 创建聊天信息收藏
+
+
+/* ----------------------笔记相关接口---------------------- */
+// 创建聊天笔记
 export const createChatCollection = (
-  chatCollectionId: string,
-  assistantId: string,
+  noteId: string,
   userId: number,
+  assistantId: string,
   type: string,
+  name: string, 
+  content: string,
+  comment: string,
+  createTime: number, 
+  lastUpdateTime: number,
+
+) => {
+  return AssistantHttpInstance({
+    url: "/notes/",
+    method: "POST",
+    data: {
+      noteId: noteId,
+      userId: userId,
+      assistantId: assistantId,
+      type: type,
+      name: name, 
+      content: content,
+      comment: comment,
+      createTime: createTime, 
+      lastUpdateTime: lastUpdateTime,
+    },
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
+};
+
+// 获取聊天笔记列表
+export const getChatCollectionList = (
+  userId: number,
+) => {
+  return AssistantHttpInstance({
+    url: "/notes/",
+    method: "GET",
+    params: {
+      userId: userId
+    },
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
+};
+
+// 创建聊天消息收藏
+export const createChatCollectionMessage = (
+  messageId: string,
+  noteId: string,
+  role: string,
+  type: string,
+  content: string,
+  image: string,
   createTime: number
 ) => {
   return AssistantHttpInstance({
-    url: "/chat_collection/",
+    url: "/note_messages/",
     method: "POST",
-    params: {
-      chatCollectionId: chatCollectionId,
-      assistantId: assistantId,
-      userId: userId,
+    data: {
+      messageId: messageId,
+      noteId: noteId,
+      name: '',
+      role: role,
       type: type,
+      content: content,
+      image: image,
       createTime: createTime
     },
     withCredentials: true,
@@ -196,15 +255,15 @@ export const createChatCollection = (
   });
 };
 
-// 删除聊天信息收藏
-export const deleteChatCollection = (
-  chatCollectionId: string
+// 获取聊天消息收藏列表
+export const getChatCollectionMessageList = (
+  noteId: string
 ) => {
   return AssistantHttpInstance({
-    url: "/chat_collection/",
-    method: "DELETE",
+    url: "/note_messages/",
+    method: "GET",
     params: {
-      chatCollectionId: chatCollectionId
+      noteId: noteId
     },
     withCredentials: true,
     headers: {
@@ -213,15 +272,35 @@ export const deleteChatCollection = (
   });
 };
 
-// 创建聊天信息收藏
-export const getChatCollectionList = (
-  userId: number,
+
+// 获取笔记列表
+export const getNoteCollectionList = (
+  userId: number
 ) => {
   return AssistantHttpInstance({
-    url: "/chat_collection/",
+    url: "/notes/",
     method: "GET",
     params: {
       userId: userId
+    },
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
+};
+
+
+
+// 删除聊天信息收藏
+export const deleteChatCollection = (
+  noteId: string
+) => {
+  return AssistantHttpInstance({
+    url: "/notes/",
+    method: "DELETE",
+    params: {
+      noteId: noteId
     },
     withCredentials: true,
     headers: {
@@ -275,22 +354,6 @@ export const deleteNoteCollection = (
   });
 };
 
-// 创建笔记收藏
-export const getNoteCollectionList = (
-  userId: number
-) => {
-  return AssistantHttpInstance({
-    url: "/note_collection/",
-    method: "GET",
-    params: {
-      userId: userId
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
 
 // 修改笔记收藏
 export const modifyNoteCollection = (
@@ -311,54 +374,6 @@ export const modifyNoteCollection = (
       title: title,
       content: content,
       createTime: createTime
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
-// 创建聊天消息收藏
-export const createChatCollectionMessage = (
-  messageId: string,
-  chatCollectionId: string,
-  name: string,
-  role: string,
-  type: string,
-  content: string,
-  image: string,
-  createTime: number
-) => {
-  return AssistantHttpInstance({
-    url: "/chat_collection_message/",
-    method: "POST",
-    params: {
-      messageId: messageId,
-      chatCollectionId: chatCollectionId,
-      name: '',
-      role: role,
-      type: type,
-      content: content,
-      image: image,
-      createTime: createTime
-    },
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-};
-
-// 获取聊天消息收藏列表
-export const getChatCollectionMessageList = (
-  chatCollectionId: string
-) => {
-  return AssistantHttpInstance({
-    url: "/chat_collection_message/",
-    method: "GET",
-    params: {
-      chatCollectionId: chatCollectionId
     },
     withCredentials: true,
     headers: {

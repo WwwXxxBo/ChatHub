@@ -3,13 +3,16 @@ import { ref, reactive } from "vue";
 import { type ChatMessage } from "@/types";
 import { Message } from '@arco-design/web-vue'
 import { useUserStore } from "@/stores/user";
+import { useCollectionStore } from '@/stores/collection'
 import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { getUserData, resgisterUser } from "@/api/login";
-import { getAssistantList, getAssistantMessageList } from "@/api/assistant"
+import { getAssistantList, getAssistantMessageList, getChatCollectionList, getChatCollectionMessageList } from "@/api/assistant"
 import axios from "axios";
+import { copyObj } from "@/utils/object-util";
 import type { FormInstance } from '@arco-design/web-vue';
 
 const userStore = useUserStore();
+const collectionStore = useCollectionStore();
 const chatAssistantStore = useChatAssistantStore();
 
 const errorMessage = ref('');
@@ -146,6 +149,7 @@ const toLogin = async () => {
       sessionStorage.phone = loginRes.data.user.phone;
 
     }
+
     // 获取聊天助手数据
     const assistantListRes = await getAssistantList(loginRes.data.user.id);
     const newChatAssistantList = []
@@ -179,6 +183,36 @@ const toLogin = async () => {
       newChatAssistantList.unshift(newChatAssistant);
     }
     chatAssistantStore.updateChatAssistantList(newChatAssistantList);
+
+    // 初始化聊天收藏列表
+    const chatCollectionRes = await getChatCollectionList(sessionStorage.userId);
+    if (!chatCollectionRes.status) {
+      Message.error(chatCollectionRes.message);
+    }
+    for (var chatCollection of chatCollectionRes.data.notes) {
+      const chatCollectionMessageRes = await getChatCollectionMessageList(chatCollection.noteId);
+      const newChatCollection = {
+        id: chatCollection.noteId,
+        type: 'chat',
+        chat: {
+          ...copyObj(chatAssistantStore.chatAssistantList.find((c) => c.id === chatCollection.assistantId)),
+          chatMessageList: []
+        },
+        createTime: chatCollection.createTime
+      }
+      for (var chatCollectionMessage of chatCollectionMessageRes.data.messages) {
+        newChatCollection.chat.chatMessageList.push({
+          id: chatCollectionMessage.messageId,
+          type: chatCollectionMessage.type,
+          role: chatCollectionMessage.role,
+          name: chatCollectionMessage.name,
+          content: chatCollectionMessage.content,
+          image: chatCollectionMessage.image,
+          createTime: chatCollectionMessage.createTime
+        })
+      }
+      collectionStore.collectionItemList.unshift(newChatCollection);
+    }
   } catch (error) {
     errorMessage.value = '登录失败，请稍后重试';
     if (axios.isAxiosError(error)) {

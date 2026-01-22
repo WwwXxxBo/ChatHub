@@ -52,7 +52,7 @@ const newNote = async () => {
     },
     createTime: nowTimestamp()
   }
-  const res = await createNoteCollection(collectionItem.id, sessionStorage.userId, collectionItem.type, collectionItem.note.title, collectionItem.note.content, collectionItem.createTime)
+  const res = await createNoteCollection(collectionItem.id, Number(sessionStorage.userId), collectionItem.type, collectionItem.note.title, collectionItem.note.content, collectionItem.createTime)
   if (res.status == 0) {
     Message.success("笔记收藏创建成功!");
   } else {
@@ -202,7 +202,7 @@ const exportChatMessageList = (id: string) => {
             </div>
             <!-- 收藏消息体尾部 -->
             <div class="collection-footer">
-              <div class="collection-time">{{ formatDateTime(new Date(c.createTime)) }}</div>
+              <div class="collection-time">{{ formatDateTime(new Date(Number(c.createTime))) }}</div>
               <a-popover position="br" trigger="click" :content-style="{ padding: '5px' }" @click.stop>
                 <icon-more class="collection-more-btn" />
                 <template #content>

@@ -196,18 +196,18 @@ let lastShowTimeMessageId: string = "";
 const calcMessageTime = (current: ChatMessage, isFirst: boolean) => {
   if (
     isFirst ||
-    (current.createTime - lastShowTime) / 1000 / 60 >= 5 ||
+    (Number(current.createTime) - lastShowTime) / 1000 / 60 >= 5 ||
     current.id === lastShowTimeMessageId
   ) {
-    lastShowTime = current.createTime;
+    lastShowTime = Number(current.createTime);
     lastShowTimeMessageId = current.id;
     if (
-      dayjs(current.createTime).format("YYYY-MM-DD") ===
+      dayjs(Number(current.createTime)).format("YYYY-MM-DD") ===
       dayjs().format("YYYY-MM-DD")
     ) {
-      return dayjs(current.createTime).format("HH:mm");
+      return dayjs(Number(current.createTime)).format("HH:mm");
     } else {
-      return dayjs(current.createTime).format("YYYY-MM-DD HH:mm");
+      return dayjs(Number(current.createTime)).format("YYYY-MM-DD HH:mm");
     }
   }
   return null;

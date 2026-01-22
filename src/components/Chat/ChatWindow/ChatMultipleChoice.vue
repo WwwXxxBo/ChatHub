@@ -81,23 +81,30 @@ const multipleChoiceCollect = async () => {
     },
     createTime: nowTimestamp()
   }
-
-  // for (var message of selectChatMessageList) {
-  //   const chatCollectionMessageRes = await createChatCollectionMessage(
-  //     message.id,
-  //     collectionItem.id,
-  //     message.name,
-  //     message.role,
-  //     message.type,
-  //     message.content,
-  //     message.image,
-  //     message.createTime
-  //   );
-  // }
+  for (var message of selectChatMessageList) {
+    const chatCollectionMessageRes = await createChatCollectionMessage(
+      message.id,
+      collectionItem.id,
+      message.role,
+      message.type,
+      message.content,
+      message.image,
+      message.createTime
+    );
+    if (chatCollectionMessageRes.status) {
+      Message.success('消息收藏成功')
+    } else {
+      Message.success(chatCollectionMessageRes.message)
+    }
+  }
   collectionStore.collectionItemList.unshift(collectionItem)
-  // const res = await createChatCollection(collectionItem.id, chatAssistantStore.getCurrentChatAssistant.id, sessionStorage.userId, collectionItem.type, collectionItem.createTime);
+  const chatCollectionRes = await createChatCollection(collectionItem.id, sessionStorage.userId, collectionItem.chat?.id, collectionItem.type, collectionItem.chat?.name, '', '', collectionItem.createTime, collectionItem.createTime);
+  if (chatCollectionRes.status) {
+    Message.success('笔记创建成功')
+  } else {
+    Message.success(chatCollectionRes.message)
+  }
   emits('close')
-  Message.success(t('chatWindow.collectSuccess'))
 }
 
 // 下载选中的消息

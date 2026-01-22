@@ -314,6 +314,9 @@ const exportChatMessageList = (id: string) => {
                 minRows: 2,
                 maxRows: 5
               }" />
+              <a-button type="primary" @click="modifyCollection()" style="margin-top: 5px; width: 100%">
+                保存笔记
+              </a-button>
             </div>
 
           </a-scrollbar>

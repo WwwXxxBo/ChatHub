@@ -133,7 +133,7 @@ onMounted(() => {
           </div>
           <!-- 收藏 -->
           <div class="app-sidebar-item no-drag-area" @click="changePage('collect')">
-            <icon-star class="app-sidebar-item-icon" />
+            <icon-file class="app-sidebar-item-icon" />
             <span class="app-sidebar-item-text">{{ $t("index.note") }}</span>
           </div>
           <!-- 设置 -->

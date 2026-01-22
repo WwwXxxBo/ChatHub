@@ -175,12 +175,13 @@ export const deleteAssistantMessage = (
 
 /* ----------------------笔记相关接口---------------------- */
 // 创建聊天笔记
-export const createChatCollection = (
+export const createNote = (
   noteId: string,
   userId: number,
   assistantId: string,
   type: string,
   name: string, 
+  title: string,
   content: string,
   comment: string,
   createTime: number, 
@@ -195,7 +196,8 @@ export const createChatCollection = (
       userId: userId,
       assistantId: assistantId,
       type: type,
-      name: name, 
+      name: name,
+      title: title,
       content: content,
       comment: comment,
       createTime: createTime, 
@@ -272,7 +274,6 @@ export const getChatCollectionMessageList = (
   });
 };
 
-
 // 获取笔记列表
 export const getNoteCollectionList = (
   userId: number
@@ -290,18 +291,13 @@ export const getNoteCollectionList = (
   });
 };
 
-
-
-// 删除聊天信息收藏
+// 删除笔记
 export const deleteChatCollection = (
   noteId: string
 ) => {
   return AssistantHttpInstance({
-    url: "/notes/",
+    url: `/notes/${noteId}`,
     method: "DELETE",
-    params: {
-      noteId: noteId
-    },
     withCredentials: true,
     headers: {
       "Content-Type": "application/json; charset=utf-8"

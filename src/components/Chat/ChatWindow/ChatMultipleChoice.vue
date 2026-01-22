@@ -25,7 +25,7 @@ import { useI18n } from 'vue-i18n'
 // 引入绘图库
 import html2canvas from 'html2canvas'
 // 引入 Assistant Message API
-import { deleteAssistantMessage, createChatCollection, createChatCollectionMessage } from "@/api/assistant"
+import { deleteAssistantMessage, createNote, createChatCollectionMessage } from "@/api/assistant"
 
 const { t } = useI18n()
 // 引入状态
@@ -98,7 +98,7 @@ const multipleChoiceCollect = async () => {
     }
   }
   collectionStore.collectionItemList.unshift(collectionItem)
-  const chatCollectionRes = await createChatCollection(collectionItem.id, sessionStorage.userId, collectionItem.chat?.id, collectionItem.type, collectionItem.chat?.name, '', '', collectionItem.createTime, collectionItem.createTime);
+  const chatCollectionRes = await createNote(collectionItem.id, sessionStorage.userId, collectionItem.chat?.id, collectionItem.type, collectionItem.chat?.name, '', '', '', collectionItem.createTime, collectionItem.createTime);
   if (chatCollectionRes.status) {
     Message.success('笔记创建成功')
   } else {

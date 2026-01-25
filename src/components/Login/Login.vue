@@ -7,7 +7,7 @@ import { useUserStore } from "@/stores/user";
 import { useCollectionStore } from '@/stores/collection'
 import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { useSettingStore } from "@/stores/setting";
-import { getUserData, resgisterUser } from "@/api/login";
+import { getUserData, resgisterUser } from "@/api/user";
 import { getAssistantList, getAssistantMessageList, getNoteList, getNoteMessageList } from "@/api/assistant"
 import { getProviderListByUserId, createProvider } from '@/api/setting'
 import axios from "axios";
@@ -87,7 +87,7 @@ const registerRules = {
 
 // 注册
 const toRegister = async () => {
-  // 验证表单
+
   const error = await registerFormRef.value?.validate();
   if (error) {
     return;
@@ -147,11 +147,11 @@ const toLogin = async () => {
     // 存储用户信息
     if (loginRes.data.user) {
       // 存储用户登录状态
+      userStore.id = loginRes.data.user.id;
+      userStore.name = loginRes.data.user.name;
+      userStore.email = loginRes.data.user.email;
+      userStore.phone = loginRes.data.user.phone;
       sessionStorage.userId = loginRes.data.user.id;
-      sessionStorage.name = loginRes.data.user.name;
-      sessionStorage.email = loginRes.data.user.email;
-      sessionStorage.phone = loginRes.data.user.phone;
-
     }
 
     /* ----------------------聊天助手初始化---------------------- */

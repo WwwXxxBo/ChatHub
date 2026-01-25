@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { watch, ref, reactive } from "vue";
-// 引入 System 状态
+import { watch, ref, reactive, computed } from "vue";
 import { useSystemStore } from "@/stores/system";
-// 引入 Setting 状态
 import { useSettingStore } from "@/stores/setting";
+import { useUserStore } from "@/stores/user";
 import { Message } from "@arco-design/web-vue";
 // 引入国际化组件
 import { useI18n } from "vue-i18n";
@@ -11,6 +10,9 @@ import { useI18n } from "vue-i18n";
 import { openInBrowser } from "@/utils/window-util";
 // 引入主题表
 import { defaultCustomThemeMap, setCustomFontSize, setCustomTheme } from "@/utils/theme-util";
+import { updateUser } from '@/api/user'
+
+
 import { copyObj } from "@/utils/object-util";
 import { modifyCommonSetting } from "@/api/setting"
 import type { FormInstance } from '@arco-design/web-vue';
@@ -18,6 +20,7 @@ import { updateProviderByProviderId } from '@/api/setting'
 
 const { t } = useI18n();
 const activeKey = ref('user');
+const userStore = useUserStore();
 const systemStore = useSystemStore();
 const settingStore = useSettingStore();
 
@@ -25,12 +28,32 @@ const settingStore = useSettingStore();
 // 注册表单实例
 const registerFormRef = ref<FormInstance>();
 // 注册表单数据
+// 注册表单数据 - 使用独立的响应式对象
 const registerForm = reactive({
-  name: "",
-  email: "",
-  phone: "",
+  name: userStore.name,
+  email: userStore.email,
+  phone: userStore.phone,
   password: "",
   validatePassword: "",
+});
+
+// 监听用户信息变化，更新表单初始值（如果需要）
+watch(() => userStore.name, (newName) => {
+  if (!registerForm.name || registerForm.name === userStore.name) {
+    registerForm.name = newName;
+  }
+});
+
+watch(() => userStore.email, (newEmail) => {
+  if (!registerForm.email || registerForm.email === userStore.email) {
+    registerForm.email = newEmail;
+  }
+});
+
+watch(() => userStore.phone, (newPhone) => {
+  if (!registerForm.phone || registerForm.phone === userStore.phone) {
+    registerForm.phone = newPhone;
+  }
 });
 // 字体大小修改实时生效
 watch(
@@ -170,7 +193,25 @@ const registerRules = {
   ],
 };
 
-const toRegister = async () => { }
+const modifyUser = async () => {
+  const validateResult = await registerFormRef.value?.validate();
+
+  // 如果验证失败，直接返回
+  if (validateResult && Object.keys(validateResult).length > 0) {
+    Message.error('请检查表单填写是否正确');
+    return;
+  }
+  const res = await updateUser(userStore.id, registerForm.name, registerForm.email, registerForm.phone, registerForm.password);
+  if (res.status) {
+    Message.success(res?.message);
+    // 更新用户Store中的值
+    userStore.name = registerForm.name;
+    userStore.email = registerForm.email;
+    userStore.phone = registerForm.phone;
+  } else {
+    Message.error(res?.message);
+  }
+}
 
 </script>
 
@@ -202,7 +243,7 @@ const toRegister = async () => { }
             <a-space direction="vertical" :size="25" fill class="setting-tab-content">
               <div class="form-content">
                 <a-form ref="registerFormRef" :model="registerForm" :rules="registerRules" layout="vertical"
-                  auto-label-width @submit="toRegister">
+                  auto-label-width @submit="modifyUser">
                   <!-- 用户名 -->
                   <a-form-item field="name" label="用户名" hide-label>
                     <a-input placeholder="请输入新的用户名" v-model="registerForm.name" allow-clear>

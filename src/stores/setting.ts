@@ -53,32 +53,8 @@ export const useSettingStore = defineStore({
         this.app = settingBackup.app;
         importFlag = true;
       }
-      if (settingBackup.openAI !== undefined) {
-        this.openAI = settingBackup.openAI;
-        importFlag = true;
-      }
-      if (settingBackup.gemini !== undefined) {
-        this.gemini = settingBackup.gemini;
-        importFlag = true;
-      }
-      if (settingBackup.spark !== undefined) {
-        this.spark = settingBackup.spark;
-        importFlag = true;
-      }
-      if (settingBackup.ernie !== undefined) {
-        this.ernie = settingBackup.ernie;
-        importFlag = true;
-      }
       if (settingBackup.tongyi !== undefined) {
         this.tongyi = settingBackup.tongyi;
-        importFlag = true;
-      }
-      if (settingBackup.tiangong !== undefined) {
-        this.tiangong = settingBackup.tiangong;
-        importFlag = true;
-      }
-      if (settingBackup.ollama !== undefined) {
-        this.ollama = settingBackup.ollama;
         importFlag = true;
       }
       if (settingBackup.moonshotAI !== undefined) {
@@ -89,28 +65,12 @@ export const useSettingStore = defineStore({
         this.zhipuAI = settingBackup.zhipuAI;
         importFlag = true;
       }
-      if (settingBackup.stepFun !== undefined) {
-        this.stepFun = settingBackup.stepFun;
-        importFlag = true;
-      }
       if (settingBackup.deepSeek !== undefined) {
         this.deepSeek = settingBackup.deepSeek;
         importFlag = true;
       }
-      if (settingBackup.baichuan !== undefined) {
-        this.baichuan = settingBackup.baichuan;
-        importFlag = true;
-      }
-      if (settingBackup.youdao !== undefined) {
-        this.youdao = settingBackup.youdao;
-        importFlag = true;
-      }
-      if (settingBackup.baiduTranslation !== undefined) {
-        this.baiduTranslation = settingBackup.baiduTranslation;
-        importFlag = true;
-      }
-      if (settingBackup.aiCalendar !== undefined) {
-        this.aiCalendar = settingBackup.aiCalendar;
+      if (settingBackup.doubao !== undefined) {
+        this.doubao = settingBackup.doubao;
         importFlag = true;
       }
       return importFlag;
@@ -118,33 +78,8 @@ export const useSettingStore = defineStore({
     checkBigModelConfig(provider: BigModelProvider) {
       let configErrorFlag = false;
       switch (provider) {
-        case "OpenAI":
-          if (!this.openAI.baseUrl || !this.openAI.key) {
-            configErrorFlag = true;
-          }
-          break;
-        case "Ollama":
-          if (!this.ollama.baseUrl) {
-            configErrorFlag = true;
-          }
-          break;
-        case "Gemini":
-          if (!this.gemini.baseUrl || !this.gemini.key) {
-            configErrorFlag = true;
-          }
-          break;
         case "ZhipuAI":
           if (!this.zhipuAI.apiKey) {
-            configErrorFlag = true;
-          }
-          break;
-        case "Spark":
-          if (!this.spark.appId || !this.spark.secret || !this.spark.key) {
-            configErrorFlag = true;
-          }
-          break;
-        case "ERNIE":
-          if (!this.ernie.apiKey || !this.ernie.secretKey) {
             configErrorFlag = true;
           }
           break;
@@ -153,18 +88,8 @@ export const useSettingStore = defineStore({
             configErrorFlag = true;
           }
           break;
-        case "Tiangong":
-          if (!this.tiangong.appKey || !this.tiangong.appSecret) {
-            configErrorFlag = true;
-          }
-          break;
         case "MoonshotAI":
           if (!this.moonshotAI.apiKey) {
-            configErrorFlag = true;
-          }
-          break;
-        case "StepFun":
-          if (!this.stepFun.apiKey) {
             configErrorFlag = true;
           }
           break;
@@ -173,8 +98,8 @@ export const useSettingStore = defineStore({
             configErrorFlag = true;
           }
           break;
-        case "BaiChuan":
-          if (!this.baichuan.apiKey) {
+        case "Doubao":
+          if (!this.doubao.apiKey) {
             configErrorFlag = true;
           }
           break;
@@ -184,39 +109,9 @@ export const useSettingStore = defineStore({
     getBigModelConfig(provider: BigModelProvider) {
       let otherOption = {};
       switch (provider) {
-        case "OpenAI":
-          otherOption = {
-            apiKey: this.openAI.key,
-            baseURL: this.openAI.baseUrl,
-          };
-          break;
-        case "Ollama":
-          otherOption = {
-            baseURL: this.ollama.baseUrl,
-          };
-          break;
-        case "Gemini":
-          otherOption = {
-            apiKey: this.gemini.key,
-            baseURL: this.gemini.baseUrl,
-          };
-          break;
         case "ZhipuAI":
           otherOption = {
             apiKey: this.zhipuAI.apiKey,
-          };
-          break;
-        case "Spark":
-          otherOption = {
-            appId: this.spark.appId,
-            secretKey: this.spark.secret,
-            apiKey: this.spark.key,
-          };
-          break;
-        case "ERNIE":
-          otherOption = {
-            apiKey: this.ernie.apiKey,
-            secretKey: this.ernie.secretKey,
           };
           break;
         case "Tongyi":
@@ -224,20 +119,9 @@ export const useSettingStore = defineStore({
             apiKey: this.tongyi.apiKey,
           };
           break;
-        case "Tiangong":
-          otherOption = {
-            apiKey: this.tiangong.appKey,
-            secretKey: this.tiangong.appSecret,
-          };
-          break;
         case "MoonshotAI":
           otherOption = {
             apiKey: this.moonshotAI.apiKey,
-          };
-          break;
-        case "StepFun":
-          otherOption = {
-            apiKey: this.stepFun.apiKey,
           };
           break;
         case "DeepSeek":
@@ -245,11 +129,11 @@ export const useSettingStore = defineStore({
             apiKey: this.deepSeek.apiKey,
           };
           break;
-        case "BaiChuan":
+        case "Doubao":
           otherOption = {
-            apiKey: this.baichuan.apiKey,
+            apiKey: this.doubao.apiKey,
           };
-            break;
+          break;
       }
       return otherOption;
     },

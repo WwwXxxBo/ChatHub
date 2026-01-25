@@ -11,12 +11,9 @@ import { openInBrowser } from "@/utils/window-util";
 // 引入主题表
 import { defaultCustomThemeMap, setCustomFontSize, setCustomTheme } from "@/utils/theme-util";
 import { updateUser } from '@/api/user'
-
-
 import { copyObj } from "@/utils/object-util";
-import { modifyCommonSetting } from "@/api/setting"
 import type { FormInstance } from '@arco-design/web-vue';
-import { updateProviderByProviderId } from '@/api/setting'
+import { updateProviderByProviderId, updateSettingByUserId } from '@/api/setting'
 
 const { t } = useI18n();
 const activeKey = ref('user');
@@ -25,9 +22,52 @@ const systemStore = useSystemStore();
 const settingStore = useSettingStore();
 
 
+// 用户信息表单验证规则
+const registerRules = {
+  name: [
+    { required: true, message: '请输入用户名', trigger: ['blur', 'change'] },
+    { minLength: 2, message: '用户名至少2个字符', trigger: ['blur', 'change'] },
+    { maxLength: 20, message: '用户名最多20个字符', trigger: ['blur', 'change'] },
+  ],
+  email: [
+    { required: true, message: '请输入邮箱', trigger: ['blur', 'change'] },
+    {
+      type: 'email',
+      message: '请输入有效的邮箱地址',
+      trigger: ['blur', 'change']
+    },
+  ],
+  phone: [
+    { required: true, message: '请输入手机号', trigger: ['blur', 'change'] },
+    {
+      match: /^1[3-9]\d{9}$/,
+      message: '请输入有效的11位手机号',
+      trigger: ['blur', 'change']
+    },
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: ['blur', 'change'] },
+    { minLength: 6, message: '密码长度至少为6位', trigger: ['blur', 'change'] },
+    { maxLength: 20, message: '密码长度最多为20位', trigger: ['blur', 'change'] },
+  ],
+  validatePassword: [
+    { required: true, message: '请再次输入密码', trigger: ['blur', 'change'] },
+    {
+      validator: (value: string, callback: (error?: string) => void) => {
+        if (value !== registerForm.password) {
+          callback('两次输入的密码不一致');
+        } else {
+          callback();
+        }
+      },
+      trigger: ['blur', 'change']
+    },
+  ],
+};
+
 // 注册表单实例
 const registerFormRef = ref<FormInstance>();
-// 注册表单数据
+
 // 注册表单数据 - 使用独立的响应式对象
 const registerForm = reactive({
   name: userStore.name,
@@ -37,7 +77,7 @@ const registerForm = reactive({
   validatePassword: "",
 });
 
-// 监听用户信息变化，更新表单初始值（如果需要）
+// 监听用户信息变化，更新表单初始值
 watch(() => userStore.name, (newName) => {
   if (!registerForm.name || registerForm.name === userStore.name) {
     registerForm.name = newName;
@@ -55,6 +95,7 @@ watch(() => userStore.phone, (newPhone) => {
     registerForm.phone = newPhone;
   }
 });
+
 // 字体大小修改实时生效
 watch(
   () => settingStore.app.fontSize,
@@ -62,6 +103,27 @@ watch(
     setCustomFontSize(value)
   }
 )
+
+// 修改用户信息
+const modifyUser = async () => {
+  const validateResult = await registerFormRef.value?.validate();
+
+  // 如果验证失败，直接返回
+  if (validateResult && Object.keys(validateResult).length > 0) {
+    Message.error('请检查表单填写是否正确');
+    return;
+  }
+  const res = await updateUser(userStore.id, registerForm.name, registerForm.email, registerForm.phone, registerForm.password);
+  if (res.status) {
+    Message.success(res?.message);
+    // 更新用户Store中的值
+    userStore.name = registerForm.name;
+    userStore.email = registerForm.email;
+    userStore.phone = registerForm.phone;
+  } else {
+    Message.error(res?.message);
+  }
+}
 
 // 保存大模型服务提供商
 const saveProvider = async (provider: string) => {
@@ -111,30 +173,14 @@ const saveProvider = async (provider: string) => {
   }
 
 }
-
+// 保存系统设置
 const saveCommonSetting = async () => {
-  // const res = await modifyCommonSetting(
-  //   sessionStorage.userId,
-  //   settingStore.openAI.key,
-  //   settingStore.zhipuAI.apiKey,
-  //   settingStore.ernie.apiKey,
-  //   settingStore.ernie.secretKey,
-  //   settingStore.spark.appId,
-  //   settingStore.spark.secret,
-  //   settingStore.spark.key,
-  //   settingStore.tongyi.apiKey,
-  //   settingStore.moonshotAI.apiKey,
-  //   settingStore.tiangong.appKey,
-  //   settingStore.tiangong.appSecret,
-  //   settingStore.stepFun.apiKey,
-  //   settingStore.deepSeek.apiKey,
-  //   settingStore.baichuan.apiKey
-  // )
-  // if (res.status === 0) {
-  //   Message.success("通用设置保存成功");
-  // } else {
-  //   Message.error("通用设置保存失败");
-  // }
+  const res = await updateSettingByUserId(userStore.id, settingStore.app.themeModel, JSON.stringify(settingStore.app.customThemeMap), settingStore.app.fontSize, settingStore.app.locale)
+  if (res.status) {
+    Message.success('设置修改成功');
+  } else {
+    Message.error(res.message);
+  }
 }
 
 // 自定义样式实时生效
@@ -149,69 +195,6 @@ watch(
     deep: true
   }
 )
-
-// 注册表单验证规则
-const registerRules = {
-  name: [
-    { required: true, message: '请输入用户名', trigger: ['blur', 'change'] },
-    { minLength: 2, message: '用户名至少2个字符', trigger: ['blur', 'change'] },
-    { maxLength: 20, message: '用户名最多20个字符', trigger: ['blur', 'change'] },
-  ],
-  email: [
-    { required: true, message: '请输入邮箱', trigger: ['blur', 'change'] },
-    {
-      type: 'email',
-      message: '请输入有效的邮箱地址',
-      trigger: ['blur', 'change']
-    },
-  ],
-  phone: [
-    { required: true, message: '请输入手机号', trigger: ['blur', 'change'] },
-    {
-      match: /^1[3-9]\d{9}$/,
-      message: '请输入有效的11位手机号',
-      trigger: ['blur', 'change']
-    },
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: ['blur', 'change'] },
-    { minLength: 6, message: '密码长度至少为6位', trigger: ['blur', 'change'] },
-    { maxLength: 20, message: '密码长度最多为20位', trigger: ['blur', 'change'] },
-  ],
-  validatePassword: [
-    { required: true, message: '请再次输入密码', trigger: ['blur', 'change'] },
-    {
-      validator: (value: string, callback: (error?: string) => void) => {
-        if (value !== registerForm.password) {
-          callback('两次输入的密码不一致');
-        } else {
-          callback();
-        }
-      },
-      trigger: ['blur', 'change']
-    },
-  ],
-};
-
-const modifyUser = async () => {
-  const validateResult = await registerFormRef.value?.validate();
-
-  // 如果验证失败，直接返回
-  if (validateResult && Object.keys(validateResult).length > 0) {
-    Message.error('请检查表单填写是否正确');
-    return;
-  }
-  const res = await updateUser(userStore.id, registerForm.name, registerForm.email, registerForm.phone, registerForm.password);
-  if (res.status) {
-    Message.success(res?.message);
-    // 更新用户Store中的值
-    userStore.name = registerForm.name;
-    userStore.email = registerForm.email;
-    userStore.phone = registerForm.phone;
-  } else {
-    Message.error(res?.message);
-  }
-}
 
 </script>
 
@@ -336,7 +319,7 @@ const modifyUser = async () => {
                 <div>{{ $t("setting.app.appearance.fontSize") }}</div>
                 <a-space :size="10">
                   <div>{{ $t("setting.app.appearance.min") }}</div>
-                  <a-slider v-model="settingStore.app.fontSize" :min="1" :max="5" show-ticks style="width: 420px;"
+                  <a-slider v-model="settingStore.app.fontSize" :min="1" :max="5" show-ticks style="width: 400px;"
                     class="purple-slider" />
                   <div>{{ $t('setting.app.appearance.max') }}</div>
                 </a-space>

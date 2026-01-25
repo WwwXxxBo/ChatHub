@@ -9,7 +9,7 @@ import { useChatAssistantStore } from "@/stores/chatAssistant";
 import { useSettingStore } from "@/stores/setting";
 import { getUserData, resgisterUser } from "@/api/user";
 import { getAssistantList, getAssistantMessageList, getNoteList, getNoteMessageList } from "@/api/assistant"
-import { getProviderListByUserId, createProvider } from '@/api/setting'
+import { getProviderListByUserId, createProvider, getSettingByUserId, createSetting } from '@/api/setting'
 import axios from "axios";
 import { copyObj } from "@/utils/object-util";
 import type { FormInstance } from '@arco-design/web-vue';
@@ -275,6 +275,25 @@ const toLogin = async () => {
         }
       }
     }
+
+    /* ----------------------设置初始化---------------------- */
+    const settingRes = await getSettingByUserId(loginRes.data.user.id);
+    if (!settingRes.data.setting) {
+      const settingId = randomUUID();
+      const initSettingRes = await createSetting(settingId, loginRes.data.user.id, 0, '', 3, 'zh_CN');
+      if (initSettingRes.status) {
+        Message.success('设置初始化成功');
+      } else {
+        Message.success(initSettingRes.message);
+      }
+    } else {
+      settingStore.app.fontSize = settingRes.data.setting.fontSize;
+      settingStore.app.themeModel = settingRes.data.setting.theme;
+      settingStore.app.customThemeMap = JSON.parse(settingRes.data.setting.customTheme);
+      settingStore.app.locale = settingRes.data.setting.locale;
+    }
+
+
   } catch (error) {
     errorMessage.value = '登录失败，请稍后重试';
     if (axios.isAxiosError(error)) {

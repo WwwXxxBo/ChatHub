@@ -52,17 +52,13 @@ export const updateProviderByProviderId = (providerId: string, apiKey: string, a
 }
 
 
-
-
-
-
-
-// 获取通用设置
-export const getCommonSetting = (
+/* ----------------------设置相关接口---------------------- */
+// 获取设置信息
+export const getSettingByUserId = (
     userId: number,
   ) => {
     return AssistantHttpInstance({
-      url: "/common_setting/",
+      url: "/settings/",
       method: "GET",
       params: {
         userId: userId
@@ -74,93 +70,53 @@ export const getCommonSetting = (
     });
 };
 
-// 创建通用设置
-export const createCommonSetting = (
-    userId: number,
-    openAIKey: string,
-    zhipuAIKey: string,
-    ernieAPIKey: string,
-    ernieSecretKey: string,
-    sparkAppId: string,
-    sparkSecret: string,
-    sparkKey: string,
-    tongyiKey: string,
-    moonshotAIKey: string, 
-    tiangongAppKey: string, 
-    tiangongAppSecret: string, 
-    stepFunKey: string, 
-    deepSeekKey: string, 
-    baichuanKey: string
-  ) => {
-    return AssistantHttpInstance({
-      url: "/common_setting/",
-      method: "POST",
-      params: {
-        userId: userId,
-        openAIKey: openAIKey,
-        zhipuAIKey: zhipuAIKey,
-        ernieAPIKey: ernieAPIKey,
-        ernieSecretKey: ernieSecretKey,
-        sparkAppId: sparkAppId,
-        sparkSecret: sparkSecret,
-        sparkKey: sparkKey,
-        tongyiKey: tongyiKey,
-        moonshotAIKey: moonshotAIKey, 
-        tiangongAppKey: tiangongAppKey, 
-        tiangongAppSecret: tiangongAppSecret, 
-        stepFunKey: stepFunKey, 
-        deepSeekKey: deepSeekKey, 
-        baichuanKey: baichuanKey
-      },
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      }
-    });
-  };
+// 创建设置
+export const createSetting = (
+  settingId: string,
+  userId: number,
+  theme:number,
+  customTheme: string,
+  fontSize: number,
+  locale: string   
+) => {
+  return AssistantHttpInstance({
+    url: "/settings/",
+    method: "POST",
+    data: {
+      settingId: settingId,
+      userId: userId,
+      theme: theme,
+      customTheme: customTheme,
+      fontSize: fontSize,
+      locale: locale
+    },
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
+};
 
-
-// 修改通用设置
-export const modifyCommonSetting = (
-    userId: number,
-    openAIKey: string,
-    zhipuAIKey: string,
-    ernieAPIKey: string,
-    ernieSecretKey: string,
-    sparkAppId: string,
-    sparkSecret: string,
-    sparkKey: string,
-    tongyiKey: string,
-    moonshotAIKey: string, 
-    tiangongAppKey: string, 
-    tiangongAppSecret: string, 
-    stepFunKey: string, 
-    deepSeekKey: string, 
-    baichuanKey: string
-  ) => {
-    return AssistantHttpInstance({
-      url: "/common_setting/",
-      method: "PUT",
-      params: {
-        userId: userId,
-        openAIKey: openAIKey,
-        zhipuAIKey: zhipuAIKey,
-        ernieAPIKey: ernieAPIKey,
-        ernieSecretKey: ernieSecretKey,
-        sparkAppId: sparkAppId,
-        sparkSecret: sparkSecret,
-        sparkKey: sparkKey,
-        tongyiKey: tongyiKey,
-        moonshotAIKey: moonshotAIKey, 
-        tiangongAppKey: tiangongAppKey, 
-        tiangongAppSecret: tiangongAppSecret, 
-        stepFunKey: stepFunKey, 
-        deepSeekKey: deepSeekKey, 
-        baichuanKey: baichuanKey
-      },
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      }
-    });
-  };
+// 修改设置
+export const updateSettingByUserId = (
+  userId: number,
+  theme:number,
+  customTheme: string,
+  fontSize: number,
+  locale: string   
+) => {
+  return AssistantHttpInstance({
+    url: `/settings/${userId}`,
+    method: "PUT",
+    data: {
+      theme: theme,
+      customTheme: customTheme,
+      fontSize: fontSize,
+      locale: locale
+    },
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
+};

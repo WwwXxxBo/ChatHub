@@ -21,51 +21,26 @@ export const useSettingStore = defineStore({
       locale: isZH() ? "zh_CN" : "en_US",
     },
     // 模型 URL 和 API Key
-    openAI: {
-      baseUrl: "https://api.openai.com/v1",
-      key: "",
-    },
-    ollama: {
-      baseUrl: "http://localhost:11434",
-    },
-    gemini: {
-      baseUrl: "https://generativelanguage.googleapis.com/v1beta",
-      key: "",
-    },
-    zhipuAI: {
+    deepSeek: {
+      id: "",
       apiKey: "",
-    },
-    ernie: {
-      apiKey: "",
-      secretKey: "",
-    },
-    spark: {
-      appId: "",
-      secret: "",
-      key: "",
     },
     tongyi: {
+      id: "",
       apiKey: "",
     },
     moonshotAI: {
+      id: "",
+      apiKey: "",
+    },
+    zhipuAI: {
+      id: "",
       apiKey: "",
     },
     doubao: {
+      id: "",
       apiKey: "",
     },
-    tiangong: {
-      appKey: "",
-      appSecret: "",
-    },
-    stepFun: {
-      apiKey: "",
-    },
-    deepSeek: {
-      apiKey: "",
-    },
-    baichuan: {
-      apiKey: "",
-    }
   }),
   actions: {
     setStoreFromJson(json: string) {

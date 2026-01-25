@@ -2,11 +2,14 @@
 import { ref, reactive } from "vue";
 import { type ChatMessage } from "@/types";
 import { Message } from '@arco-design/web-vue'
+import { randomUUID } from "@/utils/id-util";
 import { useUserStore } from "@/stores/user";
 import { useCollectionStore } from '@/stores/collection'
 import { useChatAssistantStore } from "@/stores/chatAssistant";
+import { useSettingStore } from "@/stores/setting";
 import { getUserData, resgisterUser } from "@/api/login";
 import { getAssistantList, getAssistantMessageList, getNoteList, getNoteMessageList } from "@/api/assistant"
+import { getProviderListByUserId, createProvider } from '@/api/setting'
 import axios from "axios";
 import { copyObj } from "@/utils/object-util";
 import type { FormInstance } from '@arco-design/web-vue';
@@ -14,6 +17,7 @@ import type { FormInstance } from '@arco-design/web-vue';
 const userStore = useUserStore();
 const collectionStore = useCollectionStore();
 const chatAssistantStore = useChatAssistantStore();
+const settingStore = useSettingStore();
 
 const errorMessage = ref('');
 const successMessage = ref('');
@@ -150,7 +154,7 @@ const toLogin = async () => {
 
     }
 
-    // 获取聊天助手数据
+    /* ----------------------聊天助手初始化---------------------- */
     const assistantListRes = await getAssistantList(loginRes.data.user.id);
     const newChatAssistantList = []
     for (var assistant of assistantListRes.data.assistants) {
@@ -184,7 +188,7 @@ const toLogin = async () => {
     }
     chatAssistantStore.updateChatAssistantList(newChatAssistantList);
 
-    // 初始化聊天笔记列表
+    /* ----------------------笔记初始化---------------------- */
     const chatCollectionRes = await getNoteList(sessionStorage.userId);
     if (!chatCollectionRes.status) {
       Message.error(chatCollectionRes.message);
@@ -227,8 +231,50 @@ const toLogin = async () => {
         collectionStore.collectionItemList.unshift(newChatCollection);
       }
     }
+    /* ----------------------设置初始化---------------------- */
+    const providerRes = (await getProviderListByUserId(loginRes.data.user.id));
+    if (!providerRes.status) {
+      Message.error(providerRes.message);
+    }
+    if (providerRes.data.providers.length === 0) {
+      // 没有API信息则创建
+      const deepseekId = randomUUID();
+      const tongyiId = randomUUID();
+      const moonshotAIId = randomUUID();
+      const zhipuAIId = randomUUID();
+      const doubaoId = randomUUID();
 
+      const deepseekRes = await createProvider(deepseekId, loginRes.data.user.id, 'deepseek', '', '');
+      const tongyiRes = await createProvider(tongyiId, loginRes.data.user.id, 'tongyi', '', '');
+      const moonshotAIRes = await createProvider(moonshotAIId, loginRes.data.user.id, 'moonshotAI', '', '');
+      const zhipuAIRes = await createProvider(zhipuAIId, loginRes.data.user.id, 'zhipuAI', '', '');
+      const doubaoRes = await createProvider(doubaoId, loginRes.data.user.id, 'doubao', '', '');
 
+      if (deepseekRes.status && tongyiRes.status && moonshotAIRes.status && zhipuAIRes.status && doubaoRes.status) {
+        Message.success('大模型API初始化成功');
+      } else {
+        Message.error('大模型API初始化失败');
+      }
+    } else {
+      for (var provider of providerRes.data.providers) {
+        if (provider.provider === 'deepseek') {
+          settingStore.deepSeek.apiKey = provider.apiKey;
+          settingStore.deepSeek.id = provider.providerId;
+        } else if (provider.provider === 'tongyi') {
+          settingStore.tongyi.apiKey = provider.apiKey;
+          settingStore.tongyi.id = provider.providerId;
+        } else if (provider.provider === 'moonshotAI') {
+          settingStore.moonshotAI.apiKey = provider.apiKey;
+          settingStore.moonshotAI.id = provider.providerId;
+        } else if (provider.provider === 'zhipuAI') {
+          settingStore.zhipuAI.apiKey = provider.apiKey;
+          settingStore.zhipuAI.id = provider.providerId;
+        } else if (provider.provider === 'doubao') {
+          settingStore.doubao.apiKey = provider.apiKey;
+          settingStore.doubao.id = provider.providerId;
+        }
+      }
+    }
   } catch (error) {
     errorMessage.value = '登录失败，请稍后重试';
     if (axios.isAxiosError(error)) {

@@ -14,6 +14,7 @@ import { defaultCustomThemeMap, setCustomFontSize, setCustomTheme } from "@/util
 import { copyObj } from "@/utils/object-util";
 import { modifyCommonSetting } from "@/api/setting"
 import type { FormInstance } from '@arco-design/web-vue';
+import { updateProviderByProviderId } from '@/api/setting'
 
 const { t } = useI18n();
 const activeKey = ref('user');
@@ -38,6 +39,55 @@ watch(
     setCustomFontSize(value)
   }
 )
+
+// 保存大模型服务提供商
+const saveProvider = async (provider: string) => {
+  switch (provider) {
+    case 'deepSeek':
+      const deepsekRes = await updateProviderByProviderId(settingStore.deepSeek.id, settingStore.deepSeek.apiKey, "");
+      if (deepsekRes.status) {
+        Message.success('修改成功');
+      } else {
+        Message.success('修改失败');
+      }
+      break;
+    case 'tongyi':
+      const tongyiRes = await updateProviderByProviderId(settingStore.tongyi.id, settingStore.tongyi.apiKey, "");
+      if (tongyiRes.status) {
+        Message.success('修改成功');
+      } else {
+        Message.success('修改失败');
+      }
+      break;
+    case 'moonshotAI':
+      const moonshotAIRes = await updateProviderByProviderId(settingStore.moonshotAI.id, settingStore.moonshotAI.apiKey, "");
+      if (moonshotAIRes.status) {
+        Message.success('修改成功');
+      } else {
+        Message.success('修改失败');
+      }
+      break;
+    case 'zhipuAI':
+      const zhipuAIRes = await updateProviderByProviderId(settingStore.zhipuAI.id, settingStore.zhipuAI.apiKey, "");
+      if (zhipuAIRes.status) {
+        Message.success('修改成功');
+      } else {
+        Message.success('修改失败');
+      }
+      break;
+    case 'doubao':
+      const doubaoRes = await updateProviderByProviderId(settingStore.doubao.id, settingStore.doubao.apiKey, "");
+      if (doubaoRes.status) {
+        Message.success('修改成功');
+      } else {
+        Message.success('修改失败');
+      }
+      break;
+    default:
+      Message.error(`暂不支持${provider}模型服务`);
+  }
+
+}
 
 const saveCommonSetting = async () => {
   // const res = await modifyCommonSetting(
@@ -131,8 +181,7 @@ const toRegister = async () => { }
     </div>
 
     <!-- 设置模态框 -->
-    <a-modal v-model:visible="systemStore.settingModal.visible" :footer="false" unmount-on-close title-align="start"
-      width="45vw">
+    <a-modal v-model:visible="systemStore.settingModal.visible" :footer="false" unmount-on-close title-align="start">
       <!-- 标题 -->
       <template #title><span style="color: #856cff; font-weight: 600;">{{ $t("setting.name") }} </span></template>
       <!-- 页面主内容 -->
@@ -153,7 +202,7 @@ const toRegister = async () => { }
             <a-space direction="vertical" :size="25" fill class="setting-tab-content">
               <div class="form-content">
                 <a-form ref="registerFormRef" :model="registerForm" :rules="registerRules" layout="vertical"
-                  auto-label-width @submit="toRegister" style="width: 400px;">
+                  auto-label-width @submit="toRegister">
                   <!-- 用户名 -->
                   <a-form-item field="name" label="用户名" hide-label>
                     <a-input placeholder="请输入新的用户名" v-model="registerForm.name" allow-clear>
@@ -210,7 +259,7 @@ const toRegister = async () => { }
               <a-space direction="vertical" :size="10">
                 <div>{{ $t("setting.app.appearance.theme.name") }}</div>
                 <a-radio-group v-model="settingStore.app.themeModel" type="button" size="small">
-                  <a-radio :value="0" style="color: #856cff; font-weight: 600;">
+                  <a-radio :value="0" style="color: #856cff; font-weight: 600; ">
                     <IconSync />
                     {{ $t("setting.app.appearance.theme.auto") }}
                   </a-radio>
@@ -246,7 +295,7 @@ const toRegister = async () => { }
                 <div>{{ $t("setting.app.appearance.fontSize") }}</div>
                 <a-space :size="10">
                   <div>{{ $t("setting.app.appearance.min") }}</div>
-                  <a-slider v-model="settingStore.app.fontSize" :min="1" :max="5" show-ticks style="width: 300px;"
+                  <a-slider v-model="settingStore.app.fontSize" :min="1" :max="5" show-ticks style="width: 420px;"
                     class="purple-slider" />
                   <div>{{ $t('setting.app.appearance.max') }}</div>
                 </a-space>
@@ -287,7 +336,7 @@ const toRegister = async () => { }
                         " />
                     </a-space>
                   </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()"
+                  <a-button type="primary" @click="saveProvider('deepSeek')"
                     style="background-color: #856cff; font-weight: 600; width: 100%;">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
@@ -307,7 +356,7 @@ const toRegister = async () => { }
                         " />
                     </a-space>
                   </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()"
+                  <a-button type="primary" @click="saveProvider('tongyi')"
                     style="background-color: #856cff; font-weight: 600; width: 100%;">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
@@ -327,7 +376,7 @@ const toRegister = async () => { }
                         " />
                     </a-space>
                   </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()"
+                  <a-button type="primary" @click="saveProvider('moonshotAI')"
                     style="background-color: #856cff; font-weight: 600; width: 100%;">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
@@ -347,7 +396,7 @@ const toRegister = async () => { }
                         " />
                     </a-space>
                   </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()"
+                  <a-button type="primary" @click="saveProvider('doubao')"
                     style="background-color: #856cff; font-weight: 600; width: 100%;">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
@@ -367,7 +416,7 @@ const toRegister = async () => { }
                         " />
                     </a-space>
                   </a-space>
-                  <a-button type="primary" @click="saveCommonSetting()"
+                  <a-button type="primary" @click="saveProvider('zhipuAI')"
                     style="background-color: #856cff; font-weight: 600; width: 100%;">保存修改</a-button>
                 </a-space>
               </a-tab-pane>
@@ -397,7 +446,6 @@ const toRegister = async () => { }
 
 <style lang="less" scoped>
 .setting-page {
-  height: 56vh;
   overflow-y: auto;
   font-size: var(--font-size-default);
 
@@ -409,6 +457,10 @@ const toRegister = async () => { }
   .form-content {
     display: flex;
     justify-content: center;
+  }
+
+  .setting-tab-content {
+    width: 100%;
   }
 
   .arco-tabs-tab-active,

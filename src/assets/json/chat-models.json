@@ -73,5 +73,13 @@
       "value": "cogvideox-3",
       "type": "text"
     }
+  ],
+  "Doubao": [
+    {
+      "name": "doubao-seed-1-8-251228",
+      "value": "doubao-seed-1-8-251228",
+      "type": "text",
+      "isSupportImage": true
+    }
   ]
 }

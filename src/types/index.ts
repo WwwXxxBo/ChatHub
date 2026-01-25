@@ -33,7 +33,8 @@ export type BigModelProvider =
   | "MoonshotAI"
   | "StepFun"
   | "DeepSeek"
-  | "BaiChuan";
+  | "BaiChuan"
+  | "Doubao";
 
 // 提示
 export interface AppNotification {

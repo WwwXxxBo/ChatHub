@@ -12,6 +12,7 @@ import { chat2spark } from "@/utils/bigmodel/spark-util"
 import { chat2tongyi } from "@/utils/bigmodel/tongyi-util"
 import { chat2ernie } from "@/utils/bigmodel/ernie-bot-util"
 import { chat2ollama } from "@/utils/bigmodel/ollama-util"
+import { chat2doubao } from "@/utils/bigmodel/doubao-util"
 
 // 目前支持 Kimi、智谱AI、天工、百川、DeepSeek、阶跃星辰
 type ChatFunctionMap = {
@@ -29,7 +30,8 @@ const chatFunctionMap = {
   Spark: chat2spark,
   Tongyi: chat2tongyi,
   ERNIE: chat2ernie,
-  Ollama: chat2ollama
+  Ollama: chat2ollama,
+  Doubao: chat2doubao
 }
 
 

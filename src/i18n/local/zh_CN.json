@@ -217,7 +217,8 @@
     "MoonshotAI": "月之暗面",
     "StepFun": "阶跃星辰",
     "DeepSeek": "深度求索",
-    "BaiChuan": "百川智能"
+    "BaiChuan": "百川智能",
+    "Doubao": "豆包"
   },
   "bigModelProviderWelcome": {
     "OpenAI": "我_是_ Open_AI _大_模_型，_请_问_有_什_么_可_以_帮_你_？",

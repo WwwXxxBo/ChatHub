@@ -33,6 +33,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ernie/, '')
       },
+      '/doubao':{
+        target: 'https://ark.cn-beijing.volces.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/doubao/, '')
+      },
       '/filechat':{
         target: 'http://localhost:3032/',
         changeOrigin: false,

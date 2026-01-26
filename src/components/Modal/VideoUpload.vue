@@ -12,6 +12,9 @@ import {
     type FormInstance,
     type FileItem
 } from '@arco-design/web-vue'
+import { uploadVideo, type UploadVideoResponse, type UploadVideoParams } from '@/api/videos'
+import { useUserStore } from '@/stores/user'
+import { randomUUID } from "@/utils/id-util";
 
 interface VideoUploadProps {
     visible: boolean
@@ -27,6 +30,7 @@ interface VideoFormData {
     tags: string[]
     difficulty: string
     category: string
+    description?: string
 }
 
 const props = defineProps<VideoUploadProps>()
@@ -34,8 +38,12 @@ const emit = defineEmits<VideoUploadEmits>()
 
 const formRef = ref<FormInstance>()
 const uploading = ref(false)
+const uploadProgress = ref<number>(0)
+const videoFile = ref<File | null>(null)
 const videoUrl = ref<string>('')
 const videoDuration = ref<number>(0)
+
+const userStore = useUserStore()
 
 const formData = reactive<VideoFormData>({
     title: '',
@@ -57,12 +65,14 @@ const handleChange = (fileList: FileItem[]) => {
     }
 
     const fileItem = fileList[0]
-    if (fileItem && fileItem.status === 'done') {
+    if (fileItem) {
         const file = fileItem.file
         if (file && file.type.startsWith('video/')) {
+            videoFile.value = file
             videoUrl.value = URL.createObjectURL(file)
         }
     } else if (fileList.length === 0) {
+        videoFile.value = null
         videoUrl.value = ''
         videoDuration.value = 0
     }
@@ -78,7 +88,7 @@ const beforeUpload = (file: File): boolean | Promise<boolean> => {
     }
 
     // 检查文件类型
-    const allowedExtensions = ['.mp4', '.avi', '.mov', '.mkv', '.wmv']
+    const allowedExtensions = ['.mp4', '.avi', '.mov', '.mkv', '.wmv', '.flv', '.webm']
     const fileName = file.name.toLowerCase()
     const isValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext))
 
@@ -96,6 +106,7 @@ const handleRemove = () => {
         URL.revokeObjectURL(videoUrl.value)
         videoUrl.value = ''
         videoDuration.value = 0
+        videoFile.value = null
     }
     return true
 }
@@ -121,12 +132,15 @@ const handleCancel = () => {
     }
 
     // 重置状态
+    videoFile.value = null
     videoUrl.value = ''
     videoDuration.value = 0
+    uploadProgress.value = 0
     formData.title = ''
     formData.tags = []
     formData.difficulty = ''
     formData.category = ''
+    formData.description = ''
     uploading.value = false
 
     emit('update:visible', false)
@@ -134,8 +148,13 @@ const handleCancel = () => {
 
 // 处理确认上传
 const handleConfirm = async () => {
-    if (!videoUrl.value) {
+    if (!videoFile.value) {
         Message.error('请先上传视频文件')
+        return
+    }
+
+    if (!sessionStorage.userId) {
+        Message.error('用户未登录，请先登录')
         return
     }
 
@@ -145,35 +164,73 @@ const handleConfirm = async () => {
     }
 
     uploading.value = true
+    uploadProgress.value = 0
 
     try {
-        // 模拟上传到服务器的过程
-        await new Promise(resolve => setTimeout(resolve, 2000))
-
-        // 创建模拟的返回数据
-        const uploadedVideo = {
-            id: Date.now(), // 使用时间戳作为临时ID
+        // 准备上传参数
+        const id = randomUUID();
+        const uploadParams: UploadVideoParams = {
+            video: videoFile.value,
+            videoId: id,
+            userId: sessionStorage.userId,
             title: formData.title,
+            category: formData.category,
             tags: formData.tags,
-            cover: '/images/covers/default.png', // 默认封面
-            duration: formatDuration(videoDuration.value),
-            url: videoUrl.value,
-            difficulty: formData.difficulty,
-            category: formData.category
+            description: formData.description
         }
 
-        Message.success('视频上传成功！')
+        // 调用真实的上传API
+        const response = await uploadVideo(uploadParams, (progress) => {
+            uploadProgress.value = progress
+        })
 
-        // 触发成功事件
-        emit('upload-success', uploadedVideo)
+        if (response.success) {
+            Message.success(response.data.message || '视频上传成功！')
 
-        // 关闭弹窗
-        handleCancel()
+            // 构建返回数据
+            const uploadedVideo = {
+                id: response.data.data.id,
+                videoId: response.data.data.videoId,
+                title: response.data.data.title || formData.title,
+                tags: formData.tags,
+                cover: '/images/covers/default.png', // 默认封面，可以后续生成缩略图
+                duration: formatDuration(videoDuration.value),
+                url: response.data.data.url,
+                originalUrl: response.data.data.url, // 原始URL
+                size: response.data.data.size,
+                difficulty: formData.difficulty,
+                category: response.data.data.category || formData.category,
+                uploadTime: response.data.data.uploadTime,
+                fileName: response.data.data.originalName
+            }
 
-    } catch (error) {
-        Message.error('上传失败，请重试')
+            // 触发成功事件
+            emit('upload-success', uploadedVideo)
+
+            // 关闭弹窗
+            handleCancel()
+        } else {
+            Message.error(response.data.message || '上传失败')
+        }
+
+    } catch (error: any) {
+        console.error('上传失败:', error)
+
+        // 根据错误类型显示不同的提示信息
+        if (error.response?.status === 413) {
+            Message.error('文件太大，请压缩后重新上传')
+        } else if (error.response?.status === 400) {
+            Message.error(error.response.data?.message || '文件格式不支持')
+        } else if (error.response?.status === 401) {
+            Message.error('请先登录')
+        } else if (error.code === 'ECONNABORTED') {
+            Message.error('上传超时，请检查网络连接')
+        } else {
+            Message.error('上传失败，请重试')
+        }
     } finally {
         uploading.value = false
+        uploadProgress.value = 0
     }
 }
 
@@ -191,9 +248,8 @@ watch(() => props.visible, (newVal) => {
         <div class="video-upload-modal">
             <!-- 上传区域 -->
             <div class="upload-section">
-                <Upload draggable action="/api/upload" :limit="1" accept=".mp4,.avi,.mov,.mkv,.wmv"
-                    :before-upload="beforeUpload" :auto-upload="false" @change="handleChange" @remove="handleRemove"
-                    class="upload-draggable">
+                <Upload draggable :limit="1" accept=".mp4,.avi,.mov,.mkv,.wmv,.flv,.webm" :before-upload="beforeUpload"
+                    :auto-upload="false" @change="handleChange" @remove="handleRemove" class="upload-draggable">
                     <template #upload-button>
                         <div class="upload-tip">
                             <p>点击或拖拽视频文件到此处</p>
@@ -202,29 +258,66 @@ watch(() => props.visible, (newVal) => {
                     </template>
                 </Upload>
 
+                <!-- 上传进度 -->
+                <div v-if="uploading" class="upload-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" :style="{ width: uploadProgress + '%' }"></div>
+                    </div>
+                    <div class="progress-text">上传进度: {{ uploadProgress }}%</div>
+                </div>
+
                 <!-- 视频预览 -->
                 <div v-if="videoUrl" class="video-preview">
                     <video :src="videoUrl" controls preload="metadata" class="preview-video"
                         @loadedmetadata="handleVideoLoaded"></video>
-                    <div v-if="videoDuration" class="video-duration">
-                        时长：{{ formatDuration(videoDuration) }}
+                    <div class="video-info">
+                        <div v-if="videoDuration" class="video-duration">
+                            时长：{{ formatDuration(videoDuration) }}
+                        </div>
+                        <div v-if="videoFile" class="video-size">
+                            大小：{{ (videoFile.size / 1024 / 1024).toFixed(2) }} MB
+                        </div>
                     </div>
                 </div>
 
                 <!-- 视频信息表单 -->
                 <div class="video-info-form">
                     <Form ref="formRef" :model="formData" :rules="formRules" layout="vertical">
-                        <Form.Item field="title" label="视频标题" :rules="[{ required: true, message: '请输入视频标题' }]">
+                        <Form.Item field="title" label="视频标题" required>
                             <Input v-model="formData.title" placeholder="请输入视频标题" max-length="100" show-word-limit />
                         </Form.Item>
 
-                        <Form.Item field="category" label="分类">
+                        <Form.Item field="category" label="分类" required>
                             <Select v-model="formData.category" placeholder="选择视频分类">
                                 <Option value="computer_science">计算机科学</Option>
                                 <Option value="math">数学</Option>
                                 <Option value="chemistry">化学</Option>
                                 <Option value="art_and_design">艺术设计学</Option>
+                                <Option value="other">其他</Option>
                             </Select>
+                        </Form.Item>
+
+                        <Form.Item field="tags" label="标签（可选）">
+                            <Select v-model="formData.tags" multiple allow-create placeholder="输入标签，回车添加"
+                                :max-tag-count="3">
+                                <Option value="入门">入门</Option>
+                                <Option value="进阶">进阶</Option>
+                                <Option value="实战">实战</Option>
+                                <Option value="理论">理论</Option>
+                            </Select>
+                        </Form.Item>
+
+                        <Form.Item field="difficulty" label="难度（可选）">
+                            <Select v-model="formData.difficulty" placeholder="选择难度">
+                                <Option value="beginner">入门</Option>
+                                <Option value="intermediate">中级</Option>
+                                <Option value="advanced">高级</Option>
+                            </Select>
+                        </Form.Item>
+
+                        <Form.Item field="description" label="描述（可选）">
+                            <Input v-model="formData.description" placeholder="请输入视频描述" type="textarea" :rows="3"
+                                max-length="500" show-word-limit />
                         </Form.Item>
                     </Form>
                 </div>
@@ -233,9 +326,9 @@ watch(() => props.visible, (newVal) => {
             <!-- 操作按钮 -->
             <div class="modal-footer">
                 <Button @click="handleCancel">取消</Button>
-                <Button class="confirm-btn" :loading="uploading" :disabled="!videoUrl || !formData.title"
-                    @click="handleConfirm">
-                    {{ uploading ? '上传中...' : '确认上传' }}
+                <Button class="confirm-btn" :loading="uploading"
+                    :disabled="!videoFile || !formData.title || !formData.category" @click="handleConfirm">
+                    {{ uploading ? `上传中... ${uploadProgress}%` : '确认上传' }}
                 </Button>
             </div>
         </div>
@@ -279,6 +372,31 @@ watch(() => props.visible, (newVal) => {
         }
     }
 
+    .upload-progress {
+        margin-top: 16px;
+
+        .progress-bar {
+            height: 8px;
+            background-color: var(--color-fill-3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+
+            .progress-fill {
+                height: 100%;
+                background-color: #856cff;
+                border-radius: 4px;
+                transition: width 0.3s ease;
+            }
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: var(--color-text-3);
+            text-align: center;
+        }
+    }
+
     .video-preview {
         margin-top: 20px;
 
@@ -289,11 +407,16 @@ watch(() => props.visible, (newVal) => {
             background-color: #000;
         }
 
-        .video-duration {
+        .video-info {
+            display: flex;
+            justify-content: space-between;
             margin-top: 8px;
-            font-size: 12px;
-            color: var(--color-text-3);
-            text-align: center;
+
+            .video-duration,
+            .video-size {
+                font-size: 12px;
+                color: var(--color-text-3);
+            }
         }
     }
 
@@ -302,6 +425,10 @@ watch(() => props.visible, (newVal) => {
 
         :deep(.arco-form-item) {
             margin-bottom: 16px;
+        }
+
+        :deep(.arco-select-view) {
+            min-height: 32px;
         }
     }
 

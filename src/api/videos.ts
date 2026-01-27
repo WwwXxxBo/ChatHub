@@ -38,6 +38,8 @@ export interface GetUserVideosParams {
   userId: number;
   page?: number;
   limit?: number;
+  category?: string;
+  search?: string;
 }
 
 export interface VideoItem {
@@ -143,7 +145,9 @@ export const getUserVideos = (params: GetUserVideosParams) => {
     params: {
       userId: params.userId,
       page: params.page || 1,
-      limit: params.limit || 20
+      limit: params.limit || 20,
+      category: params.category || '',
+      search: params.search || '',
     },
     withCredentials: true,
     headers: {

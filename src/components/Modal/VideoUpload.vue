@@ -27,8 +27,6 @@ interface VideoUploadEmits {
 
 interface VideoFormData {
     title: string
-    tags: string[]
-    difficulty: string
     category: string
     description?: string
 }
@@ -43,12 +41,8 @@ const videoFile = ref<File | null>(null)
 const videoUrl = ref<string>('')
 const videoDuration = ref<number>(0)
 
-const userStore = useUserStore()
-
 const formData = reactive<VideoFormData>({
     title: '',
-    tags: [],
-    difficulty: '',
     category: ''
 })
 
@@ -137,8 +131,6 @@ const handleCancel = () => {
     videoDuration.value = 0
     uploadProgress.value = 0
     formData.title = ''
-    formData.tags = []
-    formData.difficulty = ''
     formData.category = ''
     formData.description = ''
     uploading.value = false
@@ -175,8 +167,9 @@ const handleConfirm = async () => {
             userId: sessionStorage.userId,
             title: formData.title,
             category: formData.category,
-            tags: formData.tags,
-            description: formData.description
+            description: formData.description,
+            tags: [],
+            difficulty: ''
         }
 
         // 调用真实的上传API
@@ -189,19 +182,17 @@ const handleConfirm = async () => {
 
             // 构建返回数据
             const uploadedVideo = {
-                id: response.data.data.id,
-                videoId: response.data.data.videoId,
-                title: response.data.data.title || formData.title,
-                tags: formData.tags,
+                id: response.data.id,
+                videoId: response.data.videoId,
+                title: response.data.title || formData.title,
                 cover: '/images/covers/default.png', // 默认封面，可以后续生成缩略图
                 duration: formatDuration(videoDuration.value),
-                url: response.data.data.url,
-                originalUrl: response.data.data.url, // 原始URL
-                size: response.data.data.size,
-                difficulty: formData.difficulty,
-                category: response.data.data.category || formData.category,
-                uploadTime: response.data.data.uploadTime,
-                fileName: response.data.data.originalName
+                url: response.data.url,
+                originalUrl: response.data.url, // 原始URL
+                size: response.data.size,
+                category: response.data.category || formData.category,
+                uploadTime: response.data.uploadTime,
+                fileName: response.data.originalName
             }
 
             // 触发成功事件
@@ -294,24 +285,6 @@ watch(() => props.visible, (newVal) => {
                                 <Option value="chemistry">化学</Option>
                                 <Option value="art_and_design">艺术设计学</Option>
                                 <Option value="other">其他</Option>
-                            </Select>
-                        </Form.Item>
-
-                        <Form.Item field="tags" label="标签（可选）">
-                            <Select v-model="formData.tags" multiple allow-create placeholder="输入标签，回车添加"
-                                :max-tag-count="3">
-                                <Option value="入门">入门</Option>
-                                <Option value="进阶">进阶</Option>
-                                <Option value="实战">实战</Option>
-                                <Option value="理论">理论</Option>
-                            </Select>
-                        </Form.Item>
-
-                        <Form.Item field="difficulty" label="难度（可选）">
-                            <Select v-model="formData.difficulty" placeholder="选择难度">
-                                <Option value="beginner">入门</Option>
-                                <Option value="intermediate">中级</Option>
-                                <Option value="advanced">高级</Option>
                             </Select>
                         </Form.Item>
 

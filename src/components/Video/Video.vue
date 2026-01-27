@@ -240,7 +240,7 @@ const openUploadModal = () => {
                         </Button>
                     </Col>
                     <Col :span="4">
-                        <Button type="primary" size="large" @click="openUploadModal" class="reset-btn">
+                        <Button type="primary" size="large" @click="openUploadModal" class="search-btn">
                             <template #icon>
                                 <icon-upload />
                             </template>
@@ -286,7 +286,7 @@ const openUploadModal = () => {
                                 <!-- 视频封面 -->
                                 <div class="video-cover">
                                     <img :src="video.coverUrl" :alt="video.title" class="cover-image" />
-                                    <div class="video-overlay">
+                                    <div class="video-overlay" @click="playVideo(video)">
                                         <div class="play-icon">
                                             <icon-play-circle-fill />
                                         </div>

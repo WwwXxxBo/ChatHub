@@ -13,7 +13,7 @@ import {
     type FileItem
 } from '@arco-design/web-vue'
 import { uploadVideo, type UploadVideoResponse, type UploadVideoParams } from '@/api/videos'
-import { useUserStore } from '@/stores/user'
+import { processVideoAsync } from '@/api/rag'
 import { randomUUID } from "@/utils/id-util";
 
 interface VideoUploadProps {
@@ -40,11 +40,13 @@ const uploadProgress = ref<number>(0)
 const videoFile = ref<File | null>(null)
 const videoUrl = ref<string>('')
 const videoDuration = ref<number>(0)
+const processingModal = ref(null);
 
 const formData = reactive<VideoFormData>({
     title: '',
     category: ''
 })
+
 
 const formRules = {
     title: [{ required: true, message: '请输入视频标题' }],
@@ -172,7 +174,7 @@ const handleConfirm = async () => {
             difficulty: ''
         }
 
-        // 调用真实的上传API
+        // 1. 调用真实的上传API
         const response = await uploadVideo(uploadParams, (progress) => {
             uploadProgress.value = progress
         })
@@ -185,21 +187,81 @@ const handleConfirm = async () => {
                 id: response.data.id,
                 videoId: response.data.videoId,
                 title: response.data.title || formData.title,
-                cover: '/images/covers/default.png', // 默认封面，可以后续生成缩略图
+                cover: '/images/covers/default.png',
                 duration: formatDuration(videoDuration.value),
                 url: response.data.url,
-                originalUrl: response.data.url, // 原始URL
+                originalUrl: response.data.url,
                 size: response.data.size,
                 category: response.data.category || formData.category,
                 uploadTime: response.data.uploadTime,
                 fileName: response.data.originalName
             }
 
-            // 触发成功事件
+            // 2. 触发上传成功事件
             emit('upload-success', uploadedVideo)
 
-            // 关闭弹窗
+            // 3. 关闭上传弹窗
             handleCancel()
+
+            // 4. 显示视频处理中弹窗并调用处理接口
+            let processingModal: any = null
+            try {
+                processingModal = Modal.info({
+                    title: '视频处理中',
+                    content: '正在对视频进行分析和转码，请稍候...',
+                    closable: false,
+                    maskClosable: false,
+                    hideCancel: true,
+                    okText: '处理中',
+                    simple: false
+                })
+
+                const res = await processVideoAsync(uploadedVideo.url)
+
+                // 处理成功，关闭处理中弹窗
+                processingModal?.close()
+
+                // 显示处理成功提示
+                Modal.success({
+                    title: '处理完成',
+                    content: '视频处理成功，已准备就绪！',
+                    okText: '确定',
+                    onOk: () => {
+                        // 可以在这里跳转到视频详情页或其他操作
+                        console.log('处理结果：', res)
+                    }
+                })
+
+            } catch (processError: any) {
+                // 处理失败，关闭处理中弹窗
+                processingModal?.close()
+
+                // 显示处理失败提示
+                Modal.error({
+                    title: '处理失败',
+                    content: processError.message || '视频处理失败，请联系管理员',
+                    okText: '确定'
+                })
+
+                // 这里可以选择是否重试
+                const shouldRetry = await new Promise((resolve) => {
+                    Modal.warning({
+                        title: '是否重试？',
+                        content: '视频处理失败，是否重新尝试处理？',
+                        okText: '重试',
+                        cancelText: '取消',
+                        onOk: () => resolve(true),
+                        onCancel: () => resolve(false)
+                    })
+                })
+
+                if (shouldRetry) {
+                    // 重新调用处理接口
+                    await handleConfirm() // 注意：这里需要避免递归循环
+                }
+
+                console.error('视频处理失败:', processError)
+            }
         } else {
             Message.error(response.data.message || '上传失败')
         }
@@ -224,7 +286,6 @@ const handleConfirm = async () => {
         uploadProgress.value = 0
     }
 }
-
 // 监听visible变化，当弹窗关闭时清理
 watch(() => props.visible, (newVal) => {
     if (!newVal && videoUrl.value) {

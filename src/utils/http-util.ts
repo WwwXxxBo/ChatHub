@@ -26,3 +26,13 @@ AssistantHttpInstance.interceptors.response.use(
     (res) => res.data,
     (err) => Promise.reject(err)
 )
+
+export const RagHttpInstance = axios.create({
+    baseURL: "/rag",
+    timeout: 10000000,
+})
+//  axios 响应式拦截器
+RagHttpInstance.interceptors.response.use(
+    (res) => res.data,
+    (err) => Promise.reject(err)
+)

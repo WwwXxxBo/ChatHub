@@ -47,6 +47,11 @@ export default defineConfig({
         target: 'http://localhost:3001',
         changeOrigin: false,
         rewrite: (path) => path.replace(/^\/assistant/, '')
+      },
+      '/rag': {
+        target: 'http://localhost:5000',
+        changeOrigin: false,
+        rewrite: (path) => path.replace(/^\/rag/, '')
       }
     },
     cors: true

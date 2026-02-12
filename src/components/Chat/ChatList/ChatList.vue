@@ -110,7 +110,7 @@ onMounted(async () => {
       </draggable>
     </a-scrollbar>
     <div v-else class="assistant-list-empty">
-      <a-empty description="暂无对话" />
+      <a-empty :description="t('common.noChat')" />
     </div>
   </div>
 </template>

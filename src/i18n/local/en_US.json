@@ -32,7 +32,8 @@
     "updateTime": "Update time",
     "charCount": "Characters",
     "configError": "Configuration error",
-    "goSetting": "Go to Settings"
+    "goSetting": "Go to Settings",
+    "noChat": "No dialogue available"
   },
   "setting": {
     "name": "Settings",

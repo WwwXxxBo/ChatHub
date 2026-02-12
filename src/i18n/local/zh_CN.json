@@ -32,7 +32,8 @@
     "updateTime": "更新时间",
     "charCount": "字",
     "configError": "配置错误",
-    "goSetting": "前往配置"
+    "goSetting": "前往配置",
+    "noChat": "暂无对话"
   },
   "setting": {
     "name": "设置",
@@ -112,7 +113,7 @@
         "key": "Gemini Key"
       },
       "zhipuAI": {
-        "name": "智谱清言",
+        "name": "智谱AI",
         "apiKey": "API Key"
       },
       "spark": {
@@ -127,7 +128,7 @@
         "secretKey": "Secret Key"
       },
       "tongyi": {
-        "name": "阿里通义",
+        "name": "通义千问",
         "apiKey": "API Key"
       },
       "tiangong": {
